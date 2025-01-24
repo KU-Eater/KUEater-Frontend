@@ -6,8 +6,8 @@ interface MenuCardProps {
   typeCard: 'MenuCardinHome' | 'MenuCardinStall'; // Two card types
   menuName: string; // Name of the menu item
   price: string; // Price of the item
-  likes: number; // Number of likes
-  dislikes?: number; // Number of dislikes (optional if needed)
+  likes: number; // Initial number of likes
+  dislikes?: number; // Initial number of dislikes
   stallName?: string; // Optional: Stall name (only for MenuCardinHome)
   imageUrl: string; // Image URL for the menu item
 }
@@ -23,38 +23,59 @@ const MenuCard: React.FC<MenuCardProps> = ({
   stallName,
   imageUrl,
 }) => {
-  const [isLoved, setIsLoved] = useState(false);
+  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null); // Track user interaction
   const [likeCount, setLikeCount] = useState(likes);
   const [dislikeCount, setDislikeCount] = useState(dislikes);
+  const [isLoved, setIsLoved] = useState(false);
 
   const isHomeCard = typeCard === 'MenuCardinHome';
-  const cardWidth = isHomeCard ? screenWidth * 0.35 : screenWidth * 0.5;
+  const cardWidth = isHomeCard ? screenWidth * 0.4 : screenWidth * 0.5;
+
+  const handleLikePress = () => {
+    if (userAction === 'like') {
+      // Undo like
+      setUserAction(null);
+      setLikeCount(likeCount - 1);
+    } else {
+      // Like the item
+      setUserAction('like');
+      setLikeCount(likeCount + 1);
+      if (userAction === 'dislike') {
+        setDislikeCount(dislikeCount - 1); // Remove dislike if previously disliked
+      }
+    }
+  };
+
+  const handleDislikePress = () => {
+    if (userAction === 'dislike') {
+      // Undo dislike
+      setUserAction(null);
+      setDislikeCount(dislikeCount - 1);
+    } else {
+      // Dislike the item
+      setUserAction('dislike');
+      setDislikeCount(dislikeCount + 1);
+      if (userAction === 'like') {
+        setLikeCount(likeCount - 1); // Remove like if previously liked
+      }
+    }
+  };
 
   const handleLovePress = () => {
     setIsLoved(!isLoved);
   };
 
-  const handleLikePress = () => {
-    setLikeCount(likeCount + 1);
-    if (dislikeCount > 0) setDislikeCount(dislikeCount - 1); // Avoid double count
-  };
-
-  const handleDislikePress = () => {
-    setDislikeCount(dislikeCount + 1);
-    if (likeCount > 0) setLikeCount(likeCount - 1); // Avoid double count
-  };
-
   return (
     <View style={[styles.card, { width: cardWidth }]}>
-      {/* Image Section */}
-      <View style={styles.imageContainer}>
+       {/* Image Section */}
+       <View style={styles.imageContainer}>
         <Image source={{ uri: imageUrl }} style={styles.image} />
         {/* Love Button */}
         <TouchableOpacity style={styles.loveButton} onPress={handleLovePress}>
           <Ionicons
             name={isLoved ? 'heart' : 'heart-outline'}
-            size={24}
-            color={isLoved ? 'red' : '#888'}
+            size={18}
+            color={isLoved ? '#D7443E' : '#888'}
           />
         </TouchableOpacity>
       </View>
@@ -74,12 +95,20 @@ const MenuCard: React.FC<MenuCardProps> = ({
           <View style={styles.ratingSection}>
             {/* Like Button */}
             <TouchableOpacity onPress={handleLikePress} style={styles.ratingButton}>
-              <FontAwesome name="thumbs-up" size={20} color="#28a745" />
+              <FontAwesome
+                name="thumbs-up"
+                size={20}
+                color={userAction === 'like' ? '#008884' : '#999'}
+              />
               <Text style={styles.ratingText}>{likeCount}</Text>
             </TouchableOpacity>
             {/* Dislike Button */}
             <TouchableOpacity onPress={handleDislikePress} style={styles.ratingButton}>
-              <FontAwesome name="thumbs-down" size={20} color="#dc3545" />
+              <FontAwesome
+                name="thumbs-down"
+                size={20}
+                color={userAction === 'dislike' ? '#B33E3E' : '#999'}
+              />
               <Text style={styles.ratingText}>{dislikeCount}</Text>
             </TouchableOpacity>
           </View>
@@ -91,13 +120,13 @@ const MenuCard: React.FC<MenuCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    margin: 8,
+    marginLeft: 8,
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowColor: '#E9DCD3',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.5,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -110,10 +139,10 @@ const styles = StyleSheet.create({
   },
   loveButton: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 12,
+    top: 5,
+    right: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 20,
     padding: 4,
   },
   content: {
@@ -122,7 +151,7 @@ const styles = StyleSheet.create({
   menuName: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#006664',
   },
   stallName: {
     fontSize: 12,
@@ -138,7 +167,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#28a745',
+    color: '#3A3838',
   },
   ratingSection: {
     flexDirection: 'row',

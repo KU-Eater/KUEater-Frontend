@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import SearchBar from '../components/SearchBar'; // Adjust the path
 import MenuCard from '../components/MenuCard'; // Adjust the path
 import StallCard from '../components/StallCard'; // Adjust the path
-import NavBar from '../components/NavBar'; // Adjust the path
 
 
 
@@ -15,7 +14,7 @@ const mockMenuData = [
     price: '40',
     likes: 212,
     stallName: 'Eat 8 Ate',
-    imageUrl: 'https://example.com/saba.jpg',
+    imageUrl: 'https://www.justonecookbook.com/wp-content/uploads/2019/02/Saba-Shioyaki-I-1.jpg',
     typeCard: 'MenuCardinHome' as const,
   },
   {
@@ -24,7 +23,7 @@ const mockMenuData = [
     price: '50',
     likes: 120,
     stallName: 'Mr. Rice',
-    imageUrl: 'https://example.com/friedrice.jpg',
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDmete-M3ba2oCyVLZIcH2oDh7QQSz-UtoA&s',
     typeCard: 'MenuCardinHome' as const,
   },
   {
@@ -33,7 +32,7 @@ const mockMenuData = [
     price: '5',
     likes: 641,
     stallName: 'Toei Kaew (Beverages)',
-    imageUrl: 'https://example.com/pandan.jpg',
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmOe2ocJeXunMXXQTQmNWDRlBVDXmt4ZYwdA&s',
     typeCard: 'MenuCardinHome' as const,
   },
 ];
@@ -43,7 +42,7 @@ const mockStallData = [
     id: 1,
     rank: 1,
     stallName: 'Mr. Raw Fried Chicken',
-    imageUrl: 'https://example.com/mrraw.jpg',
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM7s0v7yK-niQWaDUgGD6XU_N05_SyJ9j_IYISHPPFXWacLQ2DjadykH2m9NKSSHRyPO0&usqp=CAU',
     location: '22',
     operatingHours: '10.30 - 14.30',
     priceRange: '5 - 25',
@@ -56,7 +55,7 @@ const mockStallData = [
     id: 2,
     rank: 2,
     stallName: 'Toei Kaew (Beverages)',
-    imageUrl: 'https://example.com/toei.jpg',
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQViFBap0GFwruy1uLRTbA1Z9yBY3cIjLbMYg&s',
     location: '37',
     operatingHours: '07.00 - 17.30',
     priceRange: '5 - 40',
@@ -69,7 +68,7 @@ const mockStallData = [
     id: 3,
     rank: 3,
     stallName: 'Pilin Local North',
-    imageUrl: 'https://example.com/pilin.jpg',
+    imageUrl: 'https://img.wongnai.com/p/1920x0/2023/08/28/140f720406f7403cab6ae74a58887a8f.jpg',
     location: '22',
     operatingHours: '07.30 - 15.30',
     priceRange: '35 - 60',
@@ -81,6 +80,7 @@ const mockStallData = [
 ];
 
 const HomeScreen = () => {
+
   return (
     <View style={styles.container}>
       {/* Search Bar */}
@@ -106,7 +106,52 @@ const HomeScreen = () => {
           </ScrollView>
         </View>
 
-        {/* Popular Stalls Section */}
+        {/* Top like Menu from Eater! */}
+        <View style={styles.section}>
+          <View style={styles.sectionEater}>
+            <Text style={styles.sectionTitle}>Top like Menu from</Text>
+            <Text style={styles.eater}> Eater!</Text>
+          </View>
+          
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {mockMenuData.map((menu) => (
+              <MenuCard
+                key={menu.id}
+                menuName={menu.menuName}
+                price={menu.price}
+                likes={menu.likes}
+                stallName={menu.stallName}
+                imageUrl={menu.imageUrl}
+                typeCard={menu.typeCard}
+              />
+            ))}
+          </ScrollView>
+          
+        </View>
+        
+
+
+        {/* You may Love these Food Stalls! */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>You may Love these Food Stalls!</Text>
+          {mockStallData.map((stall) => (
+            <StallCard
+              key={stall.id}
+              rank={stall.rank}
+              stallName={stall.stallName}
+              imageUrl={stall.imageUrl}
+              location={stall.location}
+              operatingHours={stall.operatingHours}
+              priceRange={stall.priceRange}
+              tags={stall.tags}
+              reviews={stall.reviews}
+              likes={stall.likes}
+              rating={stall.rating}
+            />
+          ))}
+        </View>
+
+          {/* Popular Stalls Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Popular Stalls in Bar Mai</Text>
           {mockStallData.map((stall) => (
@@ -125,47 +170,53 @@ const HomeScreen = () => {
             />
           ))}
         </View>
+
       </ScrollView>
 
       
     </View>
-    // <View style={styles.container}>
-    //       <Text style={styles.text}>Home Screen Debug</Text>
-    // </View>
+
   );
 };
 
-// const styles = StyleSheet.create({
-//     container: {
-//       flex: 1,
-//       justifyContent: 'center',
-//       alignItems: 'center',
-//       backgroundColor: '#f7f7f7',
-//     },
-//     text: {
-//       fontSize: 18,
-//       fontWeight: '600',
-//       color: '#333',
-//     },
-//   });
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#ffffff',
   },
   content: {
-    paddingBottom: 80, // Space for the navigation bar
+    paddingBottom: 20, // Space for the navigation bar
   },
   section: {
-    marginTop: 16,
-    marginHorizontal: 16,
+    marginTop: 12,
+    backgroundColor: '#FAF5F0',
+    paddingBottom: 12,
+    
+
   },
+
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
-    color: '#333',
+    color: '#006664',
+    marginTop: 16,
+    marginHorizontal: 16,
+    marginRight: 0,
+  },
+  eater: {
+    fontSize: 17,
+    fontWeight: '800',
+    marginBottom: 8,
+    color: '#004442',
+    marginTop: 16,
+    
+
+  },
+  sectionEater: {
+    flexDirection: 'row',
+ 
   },
 });
 
