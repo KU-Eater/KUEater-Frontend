@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'rea
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 interface MenuCardProps {
-  type: 'MenuCardinHome' | 'MenuCardinStall'; // Two card types
+  typeCard: 'MenuCardinHome' | 'MenuCardinStall'; // Two card types
   menuName: string; // Name of the menu item
   price: string; // Price of the item
   likes: number; // Number of likes
@@ -15,7 +15,7 @@ interface MenuCardProps {
 const screenWidth = Dimensions.get('window').width;
 
 const MenuCard: React.FC<MenuCardProps> = ({
-  type,
+  typeCard,
   menuName,
   price,
   likes,
@@ -27,7 +27,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
   const [likeCount, setLikeCount] = useState(likes);
   const [dislikeCount, setDislikeCount] = useState(dislikes);
 
-  const isHomeCard = type === 'MenuCardinHome';
+  const isHomeCard = typeCard === 'MenuCardinHome';
   const cardWidth = isHomeCard ? screenWidth * 0.35 : screenWidth * 0.5;
 
   const handleLovePress = () => {
