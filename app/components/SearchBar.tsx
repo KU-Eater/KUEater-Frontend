@@ -1,34 +1,32 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import {Ionicons} from '@expo/vector-icons';
-
-
+import { Ionicons } from '@expo/vector-icons';
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [language, setLanguage] = useState('EN'); // Default to English
+  const [language, setLanguage] = useState('ENG 🇬🇧');
 
   const handleLanguageToggle = () => {
-    setLanguage((prev) => (prev === 'EN' ? 'TH' : 'EN'));
+    setLanguage((prev) => (prev === 'ENG 🇬🇧' ? 'THA 🇹🇭' : 'ENG 🇬🇧'));
   };
 
   return (
     <View style={styles.container}>
-      {/* Location and Logo Row */}
+      {/* Top Row - Location, Logo, Language */}
       <View style={styles.topRow}>
-        {/* Location */}
+        {/* Location (Left-aligned) */}
         <View style={styles.locationContainer}>
           <Ionicons name="location-sharp" size={15} color="#B33E3E" />
           <Text style={styles.locationText}>Bar Mai</Text>
         </View>
 
-        {/* Logo */}
+        {/* Centered Logo */}
         <Image
           source={{ uri: 'https://raw.githubusercontent.com/KU-Eater/KUEater-Frontend/refs/heads/base-gui/app/assets/logo_home.png' }}
           style={styles.logo}
         />
 
-        {/* Language Switch */}
+        {/* Language Switch (Right-aligned) */}
         <TouchableOpacity onPress={handleLanguageToggle} style={styles.languageSwitch}>
           <Text style={styles.languageText}>{language}</Text>
         </TouchableOpacity>
@@ -59,11 +57,15 @@ const styles = StyleSheet.create({
   },
   topRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',    
-    
+    alignItems: 'flex-start', // Align children to top
+    justifyContent: 'center',
+    position: 'relative',
+    marginTop: 30
   },
   locationContainer: {
+    position: 'absolute',
+    left: 0,
+    top: 0, // Align to top
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -74,29 +76,32 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   logo: {
-    width: 200,
-    height: 100,
-    // resizeMode: 'contain',
+    width: 160,
+    height: 95,
+    marginTop: -25,
   },
   languageSwitch: {
+    position: 'absolute',
+    right: 0,
+    top: 0, // Align to top
     padding: 4,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#006664',
+    borderColor: '#B1AEAE',
   },
   languageText: {
     fontSize: 10,
     fontWeight: '500',
-    color: '#006664',
+    color: '#3A3838',
   },
   searchContainer: {
+    marginTop: -15,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
-    borderRadius: 8,
+    borderRadius: 20,
     paddingHorizontal: 12,
     height: 40,
-
   },
   searchIcon: {
     marginRight: 8,

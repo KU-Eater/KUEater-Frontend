@@ -3,7 +3,7 @@ import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import SearchBar from '../components/SearchBar'; // Adjust the path
 import MenuCard from '../components/MenuCard'; // Adjust the path
 import StallCard from '../components/StallCard'; // Adjust the path
-
+import CategoryBar from '../components/CategoryBar';
 
 
 
@@ -86,8 +86,14 @@ const HomeScreen = () => {
       {/* Search Bar */}
       <SearchBar />
 
+
       {/* Main Content */}
       <ScrollView contentContainerStyle={styles.content}>
+
+        {/* Category Bar */}
+       <CategoryBar />
+
+
         {/* Recommended Menus Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Recommended Menus for You!</Text>
