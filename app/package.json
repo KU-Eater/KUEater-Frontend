@@ -26,6 +26,7 @@
     "react-native-screens": "^4.5.0",
     "react-native-svg": "^15.11.1",
     "react-native-vector-icons": "^10.2.0",
+    "react-native-web": "~0.19.13",
     "tamagui": "^1.121.10"
   },
   "devDependencies": {
@@ -33,6 +34,7 @@
     "@tamagui/theme-builder": "^1.121.10",
     "@types/react": "~18.3.12",
     "@types/react-native-vector-icons": "^6.4.18",
+    "@types/react-native-web": "^0",
     "expo-dev-client": "^5.0.8",
     "typescript": "^5.3.3"
   },

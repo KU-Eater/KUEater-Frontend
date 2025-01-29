@@ -11,18 +11,22 @@ const mockMenuData = [
   {
     id: 1,
     menuName: 'Grilled Saba with Rice',
-    price: '40',
+    price: '50',
     likes: 212,
+    dislikes: 0,
     stallName: 'Eat 8 Ate',
+    stallLock: '08',
     imageUrl: 'https://www.justonecookbook.com/wp-content/uploads/2019/02/Saba-Shioyaki-I-1.jpg',
     typeCard: 'MenuCardinHome' as const,
   },
   {
     id: 2,
     menuName: 'Fried Rice Chicken',
-    price: '50',
+    price: '25',
     likes: 120,
-    stallName: 'Mr. Rice',
+    dislikes: 0,
+    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
+    stallLock: '22',
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDmete-M3ba2oCyVLZIcH2oDh7QQSz-UtoA&s',
     typeCard: 'MenuCardinHome' as const,
   },
@@ -31,7 +35,9 @@ const mockMenuData = [
     menuName: 'Pandan Juice',
     price: '5',
     likes: 641,
+    dislikes: 0,
     stallName: 'Toei Kaew (Beverages)',
+    stallLock: '26',
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmOe2ocJeXunMXXQTQmNWDRlBVDXmt4ZYwdA&s',
     typeCard: 'MenuCardinHome' as const,
   },
@@ -55,7 +61,7 @@ const mockStallData = [
     id: 2,
     rank: 2,
     stallName: 'Toei Kaew (Beverages)',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQViFBap0GFwruy1uLRTbA1Z9yBY3cIjLbMYg&s',
+    imageUrl: 'https://drive.google.com/uc?id=1wbDqPSyYn--XZQhey6j7AJ45h9G7ovH_',
     location: '37',
     operatingHours: '07.00 - 17.30',
     priceRange: '5 - 40',
@@ -104,7 +110,9 @@ const HomeScreen = () => {
                 menuName={menu.menuName}
                 price={menu.price}
                 likes={menu.likes}
+                dislikes={menu.dislikes}
                 stallName={menu.stallName}
+                stallLock={menu.stallLock}
                 imageUrl={menu.imageUrl}
                 typeCard={menu.typeCard}
               />
@@ -126,7 +134,9 @@ const HomeScreen = () => {
                 menuName={menu.menuName}
                 price={menu.price}
                 likes={menu.likes}
+                dislikes={menu.dislikes}
                 stallName={menu.stallName}
+                stallLock={menu.stallLock}
                 imageUrl={menu.imageUrl}
                 typeCard={menu.typeCard}
               />
@@ -189,7 +199,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   },
   content: {
     paddingBottom: 20, // Space for the navigation bar

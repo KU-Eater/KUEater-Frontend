@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 interface StallCardProps {
   rank: number; // Stall rank
@@ -27,13 +28,16 @@ const StallCard: React.FC<StallCardProps> = ({
   likes,
   rating,
 }) => {
+  const navigation = useNavigation();
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   const handleBookmarkPress = () => {
     setIsBookmarked(!isBookmarked);
   };
 
+
   return (
+    
     <View style={styles.card}>
        {/* Top Left Rank Badge */}
        <View style={styles.rankBadge}>
@@ -61,19 +65,19 @@ const StallCard: React.FC<StallCardProps> = ({
 
         {/* Location */}
         <View style={styles.infoRow}>
-          <FontAwesome name="map-marker" size={14} color="#555" />
+          <Ionicons name="location-sharp" size={14} color="#006664" />
           <Text style={styles.infoText}>{location}</Text>
         </View>
 
         {/* Operating Hours */}
         <View style={styles.infoRow}>
-          <FontAwesome name="clock-o" size={14} color="#555" />
+          <Ionicons name="time" size={14} color="#006664" />
           <Text style={styles.infoText}>{operatingHours}</Text>
         </View>
 
         {/* Price Range */}
         <View style={styles.infoRow}>
-          <FontAwesome name="money" size={14} color="#555" />
+          <Ionicons name="logo-bitcoin" size={14} color="#006664" />
           <Text style={styles.infoText}>{priceRange}</Text>
         </View>
 
@@ -87,7 +91,7 @@ const StallCard: React.FC<StallCardProps> = ({
           <Text style={styles.stat}>{reviews} Reviews</Text>
           <Text style={styles.stat}>{likes} Likes</Text>
           <View style={styles.ratingContainer}>
-            <FontAwesome name="star" size={14} color="#f4c20d" />
+            <Ionicons name="star" size={14} color="#D49E3A" />
             <Text style={styles.rating}>{rating.toFixed(2)}</Text>
           </View>
         </View>
@@ -144,13 +148,15 @@ const styles = StyleSheet.create({
   stallName: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#006664',
     marginBottom: 4,
+    marginLeft: 4,
   },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 2,
+    marginLeft: 4,
   },
   infoText: {
     fontSize: 12,
@@ -161,6 +167,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#777',
     marginTop: 6,
+    marginLeft: 4,
   },
   statsRow: {
     flexDirection: 'row',

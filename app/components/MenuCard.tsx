@@ -3,12 +3,13 @@ import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'rea
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 interface MenuCardProps {
-  typeCard: 'MenuCardinHome' | 'MenuCardinStall'; // Two card types
+  typeCard: 'MenuCardinHome' | 'MenuCardinStall' | 'MenuCardinSaved'; // Two card types
   menuName: string; // Name of the menu item
   price: string; // Price of the item
   likes: number; // Initial number of likes
-  dislikes?: number; // Initial number of dislikes
-  stallName?: string; // Optional: Stall name (only for MenuCardinHome)
+  dislikes: number; // Initial number of dislikes
+  stallName: string; // Optional: Stall name (only for MenuCardinHome)
+  stallLock: string;
   imageUrl: string; // Image URL for the menu item
 }
 
@@ -19,8 +20,9 @@ const MenuCard: React.FC<MenuCardProps> = ({
   menuName,
   price,
   likes,
-  dislikes = 0,
+  dislikes,
   stallName,
+  stallLock,
   imageUrl,
 }) => {
   const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null); // Track user interaction
@@ -28,8 +30,8 @@ const MenuCard: React.FC<MenuCardProps> = ({
   const [dislikeCount, setDislikeCount] = useState(dislikes);
   const [isLoved, setIsLoved] = useState(false);
 
-  const isHomeCard = typeCard === 'MenuCardinHome';
-  const cardWidth = isHomeCard ? screenWidth * 0.4 : screenWidth * 0.5;
+  const cardWidth =
+    typeCard === 'MenuCardinHome' ? screenWidth * 0.4 : screenWidth * 0.478;
 
   const handleLikePress = () => {
     if (userAction === 'like') {
@@ -81,14 +83,17 @@ const MenuCard: React.FC<MenuCardProps> = ({
       </View>
 
       {/* Content Section */}
-      <View style={styles.content}>
+       <View style={styles.content}>
         <Text style={styles.menuName} numberOfLines={1}>
           {menuName}
         </Text>
-        {isHomeCard && stallName && (
-          <Text style={styles.stallName} numberOfLines={1}>
-            {stallName}
-          </Text>
+        {(typeCard === 'MenuCardinHome' || typeCard === 'MenuCardinSaved') && (
+          <View style={styles.stallNameContainer}>
+            <Ionicons name="restaurant" size={12} color="#999" style={styles.stallIcon} />
+            <Text style={styles.stallName} numberOfLines={1}>
+            {' '}{stallLock} | {stallName}
+            </Text>
+          </View>
         )}
         <View style={styles.bottomSection}>
           <Text style={styles.price}>{price} ฿</Text>
@@ -100,7 +105,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
                 size={20}
                 color={userAction === 'like' ? '#008884' : '#999'}
               />
-              <Text style={styles.ratingText}>{likeCount}</Text>
+              <Text style={styles.ratingText}>{likeCount}  |</Text>
             </TouchableOpacity>
             {/* Dislike Button */}
             <TouchableOpacity onPress={handleDislikePress} style={styles.ratingButton}>
@@ -109,7 +114,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
                 size={20}
                 color={userAction === 'dislike' ? '#B33E3E' : '#999'}
               />
-              <Text style={styles.ratingText}>{dislikeCount}</Text>
+              
             </TouchableOpacity>
           </View>
         </View>
@@ -120,7 +125,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    marginLeft: 8,
+    marginLeft: 6,
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: '#fff',
@@ -158,6 +163,20 @@ const styles = StyleSheet.create({
     color: '#777',
     marginTop: 4,
   },
+  stallNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  stallLock: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#555',
+    marginRight: 4,
+  },
+  stallIcon: {
+    marginRight: 4,
+  },
   bottomSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -172,6 +191,12 @@ const styles = StyleSheet.create({
   ratingSection: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingRight: 5,
+    paddingVertical: 4,
+    // borderWidth: 1,
+    // borderColor: '#ddd',
+    // borderRadius: 12,
+
   },
   ratingButton: {
     flexDirection: 'row',
