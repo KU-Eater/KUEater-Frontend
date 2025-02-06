@@ -193,9 +193,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 5,
     paddingVertical: 4,
-    // borderWidth: 1,
-    // borderColor: '#ddd',
-    // borderRadius: 12,
 
   },
   ratingButton: {

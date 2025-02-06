@@ -1,92 +1,86 @@
+// StallCard.tsx
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface StallCardProps {
-  rank: number; // Stall rank
-  stallName: string; // Stall name
-  imageUrl: string; // Image URL of the stall
-  location: string; // Stall location
-  operatingHours: string; // Operating hours
-  priceRange: string; // Price range
-  tags: string; // Tags/categories
-  reviews: number; // Number of reviews
-  likes: number; // Number of likes
-  rating: number; // Rating
+  rank: number;
+  stallName: string;
+  imageUrl: string;
+  location: string;
+  operatingHours: string;
+  priceRange: string;
+  tags: string;
+  reviews: number;
+  likes: number;
+  rating: number;
 }
 
-const StallCard: React.FC<StallCardProps> = ({
-  rank,
-  stallName,
-  imageUrl,
-  location,
-  operatingHours,
-  priceRange,
-  tags,
-  reviews,
-  likes,
-  rating,
-}) => {
-  const navigation = useNavigation();
+// Define the navigation stack types
+type RootStackParamList = {
+  StallProfile: { stallData: StallCardProps };
+};
+
+const StallCard: React.FC<StallCardProps> = (props) => {
+  const {
+    rank,
+    stallName,
+    imageUrl,
+    location,
+    operatingHours,
+    priceRange,
+    tags,
+    reviews,
+    likes,
+    rating,
+  } = props;
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   const handleBookmarkPress = () => {
     setIsBookmarked(!isBookmarked);
   };
 
+  const handleCardPress = () => {
+    navigation.navigate('StallProfile', { stallData: props });
+  };
 
   return (
-    
-    <View style={styles.card}>
-       {/* Top Left Rank Badge */}
-       <View style={styles.rankBadge}>
-          <Text style={styles.rankText}>TOP {rank}</Text>
-        </View>
+    <TouchableOpacity style={styles.card} onPress={handleCardPress}>
+      <View style={styles.rankBadge}>
+        <Text style={styles.rankText}>TOP {rank}</Text>
+      </View>
 
-      {/* Image Section */}
       <Image source={{ uri: imageUrl }} style={styles.image} />
 
-      {/* Details Section */}
       <View style={styles.details}>
-        {/* Bookmark Button */}
         <TouchableOpacity style={styles.bookmarkButton} onPress={handleBookmarkPress}>
-          <Ionicons
-            name={isBookmarked ? 'bookmark' : 'bookmark'}
-            size={35}
-            color={isBookmarked ? '#006664' : '#D0CECE'}
-          />
+          <Ionicons name="bookmark" size={35} color={isBookmarked ? '#006664' : '#D0CECE'} />
         </TouchableOpacity>
 
-        {/* Stall Name */}
-        <Text style={styles.stallName} numberOfLines={1}>
-          {stallName}
-        </Text>
+        <Text style={styles.stallName} numberOfLines={1}>{stallName}</Text>
 
-        {/* Location */}
         <View style={styles.infoRow}>
           <Ionicons name="location-sharp" size={14} color="#006664" />
           <Text style={styles.infoText}>{location}</Text>
         </View>
 
-        {/* Operating Hours */}
         <View style={styles.infoRow}>
           <Ionicons name="time" size={14} color="#006664" />
           <Text style={styles.infoText}>{operatingHours}</Text>
         </View>
 
-        {/* Price Range */}
         <View style={styles.infoRow}>
           <Ionicons name="logo-bitcoin" size={14} color="#006664" />
           <Text style={styles.infoText}>{priceRange}</Text>
         </View>
 
-        {/* Tags */}
-        <Text style={styles.tags} numberOfLines={1}>
-          {tags}
-        </Text>
+        <Text style={styles.tags} numberOfLines={1}>{tags}</Text>
 
-        {/* Stats */}
         <View style={styles.statsRow}>
           <Text style={styles.stat}>{reviews} Reviews</Text>
           <Text style={styles.stat}>{likes} Likes</Text>
@@ -96,9 +90,11 @@ const StallCard: React.FC<StallCardProps> = ({
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
+
+export default StallCard;
 
 const styles = StyleSheet.create({
   card: {
@@ -132,8 +128,6 @@ const styles = StyleSheet.create({
   image: {
     width: '40%',
     height: '100%',
-    borderTopLeftRadius: 8,
-    borderBottomLeftRadius: 8,
   },
   details: {
     flex: 1,
@@ -174,6 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 6,
+    marginHorizontal: 4,
   },
   stat: {
     fontSize: 11,
@@ -187,8 +182,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     marginLeft: 3,
-    color: '#f4c20d',
+    color: '#3A3838',
   },
 });
-
-export default StallCard;

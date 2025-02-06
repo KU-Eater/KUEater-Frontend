@@ -445,7 +445,6 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingTop: 8,
-
   },
   listContent: {
     paddingBottom: 30, // Add space for the bottom navigation bar
