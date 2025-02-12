@@ -1,17 +1,28 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface MenuCardProps {
-  typeCard: 'MenuCardinHome' | 'MenuCardinStall' | 'MenuCardinSaved'; // Two card types
-  menuName: string; // Name of the menu item
-  price: string; // Price of the item
-  likes: number; // Initial number of likes
-  dislikes: number; // Initial number of dislikes
-  stallName: string; // Optional: Stall name (only for MenuCardinHome)
+  typeCard: 'MenuCardinHome' | 'MenuCardinStall' | 'MenuCardinSaved';
+  menuName: string;
+  price: string;
+  likes: number;
+  dislikes: number;
+  stallName: string;
   stallLock: string;
-  imageUrl: string; // Image URL for the menu item
+  imageUrl: string;
 }
+
+// ---------------------
+// IMPORTANT: Renamed the route to 'MenuDetails' and updated the type
+// ---------------------
+type RootStackParamList = {
+  // If you have other screens, list them here as well
+  MenuDetails: { menuData: MenuCardProps };
+  // e.g. StallProfile: undefined;
+};
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -25,7 +36,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
   stallLock,
   imageUrl,
 }) => {
-  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null); // Track user interaction
+  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
   const [likeCount, setLikeCount] = useState(likes);
   const [dislikeCount, setDislikeCount] = useState(dislikes);
   const [isLoved, setIsLoved] = useState(false);
@@ -43,7 +54,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
       setUserAction('like');
       setLikeCount(likeCount + 1);
       if (userAction === 'dislike') {
-        setDislikeCount(dislikeCount - 1); // Remove dislike if previously disliked
+        setDislikeCount(dislikeCount - 1);
       }
     }
   };
@@ -58,7 +69,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
       setUserAction('dislike');
       setDislikeCount(dislikeCount + 1);
       if (userAction === 'like') {
-        setLikeCount(likeCount - 1); // Remove like if previously liked
+        setLikeCount(likeCount - 1);
       }
     }
   };
@@ -67,61 +78,88 @@ const MenuCard: React.FC<MenuCardProps> = ({
     setIsLoved(!isLoved);
   };
 
-  return (
-    <View style={[styles.card, { width: cardWidth }]}>
-       {/* Image Section */}
-       <View style={styles.imageContainer}>
-        <Image source={{ uri: imageUrl }} style={styles.image} />
-        {/* Love Button */}
-        <TouchableOpacity style={styles.loveButton} onPress={handleLovePress}>
-          <Ionicons
-            name={isLoved ? 'heart' : 'heart-outline'}
-            size={18}
-            color={isLoved ? '#D7443E' : '#888'}
-          />
-        </TouchableOpacity>
-      </View>
+  // -----------
+  // Navigation Setup
+  // -----------
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-      {/* Content Section */}
-       <View style={styles.content}>
-        <Text style={styles.menuName} numberOfLines={1}>
-          {menuName}
-        </Text>
-        {(typeCard === 'MenuCardinHome' || typeCard === 'MenuCardinSaved') && (
-          <View style={styles.stallNameContainer}>
-            <Ionicons name="restaurant" size={12} color="#999" style={styles.stallIcon} />
-            <Text style={styles.stallName} numberOfLines={1}>
-            {' '}{stallLock} | {stallName}
-            </Text>
-          </View>
-        )}
-        <View style={styles.bottomSection}>
-          <Text style={styles.price}>{price} ฿</Text>
-          <View style={styles.ratingSection}>
-            {/* Like Button */}
-            <TouchableOpacity onPress={handleLikePress} style={styles.ratingButton}>
-              <FontAwesome
-                name="thumbs-up"
-                size={20}
-                color={userAction === 'like' ? '#008884' : '#999'}
-              />
-              <Text style={styles.ratingText}>{likeCount}  |</Text>
-            </TouchableOpacity>
-            {/* Dislike Button */}
-            <TouchableOpacity onPress={handleDislikePress} style={styles.ratingButton}>
-              <FontAwesome
-                name="thumbs-down"
-                size={20}
-                color={userAction === 'dislike' ? '#B33E3E' : '#999'}
-              />
-              
-            </TouchableOpacity>
+  const handleCardPress = () => {
+    // Pass the card's data to the MenuDetails screen
+    navigation.navigate('MenuDetails', {
+      menuData: {
+        typeCard,
+        menuName,
+        price,
+        likes: likeCount,
+        dislikes: dislikeCount,
+        stallName,
+        stallLock,
+        imageUrl,
+      },
+    });
+  };
+
+  return (
+    // Wrap the entire card in a TouchableOpacity
+    <TouchableOpacity onPress={handleCardPress} activeOpacity={0.95}>
+      <View style={[styles.card, { width: cardWidth }]}>
+        {/* Image Section */}
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: imageUrl }} style={styles.image} />
+          {/* Love Button */}
+          <TouchableOpacity style={styles.loveButton} onPress={handleLovePress}>
+            <Ionicons
+              name={isLoved ? 'heart' : 'heart-outline'}
+              size={18}
+              color={isLoved ? '#D7443E' : '#888'}
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Content Section */}
+        <View style={styles.content}>
+          <Text style={styles.menuName} numberOfLines={1}>
+            {menuName}
+          </Text>
+          {(typeCard === 'MenuCardinHome' || typeCard === 'MenuCardinSaved') && (
+            <View style={styles.stallNameContainer}>
+              <Ionicons name="restaurant" size={12} color="#999" style={styles.stallIcon} />
+              <Text style={styles.stallName} numberOfLines={1}>
+                {' '}
+                {stallLock} | {stallName}
+              </Text>
+            </View>
+          )}
+          <View style={styles.bottomSection}>
+            <Text style={styles.price}>{price} ฿</Text>
+            <View style={styles.ratingSection}>
+              {/* Like Button */}
+              <TouchableOpacity onPress={handleLikePress} style={styles.ratingButton}>
+                <FontAwesome
+                  name="thumbs-up"
+                  size={20}
+                  color={userAction === 'like' ? '#008884' : '#999'}
+                />
+                <Text style={styles.ratingText}>{likeCount} |</Text>
+              </TouchableOpacity>
+
+              {/* Dislike Button */}
+              <TouchableOpacity onPress={handleDislikePress} style={styles.ratingButton}>
+                <FontAwesome
+                  name="thumbs-down"
+                  size={20}
+                  color={userAction === 'dislike' ? '#B33E3E' : '#999'}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
+
+export default MenuCard;
 
 const styles = StyleSheet.create({
   card: {
@@ -140,7 +178,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 100, // Adjust based on design
+    height: 100,
   },
   loveButton: {
     position: 'absolute',
@@ -158,24 +196,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#006664',
   },
-  stallName: {
-    fontSize: 12,
-    color: '#777',
-    marginTop: 4,
-  },
   stallNameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 4,
   },
-  stallLock: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#555',
-    marginRight: 4,
-  },
   stallIcon: {
     marginRight: 4,
+  },
+  stallName: {
+    fontSize: 12,
+    color: '#777',
+    marginTop: 4,
   },
   bottomSection: {
     flexDirection: 'row',
@@ -193,7 +225,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 5,
     paddingVertical: 4,
-
   },
   ratingButton: {
     flexDirection: 'row',
@@ -206,5 +237,3 @@ const styles = StyleSheet.create({
     color: '#555',
   },
 });
-
-export default MenuCard;

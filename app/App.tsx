@@ -8,11 +8,14 @@ import NavBar from './components/NavBar';
 
 // นำเข้า StallProfileScreen (หน้ารายละเอียดร้านที่เราจะสร้าง)
 import StallProfileScreen from './screens/StallProfileScreen';
+import MenuDetailScreen from './screens/MenuDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+
   return (
+
     <NavigationContainer>
       <Stack.Navigator>
         {/* 1) หน้าแรกเป็น NavBar ซึ่งมี Bottom Tabs: Home, Saved, etc. */}
@@ -29,6 +32,13 @@ export default function App() {
           options={{ headerShown: false }} 
           // จะให้แสดง header ไหมก็ได้ ถ้าต้องการใส่ title ก็ปรับ headerShown: true
         />
+
+        {/* 3) หน้าเมนู (Menu Details) */}
+        <Stack.Screen 
+            name="MenuDetails"
+            component={MenuDetailScreen}
+            options={{ headerShown: false }} 
+          />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
 
-interface MenuDetails {
+
+
+
+// If you already have a type or interface for the passed data, reuse that:
+interface MenuCardProps {
+  typeCard: 'MenuCardinHome' | 'MenuCardinStall' | 'MenuCardinSaved';
   menuName: string;
   price: string;
   likes: number;
@@ -11,32 +22,38 @@ interface MenuDetails {
   stallName: string;
   stallLock: string;
   imageUrl: string;
-  stallRating: number;
-  stallType: string;
-  stallImage: string;
 }
 
-type RouteParams = {
-  menuData: MenuDetails;
+// Adjust this if your root navigator types differ
+type RootStackParamList = {
+  MenuDetails: { menuData: MenuCardProps };
 };
 
-const MenuDetailsScreen: React.FC = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { menuData } = route.params as RouteParams;
+type MenuDetailScreenRouteProp = RouteProp<RootStackParamList, 'MenuDetails'>;
 
+const MenuDetailScreen: React.FC = () => {
+  const navigation = useNavigation();
+  const route = useRoute<MenuDetailScreenRouteProp>();
+
+  // Data passed from MenuCard
+  const { menuData } = route.params;
+
+  // Replicate "like" / "dislike" / "isLoved" logic
+  const [likeCount, setLikeCount] = useState<number>(menuData.likes || 0);
+  const [dislikeCount, setDislikeCount] = useState<number>(menuData.dislikes || 0);
   const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
-  const [likeCount, setLikeCount] = useState(menuData.likes);
-  const [dislikeCount, setDislikeCount] = useState(menuData.dislikes);
   const [isLoved, setIsLoved] = useState(false);
 
   const handleLikePress = () => {
     if (userAction === 'like') {
+      // Undo like
       setUserAction(null);
       setLikeCount(likeCount - 1);
     } else {
+      // Like
       setUserAction('like');
       setLikeCount(likeCount + 1);
+      // If previously disliked, remove that
       if (userAction === 'dislike') {
         setDislikeCount(dislikeCount - 1);
       }
@@ -45,11 +62,14 @@ const MenuDetailsScreen: React.FC = () => {
 
   const handleDislikePress = () => {
     if (userAction === 'dislike') {
+      // Undo dislike
       setUserAction(null);
       setDislikeCount(dislikeCount - 1);
     } else {
+      // Dislike
       setUserAction('dislike');
       setDislikeCount(dislikeCount + 1);
+      // If previously liked, remove that
       if (userAction === 'like') {
         setLikeCount(likeCount - 1);
       }
@@ -60,181 +80,284 @@ const MenuDetailsScreen: React.FC = () => {
     setIsLoved(!isLoved);
   };
 
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
+  const handleShare = () => {
+    // Implement share logic or use Share API
+    console.log('Share pressed!');
+  };
+
+  const handleWhyThisMenuPress = () => {
+    // Example: show modal, or navigate to explanation screen
+    console.log('Why you see this menu? pressed');
+  };
+
+  const handleStallPress = () => {
+    // Example: navigate to stall’s profile if desired
+    console.log('Stall pressed!');
+  };
+
   return (
     <View style={styles.container}>
-      <ScrollView>
-        {/* Image Section */}
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: menuData.imageUrl }} style={styles.image} />
-          {/* Back Button */}
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="#006664" />
-          </TouchableOpacity>
+      {/* Top banner with image */}
+      <View style={styles.topBannerContainer}>
 
-          {/* Share Button */}
-          <TouchableOpacity style={styles.shareButton}>
-            <Ionicons name="share-social" size={26} color="#006664" />
-          </TouchableOpacity>
-        </View>
+        {/* Menu image */}
+        <Image
+          source={{ uri: menuData.imageUrl }}
+          style={styles.menuImage}
+          resizeMode="cover"
+        />
 
-        {/* Content Section */}
-        <View style={styles.content}>
-          {/* Price and Menu Name */}
-          <Text style={styles.price}>{menuData.price} ฿</Text>
-          <Text style={styles.menuName}>{menuData.menuName}</Text>
+        {/* Back Button */}
+        <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+          <Ionicons name="arrow-back" size={24} color="#066644" />
+        </TouchableOpacity>
 
-          {/* Why you see this menu */}
-          <TouchableOpacity>
-            <Text style={styles.whyText}>Why you see this menu?</Text>
-          </TouchableOpacity>
+        {/* Share Button */}
+        <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
+          <Ionicons name="share-social" size={24} color="#066644" />
+        </TouchableOpacity>
+      </View>
 
-          {/* Like & Dislike Section */}
-          <View style={styles.likeDislikeRow}>
-            <TouchableOpacity onPress={handleLikePress} style={styles.likeButton}>
-              <FontAwesome name="thumbs-up" size={20} color={userAction === 'like' ? '#008884' : '#999'} />
-              <Text style={styles.likeCount}>{likeCount}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={handleDislikePress} style={styles.dislikeButton}>
-              <FontAwesome name="thumbs-down" size={20} color={userAction === 'dislike' ? '#B33E3E' : '#999'} />
-            </TouchableOpacity>
+      {/* White card / content area */}
+      <View style={styles.cardContainer}>
+        {/* Price & Menu Name Row */}
+        <View style={styles.menuTitleRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.priceText}>{menuData.price} ฿</Text>
+            <Text style={styles.menuNameText} numberOfLines={2}>
+              {menuData.menuName}
+            </Text>
           </View>
 
-          {/* Stall Info Section */}
-          <TouchableOpacity style={styles.stallContainer}>
-            {/* Stall Image */}
-            <Image source={{ uri: menuData.stallImage }} style={styles.stallImage} />
-
-            {/* Stall Info */}
-            <View style={styles.stallInfo}>
-              <View style={styles.stallRow}>
-                <Ionicons name="restaurant" size={16} color="#006664" />
-                <Text style={styles.stallText}>{menuData.stallLock}  {menuData.stallName}</Text>
-              </View>
-              <Text style={styles.stallType}>{menuData.stallType}</Text>
-            </View>
-
-            {/* Rating */}
-            <View style={styles.stallRating}>
-              <Ionicons name="star" size={16} color="#D49E3A" />
-              <Text style={styles.ratingText}>{menuData.stallRating.toFixed(2)}</Text>
-            </View>
+          {/* Heart icon */}
+          <TouchableOpacity onPress={handleLovePress} style={styles.heartIconContainer}>
+            <Ionicons
+              name={isLoved ? 'heart' : 'heart-outline'}
+              size={28}
+              color={isLoved ? '#D7443E' : '#C1C1C1'}
+            />
           </TouchableOpacity>
         </View>
-      </ScrollView>
+
+        <View style={styles.likeRow}>
+        {/* "Why you see this menu?" */}
+        <TouchableOpacity onPress={handleWhyThisMenuPress}>
+              <Text style={styles.whyMenuText}>Why you see this menu?</Text>
+        </TouchableOpacity>
+
+        {/* Likes / Dislikes Row */}
+        <View style={styles.likeDislikeRow}>
+          {/* Like */}
+          <TouchableOpacity onPress={handleLikePress} style={styles.likeDislikeButton}>
+            <FontAwesome
+              name="thumbs-up"
+              size={20}
+              color={userAction === 'like' ? '#008884' : '#999'}
+            />
+            <Text style={styles.likeCountText}>{likeCount}</Text>
+          </TouchableOpacity>
+
+          {/* Dislike */}
+          <TouchableOpacity onPress={handleDislikePress} style={styles.likeDislikeButton}>
+            <FontAwesome
+              name="thumbs-down"
+              size={20}
+              color={userAction === 'dislike' ? '#B33E3E' : '#999'}
+            />
+          </TouchableOpacity>
+        </View>
+
+        </View>
+
+        {/* Divider */}
+        <View style={styles.divider} />
+
+        {/* Stall Info Row */}
+        <TouchableOpacity style={styles.stallRow} onPress={handleStallPress}>
+          {/* Stall Image */}
+          <Image
+            source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM7s0v7yK-niQWaDUgGD6XU_N05_SyJ9j_IYISHPPFXWacLQ2DjadykH2m9NKSSHRyPO0&usqp=CAU' }} // example icon, replace with actual stall image
+            style={styles.stallImage}
+          />
+
+          {/* Stall details */}
+          <View style={styles.stallDetails}>
+
+            <View style={styles.stallNameContainer}>
+            <Ionicons name="restaurant" size={15} color="#999"/>
+            <Text style={styles.stallTitle}>
+              {'  '}
+              {menuData.stallLock} | {menuData.stallName}
+            </Text>
+            </View>
+
+            {/* Example: Category + rating */}
+            <View style={styles.stallSubRow}>
+              <Ionicons name="pricetags" size={13} color="#999" />
+              
+              <Text style={styles.stallCategory}>{'  '} Beverages</Text>
+              <Text style={styles.stallRating}>
+                <Ionicons name="star" size={13} color="#D49E3A" /> 4.92
+              </Text>
+            </View>
+          </View>
+
+          {/* Arrow icon */}
+          <Ionicons name="chevron-forward" size={20} color="#999" />
+        </TouchableOpacity>
+        <View style={styles.divider} />
+        {/* Optionally more sections or content below */}
+      </View>
     </View>
   );
 };
 
-export default MenuDetailsScreen;
+export default MenuDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAF5F0',
   },
-  imageContainer: {
+  // Top Banner
+  topBannerContainer: {
     width: '100%',
-    height: 250,
+    height: 280,
     position: 'relative',
   },
-  image: {
+  topBackground: {
+    // Brownish background behind the image
+    backgroundColor: '#B08B6E',
+    position: 'absolute',
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
+  },
+  menuImage: {
+    width: '100%',
+    height: '100%',
   },
   backButton: {
     position: 'absolute',
-    top: 30,
+    top: 36,
     left: 16,
     backgroundColor: '#FAF5F0',
     borderRadius: 20,
-    padding: 8,
+    padding: 6,
   },
   shareButton: {
     position: 'absolute',
-    top: 30,
+    top: 36,
     right: 16,
     backgroundColor: '#FAF5F0',
     borderRadius: 20,
-    padding: 8,
+    padding: 6,
   },
-  content: {
+  // White card container
+  cardContainer: {
+    flex: 1,
+    backgroundColor: '#FFF',
+    marginTop: -30, // overlap with the banner
     padding: 16,
-    backgroundColor: '#FFFFFF',
   },
-  price: {
+  // Price & Name row
+  menuTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  priceText: {
+    fontSize: 20,
+    color: '#3A3838',
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  menuNameText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#3A3838',
-  },
-  menuName: {
-    fontSize: 18,
-    fontWeight: 'bold',
     color: '#006664',
-    marginVertical: 6,
+    marginBottom: 20,
   },
-  whyText: {
-    fontSize: 14,
+
+  heartIconContainer: {
+    marginLeft: 10,
+    marginTop: 2,
+  },
+  likeRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+
+  },
+  whyMenuText: {
+    fontSize: 13,
     color: '#777',
     textDecorationLine: 'underline',
+    marginBottom: 8,
+    marginLeft: 4,
   },
+  // Like / Dislike row
   likeDislikeRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
+    marginBottom: 12,
+
   },
-  likeButton: {
+  likeDislikeButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginHorizontal: 10,
   },
-  likeCount: {
-    fontSize: 16,
-    marginLeft: 6,
-    fontWeight: 'bold',
+  likeCountText: {
+    fontSize: 14,
+    marginLeft: 8,
     color: '#333',
   },
-  dislikeButton: {
-    marginLeft: 12,
+  // Divider
+  divider: {
+    height: 1,
+    backgroundColor: '#DDD',
+    marginTop: 10,
+    marginBottom: 16,
+    
   },
-  stallContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 20,
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: '#F8F8F8',
-  },
-  stallImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 6,
-    marginRight: 10,
-  },
-  stallInfo: {
-    flex: 1,
-  },
+  // Stall row
   stallRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  stallText: {
+  stallImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    marginRight: 12,
+  },
+  stallDetails: {
+    flex: 1,
+  },
+  stallNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  stallTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginLeft: 6,
+    color: '#333',
+    marginBottom: 4,
   },
-  stallType: {
-    fontSize: 14,
-    color: '#777',
-  },
-  stallRating: {
+  stallSubRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  ratingText: {
+  stallCategory: {
     fontSize: 14,
-    fontWeight: 'bold',
-    marginLeft: 4,
-    color: '#D49E3A',
+    color: '#999',
+    marginRight: 12,
+  },
+  stallRating: {
+    fontSize: 14,
+    color: '#999',
   },
 });

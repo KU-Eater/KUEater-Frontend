@@ -34,7 +34,7 @@ const mockSavedMenuData = [
     stallName: 'Eat 8 Ate',
     stallLock: '08',
     imageUrl: 'https://www.justonecookbook.com/wp-content/uploads/2019/02/Saba-Shioyaki-I-1.jpg',
-    typeCard: 'MenuCardinSaved' as const,
+    typeCard: 'MenuCardinStall' as const,
   },
   {
     id: 2,
@@ -45,7 +45,7 @@ const mockSavedMenuData = [
     stallName: 'Mr. Raw Fried Chicken (A La Carte)',
     stallLock: '22',
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDmete-M3ba2oCyVLZIcH2oDh7QQSz-UtoA&s',
-    typeCard: 'MenuCardinSaved' as const,
+    typeCard: 'MenuCardinStall' as const,
   },
   {
     id: 3,
@@ -56,7 +56,7 @@ const mockSavedMenuData = [
     stallName: 'Toei Kaew (Beverages)',
     stallLock: '26',
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmOe2ocJeXunMXXQTQmNWDRlBVDXmt4ZYwdA&s',
-    typeCard: 'MenuCardinSaved' as const,
+    typeCard: 'MenuCardinStall' as const,
   },
   {
       id: 4,
@@ -67,7 +67,7 @@ const mockSavedMenuData = [
       stallName: 'Eat 8 Ate',
       stallLock: '08',
       imageUrl: 'https://www.justonecookbook.com/wp-content/uploads/2019/02/Saba-Shioyaki-I-1.jpg',
-      typeCard: 'MenuCardinSaved' as const,
+      typeCard: 'MenuCardinStall' as const,
     },
     {
       id: 5,
@@ -78,7 +78,7 @@ const mockSavedMenuData = [
       stallName: 'Mr. Raw Fried Chicken (A La Carte)',
       stallLock: '22',
       imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDmete-M3ba2oCyVLZIcH2oDh7QQSz-UtoA&s',
-      typeCard: 'MenuCardinSaved' as const,
+      typeCard: 'MenuCardinStall' as const,
     },
     {
       id: 6,
@@ -89,7 +89,7 @@ const mockSavedMenuData = [
       stallName: 'Toei Kaew (Beverages)',
       stallLock: '26',
       imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmOe2ocJeXunMXXQTQmNWDRlBVDXmt4ZYwdA&s',
-      typeCard: 'MenuCardinSaved' as const,
+      typeCard: 'MenuCardinStall' as const,
     },
     {
       id: 7,
@@ -100,7 +100,7 @@ const mockSavedMenuData = [
       stallName: 'Eat 8 Ate',
       stallLock: '08',
       imageUrl: 'https://www.justonecookbook.com/wp-content/uploads/2019/02/Saba-Shioyaki-I-1.jpg',
-      typeCard: 'MenuCardinSaved' as const,
+      typeCard: 'MenuCardinStall' as const,
     },
     {
       id: 8,
@@ -111,7 +111,7 @@ const mockSavedMenuData = [
       stallName: 'Mr. Raw Fried Chicken (A La Carte)',
       stallLock: '22',
       imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDmete-M3ba2oCyVLZIcH2oDh7QQSz-UtoA&s',
-      typeCard: 'MenuCardinSaved' as const,
+      typeCard: 'MenuCardinStall' as const,
     },
     {
       id: 9,
@@ -122,7 +122,7 @@ const mockSavedMenuData = [
       stallName: 'Toei Kaew (Beverages)',
       stallLock: '26',
       imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmOe2ocJeXunMXXQTQmNWDRlBVDXmt4ZYwdA&s',
-      typeCard: 'MenuCardinSaved' as const,
+      typeCard: 'MenuCardinStall' as const,
     },
     {
       id: 10,
@@ -133,7 +133,7 @@ const mockSavedMenuData = [
       stallName: 'Eat 8 Ate',
       stallLock: '08',
       imageUrl: 'https://www.justonecookbook.com/wp-content/uploads/2019/02/Saba-Shioyaki-I-1.jpg',
-      typeCard: 'MenuCardinSaved' as const,
+      typeCard: 'MenuCardinStall' as const,
     },
     {
       id: 11,
@@ -144,7 +144,7 @@ const mockSavedMenuData = [
       stallName: 'Mr. Raw Fried Chicken (A La Carte)',
       stallLock: '22',
       imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDmete-M3ba2oCyVLZIcH2oDh7QQSz-UtoA&s',
-      typeCard: 'MenuCardinSaved' as const,
+      typeCard: 'MenuCardinStall' as const,
     },
     {
       id: 12,
@@ -155,7 +155,7 @@ const mockSavedMenuData = [
       stallName: 'Toei Kaew (Beverages)',
       stallLock: '26',
       imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmOe2ocJeXunMXXQTQmNWDRlBVDXmt4ZYwdA&s',
-      typeCard: 'MenuCardinSaved' as const,
+      typeCard: 'MenuCardinStall' as const,
     },
 ];
 
@@ -166,51 +166,54 @@ const StallProfileScreen: React.FC = () => {
   const { stallData } = route.params as RouteParams;
 
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isShared, setIsShared] = useState(false);
+
   const handleBookmarkPress = () => {
     setIsBookmarked(!isBookmarked);
   };
 
-  const [isShared, setIsShered] = useState(false);
   const handleSharePress = () => {
-    setIsShered(!isShared);
+    setIsShared(!isShared);
   };
 
-  
-
-  return (
-    
-
-    <View style={styles.container}>
-      <ScrollView>
-      {/* Banner Image */}
+  // Create a header component so FlatList can handle scrolling
+  const renderHeader = () => (
+    <>
+      {/* Banner Container */}
       <View style={styles.bannerContainer}>
         <Image source={{ uri: stallData.imageUrl }} style={styles.bannerImage} />
 
         {/* Back Button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
           <Ionicons name="arrow-back" size={26} color="#006664" />
         </TouchableOpacity>
 
         {/* Share Button */}
         <TouchableOpacity style={styles.shareButton} onPress={handleSharePress}>
-          <Ionicons name='share-social' size={26} color='#006664'/>
+          <Ionicons name="share-social" size={26} color="#006664" />
         </TouchableOpacity>
       </View>
 
-
       {/* Main Content */}
       <View style={styles.content}>
-        {/* Stall Name */}
-        <Text style={styles.stallName}>{stallData.stallName}</Text>
-        
-        {/* Bookmark Button */}
-        <TouchableOpacity style={styles.bookmarkButton} onPress={handleBookmarkPress}>
-          <Ionicons
-            name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
-            size={26}
-            color={isBookmarked ? '#006664' : '#C1C1C1'}
-          />
-        </TouchableOpacity>
+        {/* Stall Name + Bookmark */}
+        <View>
+          <Text style={styles.stallName}>{stallData.stallName}</Text>
+
+          <TouchableOpacity
+            style={styles.bookmarkButton}
+            onPress={handleBookmarkPress}
+          >
+            <Ionicons
+              name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
+              size={26}
+              color={isBookmarked ? '#006664' : '#C1C1C1'}
+            />
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.divider} />
 
@@ -222,82 +225,82 @@ const StallProfileScreen: React.FC = () => {
           <Ionicons name="chevron-forward" size={18} color="#999" />
         </TouchableOpacity>
 
-        {/* Divider */}
         <View style={styles.divider} />
 
-        {/* Stall Info Section */}
-        
-            {/* Operating Hours */}
-            <View style={styles.infoRow}>
-              <View style={styles.infoColumn}>
-                <Ionicons name="calendar" size={18} color="#777" />
-                <Text style={styles.infoText}>Monday - Sunday</Text>
-              </View>
-              <View style={styles.infoColumn}>
-                <Ionicons name="time" size={18} color="#777" />
-                <Text style={styles.infoText}>{stallData.operatingHours}</Text>
-              </View>
-            </View>
-
-            <View style={styles.divider} />
-
-            {/* Stall Location */}
-            <View style={styles.infoRow}>
-              <View style={styles.infoColumn}>
-                <FontAwesome5 name="store" size={16} color="#777" />
-                <Text style={styles.infoText}>{stallData.location}</Text>
-              </View>
-              <View style={styles.infoColumn}>
-                <Ionicons name="location" size={18} color="#777" />
-                <Text style={styles.infoText}>Bar Mai</Text>
-                <TouchableOpacity>
-                  <Text style={styles.googleMaps}>Google Map →</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={styles.divider} />
-
-            {/* Price & Tags */}
-            <View style={styles.infoRow}>
-              <View style={styles.infoColumn}>
-                <Ionicons name="logo-bitcoin" size={18} color="#777" />
-                <Text style={styles.infoText}>{stallData.priceRange} Baht</Text>
-              </View>
-              <View style={styles.infoColumn}>
-                <Ionicons name="pricetags" size={18} color="#777" />
-                <Text style={styles.infoText}>{stallData.tags}</Text>
-              </View>
-            </View>
-
-          
+        {/* Operating Hours */}
+        <View style={styles.infoRow}>
+          <View style={styles.infoColumn}>
+            <Ionicons name="calendar" size={18} color="#777" />
+            <Text style={styles.infoText}>Monday - Sunday</Text>
           </View>
-        
+          <View style={styles.infoColumn}>
+            <Ionicons name="time" size={18} color="#777" />
+            <Text style={styles.infoText}>{stallData.operatingHours}</Text>
+          </View>
+        </View>
 
-        <View style={styles.menuContent}>
-        <FlatList
+        <View style={styles.divider} />
+
+        {/* Location */}
+        <View style={styles.infoRow}>
+          <View style={styles.infoColumn}>
+            <FontAwesome5 name="store" size={16} color="#777" />
+            <Text style={styles.infoText}>{stallData.location}</Text>
+          </View>
+          <View style={styles.infoColumn}>
+            <Ionicons name="location" size={18} color="#777" />
+            <Text style={styles.infoText}>Bar Mai</Text>
+            <TouchableOpacity>
+              <Text style={styles.googleMaps}>Google Map →</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        {/* Price & Tags */}
+        <View style={styles.infoRow}>
+          <View style={styles.infoColumn}>
+            <Ionicons name="logo-bitcoin" size={18} color="#777" />
+            <Text style={styles.infoText}>{stallData.priceRange} Baht</Text>
+          </View>
+          <View style={styles.infoColumn}>
+            <Ionicons name="pricetags" size={18} color="#777" />
+            <Text style={styles.infoText}>{stallData.tags}</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Optional divider before menu list */}
+      <View style={styles.divider} />
+    </>
+  );
+
+  // Render each menu card item
+  const renderMenuItem = ({ item }: any) => (
+    <MenuCard
+      menuName={item.menuName}
+      price={item.price}
+      likes={item.likes}
+      dislikes={item.dislikes}
+      stallName={item.stallName}
+      stallLock={item.stallLock}
+      imageUrl={item.imageUrl}
+      typeCard={item.typeCard}
+    />
+  );
+
+  return (
+    <View style={styles.container}>
+      <FlatList
         data={mockSavedMenuData}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <MenuCard
-            menuName={item.menuName}
-            price={item.price}
-            likes={item.likes}
-            dislikes={item.dislikes}
-            stallName={item.stallName}
-            stallLock={item.stallLock}
-            imageUrl={item.imageUrl}
-            typeCard={item.typeCard}
-          />
-        )}
+        renderItem={renderMenuItem}
         numColumns={2}
         columnWrapperStyle={styles.menuColumn}
         contentContainerStyle={styles.listContent}
-        key="menus" // Unique key for FlatList
+        ListHeaderComponent={renderHeader}  // <-- Use ListHeaderComponent here
       />
-      </View>
-
-      </ScrollView>
     </View>
   );
 };
@@ -342,10 +345,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   content: {
-    flex: 1,
-    padding: 16,
     backgroundColor: '#FFFFFF',
-    
+    padding: 16,
   },
   stallName: {
     fontSize: 22,
@@ -377,10 +378,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#DDD',
     marginVertical: 12,
   },
-  infoContainer: {
-    paddingHorizontal: 10,
-    
-  },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -403,16 +400,12 @@ const styles = StyleSheet.create({
     color: '#006664',
     textDecorationLine: 'underline',
     marginLeft: 6,
-    marginTop:5,
+    marginTop: 5,
   },
   listContent: {
     paddingBottom: 30,
   },
   menuColumn: {
     marginBottom: 6,
-  },
-  menuContent: {
-    flex: 1,
-    paddingTop: 8,
   },
 });
