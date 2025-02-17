@@ -10,12 +10,14 @@ import NavBar from './components/NavBar';
 import StallProfileScreen from './screens/StallProfileScreen';
 import MenuDetailScreen from './screens/MenuDetailScreen';
 
+// เพิ่มการนำเข้า SearchScreen และ SearchResultScreen
+import SearchScreen from './screens/SearchScreen';
+import SearchResultScreen from './screens/SearchResultScreen';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-
   return (
-
     <NavigationContainer>
       <Stack.Navigator>
         {/* 1) หน้าแรกเป็น NavBar ซึ่งมี Bottom Tabs: Home, Saved, etc. */}
@@ -25,20 +27,37 @@ export default function App() {
           options={{ headerShown: false }}
         />
 
-        {/* 2) หน้าร้าน (Stall Profile) */}
+        {/* 2) เพิ่ม SearchScreen */}
+        <Stack.Screen
+          name="SearchScreen"
+          component={SearchScreen}
+          options={{ 
+            headerShown: false,
+            presentation: 'modal',
+            animation: 'fade',
+          }}
+        />
+
+        {/* 3) เพิ่ม SearchResultScreen */}
+        <Stack.Screen
+          name="SearchResultScreen"
+          component={SearchResultScreen}
+          options={{ headerShown: false }}
+        />
+
+        {/* 4) หน้าร้าน (Stall Profile) */}
         <Stack.Screen
           name="StallProfile"
           component={StallProfileScreen}
-          options={{ headerShown: false }} 
-          // จะให้แสดง header ไหมก็ได้ ถ้าต้องการใส่ title ก็ปรับ headerShown: true
+          options={{ headerShown: false }}
         />
 
-        {/* 3) หน้าเมนู (Menu Details) */}
-        <Stack.Screen 
-            name="MenuDetails"
-            component={MenuDetailScreen}
-            options={{ headerShown: false }} 
-          />
+        {/* 5) หน้าเมนู (Menu Details) */}
+        <Stack.Screen
+          name="MenuDetails"
+          component={MenuDetailScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

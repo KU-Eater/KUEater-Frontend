@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   },
   bookmarkButton: {
     position: 'absolute',
-    top: 22,
+    top: 5,
     right: 16,
     padding: 8,
   },
