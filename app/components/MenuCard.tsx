@@ -4,7 +4,7 @@ import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-interface MenuCardProps {
+export interface MenuCardProps {
   typeCard: 'MenuCardinHome' | 'MenuCardinStall' | 'MenuCardinSaved';
   menuName: string;
   price: string;
@@ -13,7 +13,7 @@ interface MenuCardProps {
   stallName: string;
   stallLock: string;
   imageUrl: string;
-}
+};
 
 // ---------------------
 // IMPORTANT: Renamed the route to 'MenuDetails' and updated the type

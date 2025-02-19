@@ -16,8 +16,14 @@ import SearchResultScreen from './screens/SearchResultScreen';
 
 const Stack = createNativeStackNavigator();
 
+export const APIContext = React.createContext("http://10.0.2.2:50051");
+
 export default function App() {
+
+  const [apiHost, setApiHost] = React.useState("http://10.0.2.2:50051");
+
   return (
+    <APIContext.Provider value={apiHost}>
     <NavigationContainer>
       <Stack.Navigator>
         {/* 1) หน้าแรกเป็น NavBar ซึ่งมี Bottom Tabs: Home, Saved, etc. */}
@@ -60,5 +66,6 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </APIContext.Provider>
   );
 }

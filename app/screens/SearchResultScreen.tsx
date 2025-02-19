@@ -1,6 +1,6 @@
 // screens/SearchResultScreen.tsx
 
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,10 @@ import { useRoute } from '@react-navigation/native';
 import SearchBar from '../components/SearchBar';
 import StallCard from '../components/StallCard';
 import MenuCard from '../components/MenuCard';
+import { SearchRequest, SearchResponse } from '../generated/data/search_pb';
+import getClient from '../api/gRPCClient';
+import { APIContext } from '../App';
+import { RpcError } from 'grpc-web';
 
 type StallDataType = {
   id: number;
@@ -29,7 +33,7 @@ type StallDataType = {
 };
 
 type MenuDataType = {
-  id: number;
+  id: string;
   menuName: string;
   price: string;
   likes: number;
@@ -89,7 +93,7 @@ const mockStallData: StallDataType[] = [
 // Mock menus - with typeCard = MenuCardinSaved
 const mockMenuData: MenuDataType[] = [
   {
-    id: 1,
+    id: "1",
     menuName: 'Grilled Saba with Rice',
     price: '40',
     likes: 88,
@@ -101,7 +105,7 @@ const mockMenuData: MenuDataType[] = [
     typeCard: 'MenuCardinSaved', // <--- important
   },
   {
-    id: 2,
+    id: "2",
     menuName: 'Pork Chop Basil Rice',
     price: '45',
     likes: 120,
@@ -113,7 +117,7 @@ const mockMenuData: MenuDataType[] = [
     typeCard: 'MenuCardinSaved',
   },
   {
-    id: 3,
+    id: "3",
     menuName: 'Double YenYen Drink',
     price: '30',
     likes: 55,
@@ -130,9 +134,47 @@ const SearchResultScreen = () => {
   const route = useRoute();
   // extract 'query' passed from SearchScreen
   const query = (route.params as any)?.query || '';
+  const apiHost = useContext(APIContext);
+  const client = getClient(apiHost);
+
+  const [stallResult, setStallResult] = useState([]);
+  const [menuResult, setMenuResult] = useState<MenuDataType[]>([]);
 
   // local state for active tab
   const [activeTab, setActiveTab] = useState<'stall' | 'menu'>('stall');
+
+  const performSearch = () => {
+    const request = new SearchRequest();
+    request.setQuery(query);
+    client.search(request).then((resp: SearchResponse) => {
+      setMenuResult(
+        resp.getResultsList()
+        .filter(item => item.getItem() !== undefined)
+        .map<MenuDataType>((item) => {
+          let res = item.getItem()!!;
+          console.log(res.getItem()?.getName()?.getContent()!!);
+          return {
+            id: res.getItem()?.getUuid()!!,
+            menuName: res.getItem()?.getName()?.getContent()!!,
+            stallName: res.getStallName()?.getContent()!!,
+            stallLock: res.getStallLock()!!.toString(),
+            price: res.getItem()?.getPrice()?.toString() || "0",
+            likes: res.getLikes()!!,
+            dislikes: 0,
+            imageUrl: res.getItem()?.getImage()!!,
+            typeCard: 'MenuCardinSaved'
+          }
+        })
+      )
+    })
+    .catch((e: RpcError) => {
+      console.error(`${e.code}, ${e.message}`)
+    })
+  };
+
+  useEffect(() => {
+    performSearch();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -193,8 +235,9 @@ const SearchResultScreen = () => {
         // Display Menu results using MenuCard with typeCard=MenuCardinSaved
         <FlatList
           style={styles.resultScroll}
-          data={mockMenuData}
+          data={menuResult}
           keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
           renderItem={({ item }) => (
             <MenuCard
               typeCard={item.typeCard} // "MenuCardinSaved"

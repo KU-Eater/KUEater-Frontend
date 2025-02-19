@@ -1,9 +1,14 @@
 // screens/StallProfileScreen.tsx
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity,FlatList} from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import MenuCard from '../components/MenuCard'; // Adjust the path
+import MenuCard, { MenuCardProps } from '../components/MenuCard'; // Adjust the path
+import { APIContext } from '../App';
+import getClient from '../api/gRPCClient';
+import { GetMenuListingsRequest, GetMenuListingsResponse } from '../generated/data/index_pb';
+import { RpcError } from 'grpc-web';
+import { InView, IOFlatList, IOScrollView, IOScrollViewController } from 'react-native-intersection-observer';
 
 
 
@@ -18,6 +23,10 @@ interface StallData {
   reviews: number;
   likes: number;
   rating: number;
+}
+
+interface MenuCardPropsExt extends MenuCardProps {
+  id: string;
 }
 
 type RouteParams = {
@@ -164,9 +173,14 @@ const StallProfileScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { stallData } = route.params as RouteParams;
+  const apiHost = useContext(APIContext);
+  const client = getClient(apiHost);
 
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isShared, setIsShared] = useState(false);
+  const [menuItems, setMenuItems] = useState<MenuCardPropsExt[]>([]);
+  const [pageToken, setPageToken] = useState("");
+  const [endOfPage, setEndOfPage] = useState(false);
 
   const handleBookmarkPress = () => {
     setIsBookmarked(!isBookmarked);
@@ -175,6 +189,53 @@ const StallProfileScreen: React.FC = () => {
   const handleSharePress = () => {
     setIsShared(!isShared);
   };
+
+  const retrieveItems = (token: string) => {
+    if (endOfPage) return;
+    const request = new GetMenuListingsRequest();
+    request.setPageSize(12);
+    request.setMatchLock(parseInt(stallData.location));
+    token && request.setPageToken(token);
+
+    client.indexGetMenuListings(request)
+    .then((resp: GetMenuListingsResponse) => {
+      setMenuItems([
+        ...menuItems,
+        ...resp.getItemsList()
+        .filter((v) => v.getStallLock().toString() === stallData.location)
+        .map<MenuCardPropsExt>((card) => {
+          return {
+            typeCard: 'MenuCardinStall' as const,
+            id: card.getItem()?.getUuid()!!,
+            menuName: card.getItem()?.getName()?.getContent()!!,
+            price: card.getItem()?.getPrice().toString() || "0",
+            likes: card.getLikes(),
+            dislikes: 0,
+            stallName: card.getStallName()?.getContent() || "",
+            stallLock: card.getStallLock().toString(),
+            imageUrl: card.getItem()?.getImage() || ""
+          }
+        })
+      ]);
+      setPageToken(resp.getNextPageToken());
+    })
+    .catch((err: RpcError) => {
+          console.log(`Received error: ${err.code}, ${err.message}`);
+          setEndOfPage(true);
+        });
+  }
+
+  const isNext = (id: string) => {
+    if (pageToken == id) {
+      retrieveItems(pageToken);
+    }
+  }
+
+  const scrollViewRef = useRef<IOScrollViewController>(null);
+
+  useEffect(() => {
+    retrieveItems("");
+  }, []);
 
   // Create a header component so FlatList can handle scrolling
   const renderHeader = () => (
@@ -291,17 +352,29 @@ const StallProfileScreen: React.FC = () => {
   );
 
   return (
+    <IOScrollView ref={scrollViewRef}>
     <View style={styles.container}>
-      <FlatList
-        data={mockSavedMenuData}
+      <IOFlatList
+        data={menuItems}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={renderMenuItem}
+        renderItem={({item}) => {
+          return <InView onChange={(b) => {
+            if (b) { 
+              isNext(item.id);
+            }
+            }}>
+            <MenuCard {...item}/> 
+          </InView>
+        }}
         numColumns={2}
+        maxToRenderPerBatch={6}
+        scrollEnabled={false}
         columnWrapperStyle={styles.menuColumn}
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={renderHeader}  // <-- Use ListHeaderComponent here
       />
     </View>
+    </IOScrollView>
   );
 };
 
