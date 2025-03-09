@@ -1,0 +1,6 @@
+#!/bin/sh
+
+protoc --proto_path=/protocol \
+    --js_out=import_style=commonjs,binary:/generated \
+    --grpc-web_out=import_style=typescript,mode=grpcwebtext:/generated \
+    $(find /protocol -iname "*.proto")
