@@ -14,7 +14,7 @@ ADD https://github.com/grpc/grpc-web/releases/download/${GRPCWEB_VERSION}/protoc
 
 # Unzip all other archives to /usr/local/bin, symlink the binaries to outer directory, then clean up /tmp
 RUN apt-get update && \
-    apt-get install -y unzip && \
+    apt-get install -y unzip curl && \
     unzip protoc.zip -x readme.txt -d protoc && \
     mv protoc/bin/* /usr/local/bin && \
     mv protoc/include/* /usr/local/include && \

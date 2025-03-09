@@ -1,4 +1,5 @@
 const path = require("node:path");
+const fs = require("node:fs");
 const cp = require("node:child_process");
 const { arch, exit, argv } = require("node:process");
 
@@ -142,10 +143,39 @@ ${image}
     }
 }
 
+function __fnPatchDependencies() {
+    const modulesDir = path.resolve(PARENT_DIR, 'node_modules');
+    if (!fs.existsSync(modulesDir)) {
+        console.error("node_modules not found! Make sure to perform `yarn install` and try again");
+        exit(1);
+    }
+    const binaryName = "patch-deps";
+    const image = `${IMAGE_NAME}:${IMAGE_TAG}`;
+    const command = __docker(`run --rm
+--mount type=bind,src=${path.resolve(UTIL_DIR, binaryName)},dst=/script
+--mount type=bind,src=${modulesDir},dst=/node_modules
+${image}
+`);
+    console.log("Patching dependencies...");
+    try {
+        cp.execSync(
+            command,
+            { stdio: "inherit", ...EXEC_OPTS }
+        );
+    } catch {
+        console.error("Patching failed! It is advised to reinstall Node dependencies.");
+        exit(1);
+    }
+}
+
 const functions = {
     "generate-protocol": {
         fn: __fnGenerateProtocol,
         description: "Generate protocol source files from protocol specification"
+    },
+    "patch-dependencies": {
+        fn: __fnPatchDependencies,
+        description: "Patch Node.js dependencies to support certain use cases"
     }
 }
 
