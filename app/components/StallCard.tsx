@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-interface StallCardProps {
+export interface StallCardProps {
   rank: number;
   stallName: string;
   imageUrl: string;
@@ -16,7 +16,7 @@ interface StallCardProps {
   reviews: number;
   likes: number;
   rating: number;
-}
+};
 
 // Define the navigation stack types
 type RootStackParamList = {

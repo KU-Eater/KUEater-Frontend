@@ -145,9 +145,9 @@ const MenuDetailScreen: React.FC = () => {
 
         <View style={styles.likeRow}>
         {/* "Why you see this menu?" */}
-        <TouchableOpacity onPress={handleWhyThisMenuPress}>
+        {/*<TouchableOpacity onPress={handleWhyThisMenuPress}>
               <Text style={styles.whyMenuText}>Why you see this menu?</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>*/}
 
         {/* Likes / Dislikes Row */}
         <View style={styles.likeDislikeRow}>

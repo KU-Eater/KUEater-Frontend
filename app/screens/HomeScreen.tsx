@@ -1,15 +1,48 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
+// screens/HomeScreen.tsx
+
+import React, { useState, useEffect, useCallback, useContext, useRef, Component } from 'react';
+import { ScrollView, View, Text, StyleSheet, FlatList } from 'react-native';
 import SearchBar from '../components/SearchBar'; // Adjust the path
 import MenuCard from '../components/MenuCard'; // Adjust the path
+import { MenuCardProps } from '../components/MenuCard';
 import StallCard from '../components/StallCard'; // Adjust the path
+import { StallCardProps } from '../components/StallCard';
 import CategoryBar from '../components/CategoryBar';
+import {
+  IOScrollViewController,
+  IOScrollView,
+  InView,
+  IOFlatList
+} from 'react-native-intersection-observer';
 
+import { APIContext } from '../App';
+import getClient from '../api/gRPCClient';
+import { TopMenuRequest, TopStallRequest, GetMenuListingsRequest, GetMenuListingsResponse, TopMenu, TopStall } from '../generated/data/index_pb';
+import * as grpcweb from 'grpc-web';
 
+interface MenuCardPropsExt extends MenuCardProps {
+  id: string
+};
 
+interface StallCardPropsExt extends StallCardProps {
+  id: string
+};
+
+// --- your mock data remains the same
 const mockMenuData = [
   {
     id: 1,
+    menuName: 'Rice with crispy pork and Chinese kale',
+    price: '50',
+    likes: 75,
+    dislikes: 3,
+    stallName: 'Nong Pim A LA CARTE (Stir Fry)',
+    stallLock: '02',
+    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739355627/02027_cg98ot.jpg',
+    typeCard: 'MenuCardinHome' as const,
+  },
+  {
+    id: 2,
     menuName: 'Grilled Saba with Rice',
     price: '50',
     likes: 212,
@@ -20,7 +53,7 @@ const mockMenuData = [
     typeCard: 'MenuCardinHome' as const,
   },
   {
-    id: 2,
+    id: 3,
     menuName: 'Fried Rice Chicken',
     price: '25',
     likes: 120,
@@ -31,7 +64,7 @@ const mockMenuData = [
     typeCard: 'MenuCardinHome' as const,
   },
   {
-    id: 3,
+    id: 4,
     menuName: 'Pandan Juice',
     price: '5',
     likes: 641,
@@ -39,6 +72,17 @@ const mockMenuData = [
     stallName: 'Toei Kaew (Beverages)',
     stallLock: '26',
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmOe2ocJeXunMXXQTQmNWDRlBVDXmt4ZYwdA&s',
+    typeCard: 'MenuCardinHome' as const,
+  },
+  {
+    id: 5,
+    menuName: 'Dry Thai sukiyaki with seafood',
+    price: '50',
+    likes: 75,
+    dislikes: 3,
+    stallName: 'Nong Pim A LA CARTE (Stir Fry)',
+    stallLock: '02',
+    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739355624/02022_apuaa1.jpg',
     typeCard: 'MenuCardinHome' as const,
   },
 ];
@@ -87,21 +131,118 @@ const mockStallData = [
 
 const HomeScreen = () => {
 
+  const apiHost = useContext(APIContext);
+  const client = getClient(apiHost);
+
+  const [topMenu, setTopMenu] = useState<MenuCardPropsExt[]>([]);
+  const [topStall, setTopStall] = useState<StallCardPropsExt[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuCardPropsExt[]>([]);
+  const [pageToken, setPageToken] = useState("");
+  const [endOfPage, setEndOfPage] = useState(false);
+
+  const retrieveItems = (token: string) => {
+    if (endOfPage) return;
+    if (menuItems.length > 40) {
+      setEndOfPage(true);
+      return;
+    }
+
+    const request = new GetMenuListingsRequest();
+    request.setPageSize(12);
+    token && request.setPageToken(token);
+    
+    client.indexGetMenuListings(request)
+    .then((resp: GetMenuListingsResponse) => {
+      setMenuItems([
+        ...menuItems,
+        ...resp.getItemsList().map<MenuCardPropsExt>((card) => {
+          return {
+            typeCard: "MenuCardinSaved",
+            menuName: card.getItem()?.getName()?.getContent() || "",
+            price: card.getItem()?.getPrice().toString() || "0",
+            likes: card.getLikes(),
+            dislikes: 0,
+            stallName: card.getStallName()?.getContent() || "",
+            stallLock: card.getStallLock().toString(),
+            imageUrl: card.getItem()?.getImage() || "",
+            id: card.getItem()?.getUuid()!!
+          }
+        })
+      ]);
+      setPageToken(resp.getNextPageToken());
+    })
+    .catch((err: grpcweb.RpcError) => {
+      console.log(`Received error: ${err.code}, ${err.message}`);
+      setEndOfPage(true);
+    });
+  }
+
+  const isNext = (id: string) => {
+    if (pageToken == id) {
+      retrieveItems(pageToken);
+    }
+  }
+
+  const scrollViewRef = useRef<IOScrollViewController>(null);
+
+  const init = () => {
+    retrieveItems("");
+
+    var request = new TopMenuRequest();
+    client.indexTopMenu(request).then((resp: TopMenu) => {
+      setTopMenu(resp.getItemsList().map<MenuCardPropsExt>((card) => {
+        return {
+          typeCard: 'MenuCardinHome',
+          menuName: card.getItem()?.getItem()?.getName()?.getContent()!!,
+          price: card.getItem()?.getItem()?.getPrice().toString() || "0",
+          likes: card.getItem()?.getLikes()!!,
+          dislikes: 0,
+          stallName: card.getItem()?.getStallName()?.getContent() || "",
+          stallLock: card.getItem()?.getStallLock().toString()!!,
+          imageUrl: card.getItem()?.getItem()?.getImage() || "",
+          id: card.getItem()?.getItem()?.getUuid()!!
+        }
+      }))
+    });
+
+    var request = new TopStallRequest();
+    client.indexTopStall(request).then((resp: TopStall) => {
+      setTopStall(resp.getStallsList().map<StallCardPropsExt>((card) => {
+        return {
+          rank: card.getRank()!!,
+          stallName: card.getStall()?.getStall()?.getName()?.getContent()!!,
+          imageUrl: card.getStall()?.getStall()?.getImage()!!,
+          location: card.getStall()?.getStall()?.getLock()!!.toString() || "",
+          operatingHours: '7.30 - 16.30',
+          priceRange: `${card.getStall()?.getMinPrice()!!} - ${card.getStall()?.getMaxPrice()!!}`,
+          tags: card.getStall()?.getStall()?.getDishType()?.getContent()!!,
+          reviews: card.getStall()?.getReviewCount()!!,
+          likes: card.getStall()?.getLikeCount()!!,
+          rating: card.getStall()?.getRating()!!,
+          id: card.getStall()?.getStall()?.getUuid()!!
+        }
+      }))
+    });
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
+
   return (
     <View style={styles.container}>
-      {/* Search Bar */}
-      <SearchBar />
+      {/* 
+        NOTE: We pass a prop to SearchBar so it navigates
+        to SearchScreen when the user taps the TextInput.
+      */}
+      <SearchBar isOnHomeScreen />
 
-
-      {/* Main Content */}
-      <ScrollView contentContainerStyle={styles.content}>
-
+      <IOScrollView ref={scrollViewRef} contentContainerStyle={styles.content}>
         {/* Category Bar */}
-       <CategoryBar />
-
+        <CategoryBar />
 
         {/* Recommended Menus Section */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <Text style={styles.sectionTitle}>Recommended Menus for You!</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {mockMenuData.map((menu) => (
@@ -118,7 +259,7 @@ const HomeScreen = () => {
               />
             ))}
           </ScrollView>
-        </View>
+        </View> */}
 
         {/* Top like Menu from Eater! */}
         <View style={styles.section}>
@@ -128,27 +269,17 @@ const HomeScreen = () => {
           </View>
           
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {mockMenuData.map((menu) => (
+            {topMenu.map((menu) => (
               <MenuCard
                 key={menu.id}
-                menuName={menu.menuName}
-                price={menu.price}
-                likes={menu.likes}
-                dislikes={menu.dislikes}
-                stallName={menu.stallName}
-                stallLock={menu.stallLock}
-                imageUrl={menu.imageUrl}
-                typeCard={menu.typeCard}
+                {...menu}
               />
             ))}
           </ScrollView>
-          
         </View>
-        
-
 
         {/* You may Love these Food Stalls! */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <Text style={styles.sectionTitle}>You may Love these Food Stalls!</Text>
           {mockStallData.map((stall) => (
             <StallCard
@@ -165,36 +296,45 @@ const HomeScreen = () => {
               rating={stall.rating}
             />
           ))}
-        </View>
+        </View> */}
 
-          {/* Popular Stalls Section */}
+        {/* Popular Stalls Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Popular Stalls in Bar Mai</Text>
-          {mockStallData.map((stall) => (
+          {topStall.map((stall) => (
             <StallCard
               key={stall.id}
-              rank={stall.rank}
-              stallName={stall.stallName}
-              imageUrl={stall.imageUrl}
-              location={stall.location}
-              operatingHours={stall.operatingHours}
-              priceRange={stall.priceRange}
-              tags={stall.tags}
-              reviews={stall.reviews}
-              likes={stall.likes}
-              rating={stall.rating}
+              {...stall}
             />
           ))}
         </View>
 
-      </ScrollView>
-
-      
+        <View style={styles.remains}>
+          <Text style={styles.sectionTitle}>...or browse</Text>
+          <IOFlatList
+            data={menuItems}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+            key="listings"
+            renderItem={({item}) => {
+              return <InView onChange={(b) => {
+                if (b) { 
+                  isNext(item.id);
+                }
+                }}>
+                <MenuCard {...item}/> 
+              </InView>
+            }}
+            maxToRenderPerBatch={6}
+            scrollEnabled={false}
+          />
+        </View>
+      </IOScrollView>
     </View>
-
   );
 };
 
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -202,16 +342,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   content: {
-    paddingBottom: 20, // Space for the navigation bar
+    paddingBottom: 20,
   },
   section: {
     marginTop: 12,
     backgroundColor: '#FAF5F0',
     paddingBottom: 12,
-    
-
   },
-
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
@@ -227,13 +364,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: '#004442',
     marginTop: 16,
-    
-
   },
   sectionEater: {
     flexDirection: 'row',
- 
   },
+  remains: {
+    paddingTop: 12
+  }
 });
-
-export default HomeScreen;

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# This script is used to patch dependencies in node_modules,
+# This is a manual process and requires collaborative effort to maintain changes like these.
+# Start a new patching process with 'dep: package name' line
+# End a patching process with same line followed with '-- end --'
+
+_base='/node_modules'
+
+# dep: react-native-intersection-observer
+_package='react-native-intersection-observer'
+_target='lib/withIO.js'
+_patch_url='https://gist.githubusercontent.com/GToidZ/41e0501bf88929cceb92e19309838f53/raw/715b17b46c3c07c2de20914cb646d592c832a0de/withIO.js'
+echo "Patching ${_package} at ${_target}..."
+curl -sLo $_base/$_package/$_target $_patch_url
+# dep: react-native-intersection-observer -- end --

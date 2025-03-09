@@ -1,13 +1,38 @@
+// components/SearchBar.tsx
+
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-const SearchBar = () => {
+// If you have a RootStackParamList, define it:
+type RootStackParamList = {
+  HomeScreen: undefined;
+  SearchScreen: undefined;
+  SearchResultScreen: { query: string };
+  // ... any others
+};
+
+interface SearchBarProps {
+  isOnHomeScreen?: boolean; // optional prop
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [language, setLanguage] = useState('ENG 🇬🇧');
 
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const handleLanguageToggle = () => {
     setLanguage((prev) => (prev === 'ENG 🇬🇧' ? 'THA 🇹🇭' : 'ENG 🇬🇧'));
+  };
+
+  // If on HomeScreen, tapping/focusing the TextInput navigates to SearchScreen
+  const handleFocus = () => {
+    if (isOnHomeScreen) {
+      navigation.navigate('SearchScreen');
+    }
   };
 
   return (
@@ -22,7 +47,9 @@ const SearchBar = () => {
 
         {/* Centered Logo */}
         <Image
-          source={{ uri: 'https://raw.githubusercontent.com/KU-Eater/KUEater-Frontend/refs/heads/base-gui/app/assets/logo_home.png' }}
+          source={{
+            uri: 'https://raw.githubusercontent.com/KU-Eater/KUEater-Frontend/refs/heads/base-gui/app/assets/logo_home.png',
+          }}
           style={styles.logo}
         />
 
@@ -41,11 +68,14 @@ const SearchBar = () => {
           placeholderTextColor="#999"
           value={searchQuery}
           onChangeText={setSearchQuery}
+          onFocus={handleFocus} 
         />
       </View>
     </View>
   );
 };
+
+export default SearchBar;
 
 const styles = StyleSheet.create({
   container: {
@@ -57,15 +87,15 @@ const styles = StyleSheet.create({
   },
   topRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start', // Align children to top
+    alignItems: 'flex-start',
     justifyContent: 'center',
     position: 'relative',
-    marginTop: 30
+    marginTop: 30,
   },
   locationContainer: {
     position: 'absolute',
     left: 0,
-    top: 0, // Align to top
+    top: 0,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -83,7 +113,7 @@ const styles = StyleSheet.create({
   languageSwitch: {
     position: 'absolute',
     right: 0,
-    top: 0, // Align to top
+    top: 0,
     padding: 4,
     borderRadius: 4,
     borderWidth: 1,
@@ -112,5 +142,3 @@ const styles = StyleSheet.create({
     color: '#333',
   },
 });
-
-export default SearchBar;
