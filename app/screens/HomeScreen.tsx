@@ -33,13 +33,13 @@ const mockMenuData = [
   },
   {
     id: 3,
-    menuName: 'Fried Rice Chicken',
+    menuName: 'Deep-fried battered chicken thigh',
     price: '25',
-    likes: 120,
+    likes: 956,
     dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
+    stallName: 'Mr. Raw Fried Chicken',
     stallLock: '22',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDmete-M3ba2oCyVLZIcH2oDh7QQSz-UtoA&s',
+    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22001_hsn5yx.jpg',
     typeCard: 'MenuCardinHome' as const,
   },
   {

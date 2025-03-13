@@ -1,12 +1,18 @@
 // components/SearchBar.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-// If you have a RootStackParamList, define it:
 type RootStackParamList = {
   HomeScreen: undefined;
   SearchScreen: undefined;
@@ -15,29 +21,43 @@ type RootStackParamList = {
 };
 
 interface SearchBarProps {
-  isOnHomeScreen?: boolean; // optional prop
+  isOnHomeScreen?: boolean; // if true => inactive style
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [language, setLanguage] = useState('ENG 🇬🇧');
-
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  // We'll keep a local search text state, in case you want to type in the active style
+  const [searchText, setSearchText] = useState('');
+
+  // Language toggle
+  const [language, setLanguage] = useState('ENG 🇬🇧');
   const handleLanguageToggle = () => {
     setLanguage((prev) => (prev === 'ENG 🇬🇧' ? 'THA 🇹🇭' : 'ENG 🇬🇧'));
   };
 
-  // If on HomeScreen, tapping/focusing the TextInput navigates to SearchScreen
+  // On HomeScreen, tapping the TextInput navigates to SearchScreen
   const handleFocus = () => {
     if (isOnHomeScreen) {
       navigation.navigate('SearchScreen');
     }
   };
 
+  // For the active style (if we want a back arrow or a search action)
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
+  const handleSearch = () => {
+    // In the active style, you might navigate to results or do something else
+    const trimmed = searchText.trim();
+    if (!trimmed) return;
+    navigation.navigate('SearchResultScreen', { query: trimmed });
+  };
+
   return (
     <View style={styles.container}>
-      {/* Top Row - Location, Logo, Language */}
+      {/* Top Row - Location, Logo, Language (same for both) */}
       <View style={styles.topRow}>
         {/* Location (Left-aligned) */}
         <View style={styles.locationContainer}>
@@ -59,18 +79,47 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons name="search-outline" size={20} color="#999" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Try searching for menu or food stall"
-          placeholderTextColor="#999"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onFocus={handleFocus} 
-        />
-      </View>
+      {/* 
+        Search Bar Container 
+        We'll keep the same container style, but conditionally render 
+        the "inactive" vs "active" layout inside.
+      */}
+      {isOnHomeScreen ? (
+        // =============== INACTIVE STYLE (Home Screen) ===============
+        <View style={styles.inactiveSearchContainer}>
+          <Ionicons name="search-outline" size={20} color="#999" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Try searching for menu or food stall"
+            placeholderTextColor="#999"
+            onFocus={handleFocus}
+          />
+        </View>
+      ) : (
+        // =============== ACTIVE STYLE (Search or Result Screen) ===============
+        <View style={styles.activeSearchContainer}>
+          {/* Back Arrow (left) */}
+          <TouchableOpacity onPress={handleBack} style={styles.arrowContainer}>
+            <Ionicons name="arrow-back-outline" size={20} color="#999" />
+          </TouchableOpacity>
+
+          {/* TextInput (middle) */}
+          <TextInput
+            style={styles.activeSearchInput}
+            placeholder="สตอเบอรี่ปั่น"
+            placeholderTextColor="#999"
+            value={searchText}
+            onChangeText={setSearchText}
+            onSubmitEditing={handleSearch}
+            returnKeyType="search"
+          />
+
+          {/* Teal Circle with White Search Icon (right) */}
+          <TouchableOpacity style={styles.searchIconCircle} onPress={handleSearch}>
+            <Ionicons name="search-outline" size={18} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -78,6 +127,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
 export default SearchBar;
 
 const styles = StyleSheet.create({
+  // Overall container for top row + search bar
   container: {
     paddingVertical: 15,
     paddingHorizontal: 14,
@@ -85,6 +135,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
+
+  /* =================== TOP ROW =================== */
   topRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -124,7 +176,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#3A3838',
   },
-  searchContainer: {
+
+  /* =================== INACTIVE SEARCH BAR (Home) =================== */
+  inactiveSearchContainer: {
     marginTop: -15,
     flexDirection: 'row',
     alignItems: 'center',
@@ -140,5 +194,33 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     color: '#333',
+  },
+
+  /* =================== ACTIVE SEARCH BAR (Search Screen) =================== */
+  activeSearchContainer: {
+    marginTop: -15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 20,
+    height: 40,
+    paddingHorizontal: 12,
+  },
+  arrowContainer: {
+    marginRight: 8,
+  },
+  activeSearchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: '#333',
+  },
+  searchIconCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#006664',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
   },
 });

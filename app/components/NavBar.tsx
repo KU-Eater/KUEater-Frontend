@@ -53,8 +53,6 @@ export default function NavBar() {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Saved') {
             return <BookmarkHeartIcon focused={focused} size={size} color={color} />;
-          } else if (route.name === 'Review') {
-            iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
           } else if (route.name === 'Account') {
             iconName = focused ? 'person' : 'person-outline';
           }
@@ -77,7 +75,6 @@ export default function NavBar() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Saved" component={SavedScreen} />
-      <Tab.Screen name="Review" component={ReviewScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>
   );
