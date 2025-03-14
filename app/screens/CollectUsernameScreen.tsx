@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
-import { ProgressBar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
@@ -21,6 +20,11 @@ const CollectUsernameScreen = () => {
         }
     };
 
+    // Function to handle "Back" navigation
+    const handleBack = () => {
+            navigation.navigate("LoginGoogle");
+    };
+
     return (
         <View style={styles.container}>
             {/* Progress Bar */}
@@ -31,7 +35,7 @@ const CollectUsernameScreen = () => {
             <View style={styles.secondContainer}>
 
                 {/* Back Button */}
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} >
+                <TouchableOpacity style={styles.backButton} onPress={handleBack} >
                     <Ionicons name="arrow-back" size={28} color="#066644" />
                 </TouchableOpacity>
 
@@ -98,7 +102,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.6,
         borderBottomColor: "#B0B0B0",
         fontSize: 18,
-        paddingVertical: 10,
+        paddingTop: 10,
         marginBottom: 15,
         color: "#000",
     },

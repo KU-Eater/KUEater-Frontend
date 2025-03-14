@@ -22,7 +22,7 @@ const LoginGoogleScreen: React.FC = () => {
 
     const handleGoogleLogin = () => {
         // TODO: Implement Google login functionality
-        navigation.replace('MainTab');
+        navigation.replace('CollectUsername');
     };
 
     return (

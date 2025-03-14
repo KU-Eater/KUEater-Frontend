@@ -59,7 +59,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="CollectUsername">
+      <Stack.Navigator initialRouteName="LoginGoogle">
         
         {/* 1) หน้า Login with google */}
         <Stack.Screen
