@@ -1,5 +1,5 @@
 // App.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -19,6 +19,18 @@ import SearchScreen from './screens/SearchScreen';
 import SearchResultScreen from './screens/SearchResultScreen';
 import LoginGoogleScreen from './screens/LoginGoogleScreen';
 
+// Import Landing Session Screens
+import CollectUsernameScreen from './screens/CollectUsernameScreen';
+import CollectRoleScreen from './screens/CollectRoleScreen';
+import CollectDietaryScreen from './screens/CollectDietaryScreen';
+import CollectMealScreen from './screens/CollectMealScreen';
+import CollectDishesScreen from './screens/CollectDishesScreen';
+
+
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen"; // ✅ Use expo-splash-screen
+import { View, ActivityIndicator } from "react-native"; // Loading indicator
+
 // ประกาศ type สำหรับ Stack ถ้าต้องการใช้กับ TypeScript
 // (ถ้าไม่ต้องการบังคับ type แน่น ก็สามารถใช้ any ได้)
 export type RootStackParamList = {
@@ -30,14 +42,32 @@ export type RootStackParamList = {
   SearchResultScreen: undefined;
   StallProfile: undefined;
   MenuDetails: undefined;
+  CollectUsername: undefined;
+  CollectRole: undefined;
+  CollectDietary: undefined;
+  CollectMeal: undefined;
+  CollectDishes: undefined;
 };
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+
 export default function App() {
+  
+  const [fontsLoaded] = useFonts({
+    "FC-Lamoon": require("./assets/fonts/FCLamoon.ttf"),
+    
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" />;
+  }
+
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginGoogle">
+      <Stack.Navigator initialRouteName="CollectUsername">
         
         {/* 1) หน้า Login with google */}
         <Stack.Screen
@@ -83,6 +113,14 @@ export default function App() {
           component={MenuDetailScreen}
           options={{ headerShown: false }}
         />
+
+          {/* 7) Landing Session Screens */}
+        <Stack.Screen name="CollectUsername" component={CollectUsernameScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CollectRole" component={CollectRoleScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CollectDietary" component={CollectDietaryScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CollectMeal" component={CollectMealScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CollectDishes" component={CollectDishesScreen} options={{ headerShown: false }} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
