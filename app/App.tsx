@@ -3,9 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// นำเข้า Login & Signup Screens ใหม่
-import LoginScreen from './screens/LoginScreen';
-import SignupScreen from './screens/SignupScreen';
 
 // นำเข้า NavBar (Bottom Tabs) ของเรา
 import NavBar from './components/NavBar';
@@ -27,10 +24,9 @@ import CollectMealScreen from './screens/CollectMealScreen';
 import CollectDishesScreen from './screens/CollectDishesScreen';
 
 
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen"; // ✅ Use expo-splash-screen
-import { View, ActivityIndicator } from "react-native"; // Loading indicator
 
+import * as Font from "expo-font";
+import { ActivityIndicator,View } from "react-native";
 
 // ประกาศ type สำหรับ Stack ถ้าต้องการใช้กับ TypeScript
 // (ถ้าไม่ต้องการบังคับ type แน่น ก็สามารถใช้ any ได้)
@@ -55,18 +51,43 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 
 export default function App() {
-  
+
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadResources() {
+      try {
+        await Font.loadAsync({
+          "FC-Lamoon": require("./assets/fonts/FCLamoonBold.otf"),
+        });
+        console.log("✅ FCLamoon font loaded successfully!"); // Debug log
+        setFontLoaded(true);
+      } catch (error) {
+        console.error("Error loading font:", error);
+      }
+    }
+    loadResources();
+  }, []);
+
+  if (!fontLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#006664" />
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LoginGoogle">
-        
+
         {/* 1) หน้า Login with google */}
         <Stack.Screen
           name="LoginGoogle"
           component={LoginGoogleScreen}
-          options={{ headerShown: false,
-           }}
+          options={{
+            headerShown: false,
+          }}
         />
 
         {/* 2) หน้าแรกเป็น NavBar ซึ่งมี Bottom Tabs: Home, Saved, etc. */}
@@ -80,7 +101,7 @@ export default function App() {
         <Stack.Screen
           name="SearchScreen"
           component={SearchScreen}
-          options={{ 
+          options={{
             headerShown: false,
           }}
         />
@@ -106,7 +127,7 @@ export default function App() {
           options={{ headerShown: false }}
         />
 
-          {/* 7) Landing Session Screens */}
+        {/* 7) Landing Session Screens */}
         <Stack.Screen name="CollectUsername" component={CollectUsernameScreen} options={{ headerShown: false }} />
         <Stack.Screen name="CollectRole" component={CollectRoleScreen} options={{ headerShown: false }} />
         <Stack.Screen name="CollectDietary" component={CollectDietaryScreen} options={{ headerShown: false }} />
