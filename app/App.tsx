@@ -31,6 +31,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen"; // ✅ Use expo-splash-screen
 import { View, ActivityIndicator } from "react-native"; // Loading indicator
 
+
 // ประกาศ type สำหรับ Stack ถ้าต้องการใช้กับ TypeScript
 // (ถ้าไม่ต้องการบังคับ type แน่น ก็สามารถใช้ any ได้)
 export type RootStackParamList = {
@@ -55,15 +56,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   
-  const [fontsLoaded] = useFonts({
-    "FC-Lamoon": require("./assets/fonts/FCLamoon.ttf"),
-    
-  });
-
-  if (!fontsLoaded) {
-    return <ActivityIndicator size="large" />;
-  }
-
 
   return (
     <NavigationContainer>
