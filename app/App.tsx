@@ -60,7 +60,6 @@ export default function App() {
         await Font.loadAsync({
           "FC-Lamoon": require("./assets/fonts/FCLamoonBold.otf"),
         });
-        console.log("✅ FCLamoon font loaded successfully!"); // Debug log
         setFontLoaded(true);
       } catch (error) {
         console.error("Error loading font:", error);
@@ -79,15 +78,13 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginGoogle">
+      <Stack.Navigator initialRouteName="CollectDietary">
 
         {/* 1) หน้า Login with google */}
         <Stack.Screen
           name="LoginGoogle"
           component={LoginGoogleScreen}
-          options={{
-            headerShown: false,
-          }}
+          options={{ headerShown: false }}
         />
 
         {/* 2) หน้าแรกเป็น NavBar ซึ่งมี Bottom Tabs: Home, Saved, etc. */}
@@ -101,9 +98,7 @@ export default function App() {
         <Stack.Screen
           name="SearchScreen"
           component={SearchScreen}
-          options={{
-            headerShown: false,
-          }}
+          options={{ headerShown: false }}
         />
 
         {/* 4) เพิ่ม SearchResultScreen */}
@@ -128,11 +123,34 @@ export default function App() {
         />
 
         {/* 7) Landing Session Screens */}
-        <Stack.Screen name="CollectUsername" component={CollectUsernameScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CollectRole" component={CollectRoleScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CollectDietary" component={CollectDietaryScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CollectMeal" component={CollectMealScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CollectDishes" component={CollectDishesScreen} options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="CollectUsername" 
+          component={CollectUsernameScreen} 
+          options={{ 
+            headerShown: false,
+            gestureEnabled: true,
+            animation: "fade",
+            }} />
+        <Stack.Screen 
+          name="CollectRole" 
+          component={CollectRoleScreen}
+          options={{ 
+            headerShown: false,
+            gestureEnabled: true,
+            animation: "fade",
+            }} />
+        <Stack.Screen 
+          name="CollectDietary" 
+          component={CollectDietaryScreen} 
+          options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="CollectMeal"
+          component={CollectMealScreen} 
+          options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="CollectDishes" 
+          component={CollectDishesScreen} 
+          options={{ headerShown: false }} />
 
       </Stack.Navigator>
     </NavigationContainer>

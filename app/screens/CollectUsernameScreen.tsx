@@ -105,15 +105,22 @@ const styles = StyleSheet.create({
         paddingTop: 5,
         marginBottom: 15,
         color: "#3A3838",
+        alignItems: "center",
+        alignSelf: "center",
+        width: "95%",
+        
     },
     helperText: {
         fontSize: 14,
         color: "#666",
         marginBottom: 40,
+        alignItems: "center",
+        alignSelf: "center",
+        width: "95%",
     },
     buttonWrapper: {
         marginTop: "auto",
-        paddingVertical: 10,
+        paddingVertical: 20,
     },
 });
 
