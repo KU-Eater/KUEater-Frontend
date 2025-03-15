@@ -142,15 +142,27 @@ export default function App() {
         <Stack.Screen 
           name="CollectDietary" 
           component={CollectDietaryScreen} 
-          options={{ headerShown: false }} />
+          options={{ 
+            headerShown: false,
+            gestureEnabled: true,
+            animation: "fade",
+            }} />
         <Stack.Screen 
           name="CollectMeal"
           component={CollectMealScreen} 
-          options={{ headerShown: false }} />
+          options={{ 
+            headerShown: false,
+            gestureEnabled: true,
+            animation: "fade",
+            }} />
         <Stack.Screen 
           name="CollectDishes" 
           component={CollectDishesScreen} 
-          options={{ headerShown: false }} />
+          options={{ 
+            headerShown: false,
+            gestureEnabled: true,
+            animation: "fade",
+            }} />
 
       </Stack.Navigator>
     </NavigationContainer>

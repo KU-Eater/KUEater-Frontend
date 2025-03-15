@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
   roleText: {
     fontSize: 18,
     color: "#3A3838",
+    fontWeight:"bold",
   },
   roleTextSelected: {
     fontWeight: "bold",
