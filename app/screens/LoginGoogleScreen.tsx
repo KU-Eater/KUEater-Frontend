@@ -33,7 +33,7 @@ const LoginGoogleScreen: React.FC = () => {
                 <View style={styles.cardContainer}>
                     {/* โลโก้ KU EATER */}
                     <Image
-                        source={require('../assets/logo2.png')}
+                        source={require('../assets/logo_signin.png')}
                         style={styles.logo}
                         resizeMode="contain"
                     />
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     logo: {
         width: 250,
         height: 250,
-        marginBottom: 40,
+        marginBottom: 100,
     },
     wrapper: {
         width: '100%',
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         paddingVertical: 18,
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 15,
         borderWidth: 2,
         borderColor: '#E0E0E0',
     },
