@@ -14,7 +14,7 @@ const Tab = createBottomTabNavigator();
 interface IconProps {
   focused: boolean;
   size: number;
-  color: string
+  color: string;
 }
 
 // Custom Bookmark-Heart Icon
@@ -47,7 +47,7 @@ export default function NavBar() {
       screenOptions={({ route }) => ({
         headerShown: false, // Hide the top header
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
+          let iconName: any;
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';

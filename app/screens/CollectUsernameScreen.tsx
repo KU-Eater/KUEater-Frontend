@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -6,16 +6,25 @@ import { RootStackParamList } from "../App";
 import { Ionicons } from '@expo/vector-icons';
 import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
+import { useUserPreferences } from "../context/UserPreferencesContext"; // Import context
 
 type CollectUsernameScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectUsername">;
 
+
 const CollectUsernameScreen = () => {
     const navigation = useNavigation<CollectUsernameScreenNavigationProp>();
-    const [username, setUsername] = useState("");
+    const { preferences, updatePreferences } = useUserPreferences();
+    
+    const [username, setUsername] = useState(preferences.username); // Load stored value
+
+    useEffect(() => {
+        setUsername(preferences.username); // Ensure stored value loads when re-entering screen
+    }, [preferences.username]);
 
     // Function to handle "Next" navigation
     const handleNext = () => {
         if (username.trim()) {
+            updatePreferences("username", username.trim()); // Store username
             navigation.navigate("CollectRole");
         }
     };

@@ -7,12 +7,14 @@ import { Ionicons } from "@expo/vector-icons";
 import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
 import Chips from "../components/Chips"; // Reusing Chips Component
+import { useUserPreferences } from "../context/UserPreferencesContext";
 
 type CollectDishesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectDishes">;
 
 const CollectDishesScreen = () => {
   const navigation = useNavigation<CollectDishesScreenNavigationProp>();
-  const [selectedDishes, setSelectedDishes] = useState<string[]>([]);
+  const { preferences, updatePreferences } = useUserPreferences();
+    const [selectedDishes, setSelectedDishes] = useState(preferences.favoriteDishes);
 
   // Dishes options
   const dishes = [
@@ -29,7 +31,8 @@ const CollectDishesScreen = () => {
   // Function to navigate next
   const handleNext = () => {
     if (selectedDishes.length > 10) {
-      navigation.navigate("MainTab");
+        updatePreferences("favoriteDishes", selectedDishes); // Store favorite dishes
+        navigation.navigate("MainTab");
     }
   };
 

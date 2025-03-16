@@ -7,13 +7,18 @@ import { Ionicons } from "@expo/vector-icons";
 import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
 import Chips from "../components/Chips"; // Import Chips Component
+import { useUserPreferences } from "../context/UserPreferencesContext";
+
+
 
 type CollectDietaryScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectDietary">;
 
 const CollectDietaryScreen = () => {
     const navigation = useNavigation<CollectDietaryScreenNavigationProp>();
-    const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
-    const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
+    const { preferences, updatePreferences } = useUserPreferences();
+    const [selectedPreferences, setSelectedPreferences] = useState(preferences.dietaryPreferences);
+    const [selectedAllergies, setSelectedAllergies] = useState(preferences.allergies);
+
 
     // Dietary Preferences Options
     const dietaryPreferences = [
@@ -31,6 +36,8 @@ const CollectDietaryScreen = () => {
 
     // Function to navigate next
     const handleNext = () => {
+        updatePreferences("dietaryPreferences", selectedPreferences); // Store dietary preferences
+        updatePreferences("allergies", selectedAllergies); // Store allergies
         navigation.navigate("CollectMeal");
     };
 
@@ -56,7 +63,7 @@ const CollectDietaryScreen = () => {
                 </TouchableOpacity>
 
                 {/* Skip Button */}
-                <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+                <TouchableOpacity style={styles.skipButton} onPress={handleNext}>
                     <Text style={styles.skipText}>Skip</Text>
                 </TouchableOpacity>
 
@@ -78,7 +85,7 @@ const CollectDietaryScreen = () => {
 
                 {/* Next Button */}
                 <View style={styles.buttonWrapper}>
-                    <GradientButton title="Next" onPress={handleNext} disabled={selectedPreferences.length === 0 && selectedAllergies.length === 0} />
+                    <GradientButton title="Next" onPress={handleNext} />
                 </View>
             </View>
         </View>
