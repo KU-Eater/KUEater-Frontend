@@ -30,7 +30,7 @@ const CollectDishesScreen = () => {
 
   // Function to navigate next
   const handleNext = () => {
-    if (selectedDishes.length > 10) {
+    if (selectedDishes.length >= 10) {
         updatePreferences("favoriteDishes", selectedDishes); // Store favorite dishes
         navigation.navigate("MainTab");
     }
@@ -38,6 +38,7 @@ const CollectDishesScreen = () => {
 
   // Function to go back
   const handleBack = () => {
+    updatePreferences("favoriteDishes", selectedDishes);
     navigation.navigate("CollectMeal");
   };
 

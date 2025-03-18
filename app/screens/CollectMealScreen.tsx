@@ -33,11 +33,11 @@ const CollectMealScreen = () => {
 
     // Function to navigate next
     const handleNext = () => {
-        if (selectedCuisines.length > 0 || selectedDislikes.length > 0) {
+        // if (selectedCuisines.length > 0 || selectedDislikes.length > 0) {
             updatePreferences("favoriteCuisines", selectedCuisines); // Store favorite cuisines
             updatePreferences("dislikedIngredients", selectedDislikes); // Store disliked ingredients
             navigation.navigate("CollectDishes");
-        }
+        // }
     };
 
     // Function to skip
