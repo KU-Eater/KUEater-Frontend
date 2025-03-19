@@ -6,6 +6,7 @@ interface UserPreferences {
     gmail: string;
     username: string;
     role: string | null;
+    gender: string | null;
     dietaryPreferences: string[];
     allergies: string[];
     favoriteCuisines: string[];
@@ -29,6 +30,7 @@ export const UserPreferencesProvider: React.FC<{ children: React.ReactNode }> = 
         gmail: "",
         username: "",
         role: null,
+        gender: null,
         dietaryPreferences: [],
         allergies: [],
         favoriteCuisines: [],

@@ -22,11 +22,12 @@ import CollectRoleScreen from './screens/CollectRoleScreen';
 import CollectDietaryScreen from './screens/CollectDietaryScreen';
 import CollectMealScreen from './screens/CollectMealScreen';
 import CollectDishesScreen from './screens/CollectDishesScreen';
-
+import ProsonalProfileScreen from './screens/PersonalProfileScreen';
+import FoodPreferencesScreen from './screens/FoodPreferencesScreen';
 
 import { UserPreferencesProvider } from './context/UserPreferencesContext';
 
-
+import AccountScreen from './screens/AccountScreen';
 
 import * as Font from "expo-font";
 import { ActivityIndicator, View } from "react-native";
@@ -38,6 +39,7 @@ export type RootStackParamList = {
   Signup: undefined;
   LoginGoogle: undefined;
   MainTab: undefined;
+  Account: undefined;
   SearchScreen: undefined;
   SearchResultScreen: undefined;
   StallProfile: undefined;
@@ -47,6 +49,9 @@ export type RootStackParamList = {
   CollectDietary: undefined;
   CollectMeal: undefined;
   CollectDishes: undefined;
+  PersonalProfile: undefined;
+  FoodPreferences: undefined;
+
 };
 
 
@@ -167,6 +172,33 @@ export default function App() {
               gestureEnabled: true,
               animation: "fade",
             }} />
+
+
+          {/* 8) Account Session Screens */}
+          <Stack.Screen
+            name="Account"
+            component={AccountScreen}
+            options={{
+              headerShown: false,
+            }} />
+          <Stack.Screen
+            name="PersonalProfile"
+            component={ProsonalProfileScreen}
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "fade",
+            }} />
+          <Stack.Screen
+            name="FoodPreferences"
+            component={FoodPreferencesScreen}
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "fade",
+            }} />
+
+
 
         </Stack.Navigator>
       </NavigationContainer>

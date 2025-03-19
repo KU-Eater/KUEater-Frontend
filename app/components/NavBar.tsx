@@ -73,9 +73,11 @@ export default function NavBar() {
         },
       })}
     >
+      
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Saved" component={SavedScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
+      
     </Tab.Navigator>
   );
 }
