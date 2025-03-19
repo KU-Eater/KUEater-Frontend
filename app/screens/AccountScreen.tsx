@@ -14,41 +14,6 @@ const AccountScreen = () => {
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
   const [feedbackText, setFeedbackText] = useState("");
 
-  // Determine profile picture based on role and gender
-  // const getProfilePic = () => {
-  //   const basePath = "../assets/roles/";
-  //   let rolePic = "";
-
-  //   switch (preferences.role) {
-  //     case "KU Student":
-  //       rolePic = "ku_student";
-  //       break;
-  //     case "Exchange Student":
-  //       rolePic = "exchange_student";
-  //       break;
-  //     case "KU Professor":
-  //       rolePic = "ku_professor";
-  //       break;
-  //     case "KU Staff":
-  //       rolePic = "ku_staff";
-  //       break;
-  //     case "Guest":
-  //       rolePic = "guest";
-  //       break;
-  //     default:
-  //       rolePic = ""; // Default role
-  //   }
-  //   console.log(basePath,rolePic)
-  //   if (preferences.gender === "male") {
-  //     return require(`${basePath}${rolePic}_f.png`);
-  //   } else if (preferences.gender === "female") {
-  //     return require(`${basePath}${rolePic}_f.png`);
-  //   } else if (preferences.gender==="") {
-  //     return require(`${basePath}${rolePic}.png`);
-  //   } else {
-  //     return require(`${basePath}default_profile.png`);
-  //   }
-  // };
 
   const profilePics: { [key: string]: any } = {
     "KU Student Male": require("../assets/roles/ku_student_m.png"),
@@ -61,7 +26,7 @@ const AccountScreen = () => {
     "KU Professor Female": require("../assets/roles/ku_professor_f.png"),
     "KU Professor": require("../assets/roles/ku_professor.png"),
     "KU Staff Male": require("../assets/roles/ku_staff_m.png"),
-    "KU Staff  Female": require("../assets/roles/ku_staff_f.png"),
+    "KU Staff Female": require("../assets/roles/ku_staff_f.png"),
     "KU Staff": require("../assets/roles/ku_staff.png"),
     "Guest Male": require("../assets/roles/guest_m.png"),
     "Guest Female": require("../assets/roles/guest_f.png"),

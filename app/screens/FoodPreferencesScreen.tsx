@@ -14,7 +14,7 @@ const FoodPreferencesScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Account Screen</Text>
+            <Text style={styles.text}>Food Preferences Screen</Text>
         </View>
     );
 };

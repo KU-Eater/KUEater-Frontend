@@ -26,11 +26,23 @@ const UserPreferencesContext = createContext<UserPreferencesContextType | undefi
 // Context provider component
 export const UserPreferencesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [preferences, setPreferences] = useState<UserPreferences>({
-        userID: "",
-        gmail: "",
-        username: "",
-        role: null,
-        gender: null,
+        // userID: "",
+        // gmail: "",
+        // username: "",
+        // role: null,
+        // gender: null,
+        // dietaryPreferences: [],
+        // allergies: [],
+        // favoriteCuisines: [],
+        // dislikedIngredients: [],
+        // favoriteDishes: [],
+
+        // mock data for test
+        userID: "01",
+        gmail: "ratchaprapa.c@gmail.com",
+        username: "Proud",
+        role: "KU Student",
+        gender: "Female",
         dietaryPreferences: [],
         allergies: [],
         favoriteCuisines: [],

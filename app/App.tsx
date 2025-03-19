@@ -22,7 +22,7 @@ import CollectRoleScreen from './screens/CollectRoleScreen';
 import CollectDietaryScreen from './screens/CollectDietaryScreen';
 import CollectMealScreen from './screens/CollectMealScreen';
 import CollectDishesScreen from './screens/CollectDishesScreen';
-import ProsonalProfileScreen from './screens/PersonalProfileScreen';
+import PersonalProfileScreen from './screens/PersonalProfileScreen';
 import FoodPreferencesScreen from './screens/FoodPreferencesScreen';
 
 import { UserPreferencesProvider } from './context/UserPreferencesContext';
@@ -183,7 +183,7 @@ export default function App() {
             }} />
           <Stack.Screen
             name="PersonalProfile"
-            component={ProsonalProfileScreen}
+            component={PersonalProfileScreen}
             options={{
               headerShown: false,
               gestureEnabled: true,
