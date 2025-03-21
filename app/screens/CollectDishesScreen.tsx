@@ -8,7 +8,7 @@ import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
 import Chips from "../components/Chips";
 import { useUserPreferences } from "../context/UserPreferencesContext";
-import { dishesOptions } from "../api/PreferencesData";
+import { dishesOptions } from "../api/preferencesData";
 
 type CollectDishesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectDishes">;
 

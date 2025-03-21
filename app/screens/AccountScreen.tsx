@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import { Ionicons } from "@expo/vector-icons";
+import FeedbackModal from "../components/FeedbackModal";
 
 type AccountScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "Account">;
 
@@ -106,36 +107,7 @@ const AccountScreen = () => {
       </TouchableOpacity>
       <View style={styles.line} />
 
-      {/* Feedback Modal */}
-      <Modal animationType="slide" transparent={true} visible={feedbackModalVisible}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Give Feedback</Text>
-            <TextInput
-              style={styles.feedbackInput}
-              placeholder="Write your feedback here..."
-              multiline
-              value={feedbackText}
-              onChangeText={setFeedbackText}
-            />
-            <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.modalButton} onPress={() => setFeedbackModalVisible(false)}>
-                <Text style={styles.modalButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, { backgroundColor: "#4CAF50" }]}
-                onPress={() => {
-                  setFeedbackModalVisible(false);
-                  setFeedbackText(""); // Clear feedback
-                  alert("Thank you for your feedback!");
-                }}
-              >
-                <Text style={styles.modalButtonText}>Submit</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <FeedbackModal visible={feedbackModalVisible} onClose={() => setFeedbackModalVisible(false)} />
     </View>
   );
 };

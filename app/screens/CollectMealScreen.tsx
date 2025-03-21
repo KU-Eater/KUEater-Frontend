@@ -8,7 +8,7 @@ import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
 import Chips from "../components/Chips"; // Reusing Chips Component
 import { useUserPreferences } from "../context/UserPreferencesContext";
-import { cuisinesOptions,dislikesOptions } from "../api/PreferencesData";
+import { cuisinesOptions,dislikesOptions } from "../api/preferencesData";
 
 type CollectMealScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectMeal">;
 

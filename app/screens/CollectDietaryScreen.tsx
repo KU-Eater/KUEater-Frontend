@@ -8,7 +8,7 @@ import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
 import Chips from "../components/Chips"; // Import Chips Component
 import { useUserPreferences } from "../context/UserPreferencesContext";
-import { dietaryOptions, allergiesOptions } from "../api/PreferencesData";
+import { dietaryOptions, allergiesOptions } from "../api/preferencesData";
 
 
 

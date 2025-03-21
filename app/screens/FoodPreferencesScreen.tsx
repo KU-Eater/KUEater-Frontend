@@ -21,7 +21,7 @@ import {
     cuisinesOptions,
     dislikesOptions,
     dishesOptions
-} from "../api/PreferencesData";
+} from "../api/preferencesData";
 
 // Chips Component
 import Chips from "../components/Chips";
