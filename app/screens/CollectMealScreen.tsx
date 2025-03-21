@@ -8,6 +8,7 @@ import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
 import Chips from "../components/Chips"; // Reusing Chips Component
 import { useUserPreferences } from "../context/UserPreferencesContext";
+import { cuisinesOptions,dislikesOptions } from "../api/PreferencesData";
 
 type CollectMealScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectMeal">;
 
@@ -18,18 +19,10 @@ const CollectMealScreen = () => {
     const [selectedDislikes, setSelectedDislikes] = useState(preferences.dislikedIngredients);
 
     // Favorite Cuisines Options
-    const cuisines = [
-        "Thai", "Italian", "Chinese", "Japanese", "Indian", "Korean",
-        "Vietnamese", "French", "American", "Middle Eastern", "Western"
-    ];
+    const cuisines = cuisinesOptions
 
     // Disliked Ingredients Options
-    const dislikes = [
-        "Fruits", "Vegetables", "Fermented Fish Sauce (Pla-ra)", "Seafoods",
-        "Stink Beans (Sa-taw)", "Tomatoes", "Shrimp Paste (Ka-pi)", "Century Eggs",
-        "Durians", "Garlics", "Ripe Papaya", "Bitter Melon (Ma-ra)", "Bay Leaves",
-        "Chinese Sausages", "Onions", "Bamboo Shoots", "Thai Calories", "Lemongrasses"
-    ];
+    const dislikes = dislikesOptions
 
     // Function to navigate next
     const handleNext = () => {

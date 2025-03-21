@@ -186,16 +186,12 @@ export default function App() {
             component={PersonalProfileScreen}
             options={{
               headerShown: false,
-              gestureEnabled: true,
-              animation: "fade",
             }} />
           <Stack.Screen
             name="FoodPreferences"
             component={FoodPreferencesScreen}
             options={{
               headerShown: false,
-              gestureEnabled: true,
-              animation: "fade",
             }} />
 
 

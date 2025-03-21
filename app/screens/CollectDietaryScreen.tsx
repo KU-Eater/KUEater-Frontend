@@ -8,6 +8,7 @@ import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
 import Chips from "../components/Chips"; // Import Chips Component
 import { useUserPreferences } from "../context/UserPreferencesContext";
+import { dietaryOptions, allergiesOptions } from "../api/PreferencesData";
 
 
 
@@ -21,18 +22,10 @@ const CollectDietaryScreen = () => {
 
 
     // Dietary Preferences Options
-    const dietaryPreferences = [
-        "Nothing", "Halal", "Vegetarian", "Vegan",
-        "Pescatarian", "Pollotarian", "Ovo-Vegetarian",
-        "Lacto-Vegetarian", "Low-Carb", "Keto"
-    ];
+    const dietaryPreferences = dietaryOptions
 
     // Allergies & Intolerances Options
-    const allergies = [
-        "Nothing", "Lactose", "Eggs", "Dairy", "Shellfish", "Fishes", "Seafood",
-        "Peanuts", "Gluten", "Sesame", "Nuts", "Soy", "Rice",
-        "Red Meat", "Corn", "Wheat", "Fructose"
-    ];
+    const allergies = allergiesOptions
 
     // Function to navigate next
     const handleNext = () => {

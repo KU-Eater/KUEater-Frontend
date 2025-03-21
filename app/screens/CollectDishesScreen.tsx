@@ -6,33 +6,25 @@ import { RootStackParamList } from "../App";
 import { Ionicons } from "@expo/vector-icons";
 import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
-import Chips from "../components/Chips"; // Reusing Chips Component
+import Chips from "../components/Chips";
 import { useUserPreferences } from "../context/UserPreferencesContext";
+import { dishesOptions } from "../api/PreferencesData";
 
 type CollectDishesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectDishes">;
 
 const CollectDishesScreen = () => {
   const navigation = useNavigation<CollectDishesScreenNavigationProp>();
   const { preferences, updatePreferences } = useUserPreferences();
-    const [selectedDishes, setSelectedDishes] = useState(preferences.favoriteDishes);
+  const [selectedDishes, setSelectedDishes] = useState(preferences.favoriteDishes);
 
   // Dishes options
-  const dishes = [
-    "Thai Food", "Egg", "Crispy Pork", "Fried Rice Chicken",
-    "Iced Thai Tea", "Pad Thai", "Vietnamese Noodle (Pho)", 
-    "Thai Coconut Curry Noodle (Khao Soi)", "Noodles", "Crab", "Spicy Salad", "Sushi",
-    "Hamburger", "Coffee", "Som Tam (Green Papaya Salad)", "Kimchi soup (Kimchi Jjigae)",
-    "Japanese foods", "Chicken", "Shrimp", "Smoothies", "Mango Sticky Rice", "Fish",
-    "Kimchi Jjigae (Kimchi Soup)", "Japanese Curry Rice", "Stir-Fried Thai Basil (Pad Kra Pao)",
-    "Thai Green Curry Chicken", "Stir-Fried Noodle (Pad See Ew)", "Spaghetti",
-    "Thai Chicken Rice", "Curry Rice", "Pork"
-  ];
+  const dishes = dishesOptions
 
   // Function to navigate next
   const handleNext = () => {
     if (selectedDishes.length >= 10) {
-        updatePreferences("favoriteDishes", selectedDishes); // Store favorite dishes
-        navigation.navigate("MainTab");
+      updatePreferences("favoriteDishes", selectedDishes); // Store favorite dishes
+      navigation.navigate("MainTab");
     }
   };
 
@@ -45,8 +37,8 @@ const CollectDishesScreen = () => {
   // Function to limit selection to 10 dishes
   const handleSelectDishes = (selected: string[]) => {
     if (selected.length <= 50) {
-        setSelectedDishes(selected);
-      }
+      setSelectedDishes(selected);
+    }
   };
 
   return (
@@ -61,7 +53,9 @@ const CollectDishesScreen = () => {
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.title}>Select your favorite Dishes! ❤︎</Text>
+
+        <Text style={styles.title}>Select your Favorite Dishes! ❤︎</Text>
+
         <Text style={styles.infoText}>You can change them later on Setting.</Text>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
