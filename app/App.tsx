@@ -31,6 +31,7 @@ import AccountScreen from './screens/AccountScreen';
 
 import * as Font from "expo-font";
 import { ActivityIndicator, View } from "react-native";
+import { FeedbackProvider } from './context/FeedbackContext';
 
 // ประกาศ type สำหรับ Stack ถ้าต้องการใช้กับ TypeScript
 // (ถ้าไม่ต้องการบังคับ type แน่น ก็สามารถใช้ any ได้)
@@ -86,118 +87,120 @@ export default function App() {
 
   return (
     <UserPreferencesProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="LoginGoogle">
+      <FeedbackProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Account">
 
-          {/* 1) หน้า Login with google */}
-          <Stack.Screen
-            name="LoginGoogle"
-            component={LoginGoogleScreen}
-            options={{ headerShown: false }}
-          />
+            {/* 1) หน้า Login with google */}
+            <Stack.Screen
+              name="LoginGoogle"
+              component={LoginGoogleScreen}
+              options={{ headerShown: false }}
+            />
 
-          {/* 2) หน้าแรกเป็น NavBar ซึ่งมี Bottom Tabs: Home, Saved, etc. */}
-          <Stack.Screen
-            name="MainTab"
-            component={NavBar}
-            options={{ headerShown: false }}
-          />
+            {/* 2) หน้าแรกเป็น NavBar ซึ่งมี Bottom Tabs: Home, Saved, etc. */}
+            <Stack.Screen
+              name="MainTab"
+              component={NavBar}
+              options={{ headerShown: false }}
+            />
 
-          {/* 3) เพิ่ม SearchScreen */}
-          <Stack.Screen
-            name="SearchScreen"
-            component={SearchScreen}
-            options={{ headerShown: false }}
-          />
+            {/* 3) เพิ่ม SearchScreen */}
+            <Stack.Screen
+              name="SearchScreen"
+              component={SearchScreen}
+              options={{ headerShown: false }}
+            />
 
-          {/* 4) เพิ่ม SearchResultScreen */}
-          <Stack.Screen
-            name="SearchResultScreen"
-            component={SearchResultScreen}
-            options={{ headerShown: false }}
-          />
+            {/* 4) เพิ่ม SearchResultScreen */}
+            <Stack.Screen
+              name="SearchResultScreen"
+              component={SearchResultScreen}
+              options={{ headerShown: false }}
+            />
 
-          {/* 5) หน้าร้าน (Stall Profile) */}
-          <Stack.Screen
-            name="StallProfile"
-            component={StallProfileScreen}
-            options={{ headerShown: false }}
-          />
+            {/* 5) หน้าร้าน (Stall Profile) */}
+            <Stack.Screen
+              name="StallProfile"
+              component={StallProfileScreen}
+              options={{ headerShown: false }}
+            />
 
-          {/* 6) หน้าเมนู (Menu Details) */}
-          <Stack.Screen
-            name="MenuDetails"
-            component={MenuDetailScreen}
-            options={{ headerShown: false }}
-          />
+            {/* 6) หน้าเมนู (Menu Details) */}
+            <Stack.Screen
+              name="MenuDetails"
+              component={MenuDetailScreen}
+              options={{ headerShown: false }}
+            />
 
-          {/* 7) Landing Session Screens */}
-          <Stack.Screen
-            name="CollectUsername"
-            component={CollectUsernameScreen}
-            options={{
-              headerShown: false,
-              gestureEnabled: true,
-              animation: "fade",
-            }} />
-          <Stack.Screen
-            name="CollectRole"
-            component={CollectRoleScreen}
-            options={{
-              headerShown: false,
-              gestureEnabled: true,
-              animation: "fade",
-            }} />
-          <Stack.Screen
-            name="CollectDietary"
-            component={CollectDietaryScreen}
-            options={{
-              headerShown: false,
-              gestureEnabled: true,
-              animation: "fade",
-            }} />
-          <Stack.Screen
-            name="CollectMeal"
-            component={CollectMealScreen}
-            options={{
-              headerShown: false,
-              gestureEnabled: true,
-              animation: "fade",
-            }} />
-          <Stack.Screen
-            name="CollectDishes"
-            component={CollectDishesScreen}
-            options={{
-              headerShown: false,
-              gestureEnabled: true,
-              animation: "fade",
-            }} />
-
-
-          {/* 8) Account Session Screens */}
-          <Stack.Screen
-            name="Account"
-            component={AccountScreen}
-            options={{
-              headerShown: false,
-            }} />
-          <Stack.Screen
-            name="PersonalProfile"
-            component={PersonalProfileScreen}
-            options={{
-              headerShown: false,
-            }} />
-          <Stack.Screen
-            name="FoodPreferences"
-            component={FoodPreferencesScreen}
-            options={{
-              headerShown: false,
-            }} />
+            {/* 7) Landing Session Screens */}
+            <Stack.Screen
+              name="CollectUsername"
+              component={CollectUsernameScreen}
+              options={{
+                headerShown: false,
+                gestureEnabled: true,
+                animation: "fade",
+              }} />
+            <Stack.Screen
+              name="CollectRole"
+              component={CollectRoleScreen}
+              options={{
+                headerShown: false,
+                gestureEnabled: true,
+                animation: "fade",
+              }} />
+            <Stack.Screen
+              name="CollectDietary"
+              component={CollectDietaryScreen}
+              options={{
+                headerShown: false,
+                gestureEnabled: true,
+                animation: "fade",
+              }} />
+            <Stack.Screen
+              name="CollectMeal"
+              component={CollectMealScreen}
+              options={{
+                headerShown: false,
+                gestureEnabled: true,
+                animation: "fade",
+              }} />
+            <Stack.Screen
+              name="CollectDishes"
+              component={CollectDishesScreen}
+              options={{
+                headerShown: false,
+                gestureEnabled: true,
+                animation: "fade",
+              }} />
 
 
+            {/* 8) Account Session Screens */}
+            <Stack.Screen
+              name="Account"
+              component={AccountScreen}
+              options={{
+                headerShown: false,
+              }} />
+            <Stack.Screen
+              name="PersonalProfile"
+              component={PersonalProfileScreen}
+              options={{
+                headerShown: false,
+              }} />
+            <Stack.Screen
+              name="FoodPreferences"
+              component={FoodPreferencesScreen}
+              options={{
+                headerShown: false,
+              }} />
 
-        </Stack.Navigator>
-      </NavigationContainer>
+
+
+          </Stack.Navigator>
+        </NavigationContainer>
+      </FeedbackProvider>
     </UserPreferencesProvider>
   );
 }
