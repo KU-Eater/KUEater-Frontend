@@ -65,7 +65,7 @@ const CollectDishesScreen = () => {
 
         {/* Next Button with dynamic counter */}
         <View style={styles.buttonWrapper}>
-          <GradientButton title={`Next (${selectedDishes.length}/10)`} onPress={handleNext} disabled={selectedDishes.length < 10} />
+          <GradientButton title={`Finish (${selectedDishes.length}/10)`} onPress={handleNext} disabled={selectedDishes.length < 10} />
         </View>
       </View>
     </View>
