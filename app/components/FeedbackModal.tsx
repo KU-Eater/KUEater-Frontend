@@ -64,9 +64,9 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ visible, onClose }) => {
             {[1, 2, 3, 4, 5].map((star) => (
               <TouchableOpacity key={star} onPress={() => handleRating(star)}>
                 <Ionicons
-                  name={star <= feedback.feedbackRating ? "star" : "star-outline"}
-                  size={32}
-                  color={star <= feedback.feedbackRating ? "#FFC107" : "#B0B0B0"}
+                  name={"star"}
+                  size={40}
+                  color={star <= feedback.feedbackRating ? "#FFC107" : "#D0CECE"}
                 />
               </TouchableOpacity>
             ))}
@@ -119,18 +119,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#006664",
-    marginBottom: 10,
+    marginBottom: 20,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 13,
     color: "#3A3838",
     marginBottom: 10,
     textAlign: "center",
+    fontWeight: "bold",
   },
   starsContainer: {
     flexDirection: "row",
-    justifyContent: "center",
-    marginBottom: 20,
+    justifyContent: "space-between",
+    marginBottom: 30,
+    width: 250,
   },
   input: {
     width: "100%",
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   button: {
-    backgroundColor: "#066644",
+    backgroundColor: "#006664",
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 20,
@@ -159,7 +161,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
   },
 });
