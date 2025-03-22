@@ -1,7 +1,9 @@
 // context/FeedbackContext.tsx
 import React, { createContext, useContext, useState } from "react";
 
+
 interface FeedbackData {
+  userID: string;
   feedbackRating: number;
   comment: string;
 }
@@ -16,6 +18,7 @@ const FeedbackContext = createContext<FeedbackContextType | undefined>(undefined
 
 export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [feedback, setFeedback] = useState<FeedbackData>({
+    userID: "",
     feedbackRating: 0,
     comment: "",
   });
@@ -25,7 +28,7 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const resetFeedback = () => {
-    setFeedback({ feedbackRating: 0, comment: "" });
+    setFeedback({userID: "", feedbackRating: 0, comment: "" });
   };
 
   return (

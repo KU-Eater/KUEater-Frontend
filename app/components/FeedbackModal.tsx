@@ -11,6 +11,9 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useFeedback } from "../context/FeedbackContext";
 import { sendFeedback } from "../api/feedback";
+import { useUserPreferences } from "../context/UserPreferencesContext";
+
+
 
 interface FeedbackModalProps {
   visible: boolean;
@@ -20,6 +23,7 @@ interface FeedbackModalProps {
 const FeedbackModal: React.FC<FeedbackModalProps> = ({ visible, onClose }) => {
   const { feedback, updateFeedback, resetFeedback } = useFeedback();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const userid = useUserPreferences().preferences.gmail
 
   // Handle star rating selection
   const handleRating = (rating: number) => {
@@ -33,9 +37,10 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ visible, onClose }) => {
 
   // Send feedback API call
   const handleSendFeedback = async () => {
+    updateFeedback("userID", userid);
     try {
       setIsSubmitting(true);
-      await sendFeedback(feedback.feedbackRating, feedback.comment);
+      await sendFeedback(feedback.userID, feedback.feedbackRating, feedback.comment);
       resetFeedback();
       onClose();
     } catch (error) {
