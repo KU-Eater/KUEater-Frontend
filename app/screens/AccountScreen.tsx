@@ -6,6 +6,7 @@ import { RootStackParamList } from "../App";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import { Ionicons } from "@expo/vector-icons";
 import FeedbackModal from "../components/FeedbackModal";
+import ProfilePicture from "../components/ProfilePicture";
 
 type AccountScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "Account">;
 
@@ -13,33 +14,8 @@ const AccountScreen = () => {
   const { preferences } = useUserPreferences();
   const navigation = useNavigation<AccountScreenNavigationProp>();
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
-  const [feedbackText, setFeedbackText] = useState("");
 
 
-  const profilePics: { [key: string]: any } = {
-    "KU Student Male": require("../assets/roles/ku_student_m.png"),
-    "KU Student Female": require("../assets/roles/ku_student_f.png"),
-    "KU Student": require("../assets/roles/ku_student.png"),
-    "Exchange Student Male": require("../assets/roles/exchange_student_m.png"),
-    "Exchange Student Female": require("../assets/roles/exchange_student_f.png"),
-    "Exchange Student": require("../assets/roles/exchange_student.png"),
-    "KU Professor Male": require("../assets/roles/ku_professor_m.png"),
-    "KU Professor Female": require("../assets/roles/ku_professor_f.png"),
-    "KU Professor": require("../assets/roles/ku_professor.png"),
-    "KU Staff Male": require("../assets/roles/ku_staff_m.png"),
-    "KU Staff Female": require("../assets/roles/ku_staff_f.png"),
-    "KU Staff": require("../assets/roles/ku_staff.png"),
-    "Guest Male": require("../assets/roles/guest_m.png"),
-    "Guest Female": require("../assets/roles/guest_f.png"),
-    "Guest": require("../assets/roles/guest.png"),
-    "default": require("../assets/roles/default_profile.png"),
-  };
-  
-  const getProfilePic = () => {
-    const role = preferences.role || "default";
-    const gender = preferences.gender ? ` ${preferences.gender}` : "";
-    return profilePics[`${role}${gender}`] || profilePics["default"];
-  };
   
 
   const handlePersonalProfile = () => { navigation.navigate("PersonalProfile") };
@@ -55,7 +31,7 @@ const AccountScreen = () => {
 
       {/* Profile Section */}
       <View style={styles.profileSection}>
-        <Image source={getProfilePic()} style={styles.profileImage} />
+        <ProfilePicture size={120} />
         <Text style={styles.username}>{preferences.username}</Text>
         <Text style={styles.userRole}>{preferences.role}</Text>
       </View>
@@ -130,13 +106,7 @@ const styles = StyleSheet.create({
     marginTop: 80,
     position: "absolute"
   },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 100,
-    borderWidth: 3,
-    borderColor: "#FFF",
-  },
+
   username: {
     fontSize: 20,
     fontWeight: "bold",

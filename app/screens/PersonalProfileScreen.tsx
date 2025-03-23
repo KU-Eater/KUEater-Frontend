@@ -14,6 +14,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { RootStackParamList } from "../App";
 import { useUserPreferences } from "../context/UserPreferencesContext";
+import ProfilePicture from "../components/ProfilePicture";
+
 
 type PersonalProfileScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -62,30 +64,6 @@ const PersonalProfileScreen = () => {
     setIsSaved(!hasChanges || !isUsernameValid);
   }, [username, role, gender]);
 
-  const profilePics: { [key: string]: any } = {
-    "KU Student Male": require("../assets/roles/ku_student_m.png"),
-    "KU Student Female": require("../assets/roles/ku_student_f.png"),
-    "KU Student": require("../assets/roles/ku_student.png"),
-    "Exchange Student Male": require("../assets/roles/exchange_student_m.png"),
-    "Exchange Student Female": require("../assets/roles/exchange_student_f.png"),
-    "Exchange Student": require("../assets/roles/exchange_student.png"),
-    "KU Professor Male": require("../assets/roles/ku_professor_m.png"),
-    "KU Professor Female": require("../assets/roles/ku_professor_f.png"),
-    "KU Professor": require("../assets/roles/ku_professor.png"),
-    "KU Staff Male": require("../assets/roles/ku_staff_m.png"),
-    "KU Staff Female": require("../assets/roles/ku_staff_f.png"),
-    "KU Staff": require("../assets/roles/ku_staff.png"),
-    "Guest Male": require("../assets/roles/guest_m.png"),
-    "Guest Female": require("../assets/roles/guest_f.png"),
-    "Guest": require("../assets/roles/guest.png"),
-    "default": require("../assets/roles/default_profile.png"),
-  };
-
-  const getProfilePic = () => {
-    const userRole = preferences.role || "default";
-    const userGender = preferences.gender ? ` ${preferences.gender}` : "";
-    return profilePics[`${userRole}${userGender}`] || profilePics["default"];
-  };
 
   // Handler to save changes
   const handleSave = () => {
@@ -127,7 +105,7 @@ const PersonalProfileScreen = () => {
 
       {/* Profile Picture Section */}
       <View style={styles.profileSection}>
-        <Image source={getProfilePic()} style={styles.profileImage} />
+        <ProfilePicture size={120} style={{borderColor: "#3A3838",borderWidth: 2}}/>
       </View>
 
       {/* Username Field */}
