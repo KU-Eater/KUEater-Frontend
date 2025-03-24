@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import SavedScreen from '../screens/SavedScreen'; // Adjust path as needed
-import ReviewScreen from '../screens/ReviewScreen'; // Adjust path as needed
+import ReviewScreen from '../screens/MyReviewScreen'; // Adjust path as needed
 import AccountScreen from '../screens/AccountScreen'; // Adjust path as needed
 import { View, StyleSheet } from 'react-native';
 

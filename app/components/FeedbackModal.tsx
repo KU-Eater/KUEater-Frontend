@@ -23,7 +23,7 @@ interface FeedbackModalProps {
 const FeedbackModal: React.FC<FeedbackModalProps> = ({ visible, onClose }) => {
   const { feedback, updateFeedback, resetFeedback } = useFeedback();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const userid = useUserPreferences().preferences.gmail
+  const userid = useUserPreferences().preferences.userID
 
   // Handle star rating selection
   const handleRating = (rating: number) => {

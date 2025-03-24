@@ -24,6 +24,8 @@ interface SearchBarProps {
   isOnHomeScreen?: boolean; // if true => inactive style
 }
 
+
+
 const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     View,
@@ -12,7 +12,12 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
+import { useUserPreferences } from '../context/UserPreferencesContext';
 
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import { checkUserExists } from '../api/userPreferences';
+WebBrowser.maybeCompleteAuthSession();
 
 type LoginGoogleScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginGoogle'>;
 
@@ -20,10 +25,52 @@ const LoginGoogleScreen: React.FC = () => {
     const navigation = useNavigation<LoginGoogleScreenNavigationProp>();
     const [modalVisible, setModalVisible] = useState(false);
 
-    const handleGoogleLogin = () => {
-        // TODO: Implement Google login functionality
-        navigation.replace('CollectUsername');
+    const { preferences, updatePreferences } = useUserPreferences();
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        clientId: '125519731352-d6nivd7ddttrholqalln1imprb6rt0gm.apps.googleusercontent.com',
+        redirectUri: 'http://localhost:8888',
+        scopes: ['profile', 'email'],
+    });
+
+    useEffect(() => {
+        if (response?.type === 'success') {
+            const { authentication } = response;
+            console.log('✅ Access Token:', authentication?.accessToken);
+            fetchUserInfo(authentication?.accessToken);
+        }
+    }, [response]);
+
+    const fetchUserInfo = async (token?: string) => {
+        if (!token) return;
+        try {
+            const res = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const user = await res.json();
+            console.log('✅ Google User:', user);
+            alert(`Welcome ${user.name}`);
+
+            const backendRes = await checkUserExists(user.email);
+
+            if (backendRes.preferences) {
+                navigation.replace('MainTab');
+            } else {
+                updatePreferences("gmail", user.email);
+                navigation.replace('CollectUsername');
+            }
+        } catch (error) {
+            console.error('Google Login Error:', error);
+        }
     };
+
+    const handleGoogleLogin = async () => {
+        const result = await promptAsync();
+        if (result?.type === 'success') {
+          const { authentication } = result;
+          fetchUserInfo(authentication?.accessToken);
+        }
+      };
+
 
     return (
         <SafeAreaView style={styles.container}>
