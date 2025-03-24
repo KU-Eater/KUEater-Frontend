@@ -22,7 +22,7 @@ const CollectDishesScreen = () => {
 
   // Function to navigate next
   const handleNext = () => {
-    if (selectedDishes.length >= 10) {
+    if (selectedDishes.length >= 5) {
       updatePreferences("favoriteDishes", selectedDishes); // Store favorite dishes
       navigation.navigate("MainTab");
     }
@@ -65,7 +65,7 @@ const CollectDishesScreen = () => {
 
         {/* Next Button with dynamic counter */}
         <View style={styles.buttonWrapper}>
-          <GradientButton title={`Finish! (${selectedDishes.length}/10)`} onPress={handleNext} disabled={selectedDishes.length < 10} />
+          <GradientButton title={`Finish! (${selectedDishes.length}/5)`} onPress={handleNext} disabled={selectedDishes.length < 10} />
         </View>
       </View>
     </View>
