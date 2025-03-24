@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import SavedScreen from '../screens/SavedScreen'; // Adjust path as needed
-import ReviewScreen from '../screens/ReviewScreen'; // Adjust path as needed
+import ReviewScreen from '../screens/MyReviewScreen'; // Adjust path as needed
 import AccountScreen from '../screens/AccountScreen'; // Adjust path as needed
 import { View, StyleSheet } from 'react-native';
 
@@ -14,7 +14,7 @@ const Tab = createBottomTabNavigator();
 interface IconProps {
   focused: boolean;
   size: number;
-  color: string
+  color: string;
 }
 
 // Custom Bookmark-Heart Icon
@@ -47,14 +47,12 @@ export default function NavBar() {
       screenOptions={({ route }) => ({
         headerShown: false, // Hide the top header
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
+          let iconName: any;
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Saved') {
             return <BookmarkHeartIcon focused={focused} size={size} color={color} />;
-          } else if (route.name === 'Review') {
-            iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
           } else if (route.name === 'Account') {
             iconName = focused ? 'person' : 'person-outline';
           }
@@ -75,10 +73,11 @@ export default function NavBar() {
         },
       })}
     >
+      
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Saved" component={SavedScreen} />
-      <Tab.Screen name="Review" component={ReviewScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
+      
     </Tab.Navigator>
   );
 }

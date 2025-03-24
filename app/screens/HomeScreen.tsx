@@ -1,3 +1,5 @@
+// screens/HomeScreen.tsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import SearchBar from '../components/SearchBar'; // Adjust the path
@@ -5,11 +7,21 @@ import MenuCard from '../components/MenuCard'; // Adjust the path
 import StallCard from '../components/StallCard'; // Adjust the path
 import CategoryBar from '../components/CategoryBar';
 
-
-
+// --- your mock data remains the same
 const mockMenuData = [
   {
     id: 1,
+    menuName: 'Rice with crispy pork and Chinese kale',
+    price: '50',
+    likes: 75,
+    dislikes: 3,
+    stallName: 'Nong Pim A LA CARTE (Stir Fry)',
+    stallLock: '02',
+    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739355627/02027_cg98ot.jpg',
+    typeCard: 'MenuCardinHome' as const,
+  },
+  {
+    id: 2,
     menuName: 'Grilled Saba with Rice',
     price: '50',
     likes: 212,
@@ -20,18 +32,18 @@ const mockMenuData = [
     typeCard: 'MenuCardinHome' as const,
   },
   {
-    id: 2,
-    menuName: 'Fried Rice Chicken',
+    id: 3,
+    menuName: 'Deep-fried battered chicken thigh',
     price: '25',
-    likes: 120,
+    likes: 956,
     dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
+    stallName: 'Mr. Raw Fried Chicken',
     stallLock: '22',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDmete-M3ba2oCyVLZIcH2oDh7QQSz-UtoA&s',
+    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22001_hsn5yx.jpg',
     typeCard: 'MenuCardinHome' as const,
   },
   {
-    id: 3,
+    id: 4,
     menuName: 'Pandan Juice',
     price: '5',
     likes: 641,
@@ -39,6 +51,17 @@ const mockMenuData = [
     stallName: 'Toei Kaew (Beverages)',
     stallLock: '26',
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmOe2ocJeXunMXXQTQmNWDRlBVDXmt4ZYwdA&s',
+    typeCard: 'MenuCardinHome' as const,
+  },
+  {
+    id: 5,
+    menuName: 'Dry Thai sukiyaki with seafood',
+    price: '50',
+    likes: 75,
+    dislikes: 3,
+    stallName: 'Nong Pim A LA CARTE (Stir Fry)',
+    stallLock: '02',
+    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739355624/02022_apuaa1.jpg',
     typeCard: 'MenuCardinHome' as const,
   },
 ];
@@ -86,19 +109,17 @@ const mockStallData = [
 ];
 
 const HomeScreen = () => {
-
   return (
     <View style={styles.container}>
-      {/* Search Bar */}
-      <SearchBar />
+      {/* 
+        NOTE: We pass a prop to SearchBar so it navigates
+        to SearchScreen when the user taps the TextInput.
+      */}
+      <SearchBar isOnHomeScreen />
 
-
-      {/* Main Content */}
       <ScrollView contentContainerStyle={styles.content}>
-
         {/* Category Bar */}
-       <CategoryBar />
-
+        <CategoryBar />
 
         {/* Recommended Menus Section */}
         <View style={styles.section}>
@@ -142,10 +163,7 @@ const HomeScreen = () => {
               />
             ))}
           </ScrollView>
-          
         </View>
-        
-
 
         {/* You may Love these Food Stalls! */}
         <View style={styles.section}>
@@ -167,7 +185,7 @@ const HomeScreen = () => {
           ))}
         </View>
 
-          {/* Popular Stalls Section */}
+        {/* Popular Stalls Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Popular Stalls in Bar Mai</Text>
           {mockStallData.map((stall) => (
@@ -186,15 +204,12 @@ const HomeScreen = () => {
             />
           ))}
         </View>
-
       </ScrollView>
-
-      
     </View>
-
   );
 };
 
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -202,16 +217,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   content: {
-    paddingBottom: 20, // Space for the navigation bar
+    paddingBottom: 20,
   },
   section: {
     marginTop: 12,
     backgroundColor: '#FAF5F0',
     paddingBottom: 12,
-    
-
   },
-
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
@@ -227,13 +239,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: '#004442',
     marginTop: 16,
-    
-
   },
   sectionEater: {
     flexDirection: 'row',
- 
   },
 });
-
-export default HomeScreen;
