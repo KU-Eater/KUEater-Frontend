@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFeedback } from "../context/FeedbackContext";
 import { sendFeedback } from "../api/feedback";
 import { useUserPreferences } from "../context/UserPreferencesContext";
+import Stars from "./Stars";
 
 
 
@@ -28,6 +29,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ visible, onClose }) => {
   // Handle star rating selection
   const handleRating = (rating: number) => {
     updateFeedback("feedbackRating", rating);
+    console.log(rating)
   };
 
   // Handle comment input
@@ -66,15 +68,12 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ visible, onClose }) => {
 
           {/* Star Rating */}
           <View style={styles.starsContainer}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <TouchableOpacity key={star} onPress={() => handleRating(star)}>
-                <Ionicons
-                  name={"star"}
-                  size={40}
-                  color={star <= feedback.feedbackRating ? "#FFC107" : "#D0CECE"}
-                />
-              </TouchableOpacity>
-            ))}
+            <Stars
+              touchable={true}
+              size={220}
+              onRatingChange={(val) => handleRating(val)}
+              style={{width: 250}}
+            />
           </View>
 
           {/* Comment Input */}
