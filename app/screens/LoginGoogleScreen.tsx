@@ -16,7 +16,7 @@ import { useUserPreferences } from '../context/UserPreferencesContext';
 
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { checkUserExists } from '../api/userPreferences';
+import { checkUserExists } from '../api/userPreferencesApi';
 WebBrowser.maybeCompleteAuthSession();
 
 type LoginGoogleScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginGoogle'>;

@@ -31,7 +31,7 @@ const AccountScreen = () => {
 
       {/* Profile Section */}
       <View style={styles.profileSection}>
-        <ProfilePicture size={120} />
+        <ProfilePicture size={120}/>
         <Text style={styles.username}>{preferences.username}</Text>
         <Text style={styles.userRole}>{preferences.role}</Text>
       </View>

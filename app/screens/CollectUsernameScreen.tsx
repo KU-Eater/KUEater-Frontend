@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -7,6 +7,9 @@ import { Ionicons } from '@expo/vector-icons';
 import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
 import { useUserPreferences } from "../context/UserPreferencesContext"; // Import context
+import CommentCard from "../components/CommentCard";
+
+
 
 type CollectUsernameScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectUsername">;
 
@@ -14,7 +17,7 @@ type CollectUsernameScreenNavigationProp = NativeStackNavigationProp<RootStackPa
 const CollectUsernameScreen = () => {
     const navigation = useNavigation<CollectUsernameScreenNavigationProp>();
     const { preferences, updatePreferences } = useUserPreferences();
-    
+
     const [username, setUsername] = useState(preferences.username); // Load stored value
 
     useEffect(() => {
@@ -31,7 +34,7 @@ const CollectUsernameScreen = () => {
 
     // Function to handle "Back" navigation
     const handleBack = () => {
-            navigation.navigate("LoginGoogle");
+        navigation.navigate("LoginGoogle");
     };
 
     return (
@@ -66,6 +69,18 @@ const CollectUsernameScreen = () => {
                     This is how it’ll appear on your profile{"\n"}
                     <Text style={{ fontWeight: "bold" }}>You can change it later.</Text>
                 </Text>
+
+
+                <CommentCard
+                    username="Tanny"
+                    role="KU Student"
+                    gender="Male"
+                    date="2025-03-25"
+                    stars={4}
+                    content="pandan juice are refreshing and unique and natural sweetness make it a perfect thirst quencher"
+                    
+                />
+
 
                 {/* Next Button */}
                 <View style={styles.buttonWrapper}>
@@ -117,7 +132,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         alignSelf: "center",
         width: "95%",
-        
+
     },
     helperText: {
         fontSize: 14,

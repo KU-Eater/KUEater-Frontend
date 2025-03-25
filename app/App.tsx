@@ -24,6 +24,7 @@ import CollectMealScreen from './screens/CollectMealScreen';
 import CollectDishesScreen from './screens/CollectDishesScreen';
 import PersonalProfileScreen from './screens/PersonalProfileScreen';
 import FoodPreferencesScreen from './screens/FoodPreferencesScreen';
+import ReviewRatingScreen from './screens/ReviewRatingScreen';
 
 import { UserPreferencesProvider } from './context/UserPreferencesContext';
 
@@ -52,6 +53,7 @@ export type RootStackParamList = {
   CollectDishes: undefined;
   PersonalProfile: undefined;
   FoodPreferences: undefined;
+  ReviewRating: undefined;
 
 };
 
@@ -89,7 +91,7 @@ export default function App() {
     <UserPreferencesProvider>
       <FeedbackProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="CollectUsername">
+          <Stack.Navigator initialRouteName="ReviewRating">
 
             {/* 1) หน้า Login with google */}
             <Stack.Screen
@@ -192,6 +194,14 @@ export default function App() {
             <Stack.Screen
               name="FoodPreferences"
               component={FoodPreferencesScreen}
+              options={{
+                headerShown: false,
+              }} />
+
+
+            <Stack.Screen
+              name="ReviewRating"
+              component={ReviewRatingScreen}
               options={{
                 headerShown: false,
               }} />
