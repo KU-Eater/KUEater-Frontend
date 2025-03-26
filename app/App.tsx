@@ -33,6 +33,7 @@ import AccountScreen from './screens/AccountScreen';
 import * as Font from "expo-font";
 import { ActivityIndicator, View } from "react-native";
 import { FeedbackProvider } from './context/FeedbackContext';
+import { SearchProvider } from './context/SearchContext';
 
 // ประกาศ type สำหรับ Stack ถ้าต้องการใช้กับ TypeScript
 // (ถ้าไม่ต้องการบังคับ type แน่น ก็สามารถใช้ any ได้)
@@ -90,8 +91,9 @@ export default function App() {
   return (
     <UserPreferencesProvider>
       <FeedbackProvider>
+      <SearchProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="ReviewRating">
+          <Stack.Navigator initialRouteName="MainTab">
 
             {/* 1) หน้า Login with google */}
             <Stack.Screen
@@ -210,6 +212,7 @@ export default function App() {
 
           </Stack.Navigator>
         </NavigationContainer>
+        </SearchProvider>
       </FeedbackProvider>
     </UserPreferencesProvider>
   );
