@@ -2,8 +2,10 @@
 import React, { useState } from 'react';
 import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity,FlatList} from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import MenuCard from '../components/MenuCard'; // Adjust the path
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { RootStackParamList } from '../App';
 
 
 
@@ -84,8 +86,10 @@ const mockStallMenuData = [
 ];
 
 
+type StallProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'StallProfile'>;
+
 const StallProfileScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StallProfileScreenNavigationProp>();
   const route = useRoute();
   const { stallData } = route.params as RouteParams;
 
@@ -99,6 +103,10 @@ const StallProfileScreen: React.FC = () => {
   const handleSharePress = () => {
     setIsShared(!isShared);
   };
+
+  const handleReview = () => {
+    navigation.navigate("ReviewRating");
+};
 
   // Create a header component so FlatList can handle scrolling
   const renderHeader = () => (
@@ -142,7 +150,7 @@ const StallProfileScreen: React.FC = () => {
         <View style={styles.divider} />
 
         {/* Rating & Review */}
-        <TouchableOpacity style={styles.ratingRow}>
+        <TouchableOpacity style={styles.ratingRow} onPress={handleReview}>
           <Ionicons name="star" size={18} color="#D49E3A" />
           <Text style={styles.ratingText}>{stallData.rating.toFixed(2)}</Text>
           <Text style={styles.reviewText}> • Rating and Review this Stall</Text>
