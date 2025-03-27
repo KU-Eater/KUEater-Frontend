@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSearch } from '../context/SearchContext';
 
 type RootStackParamList = {
   HomeScreen: undefined;
@@ -31,6 +32,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
 
   // We'll keep a local search text state, in case you want to type in the active style
   const [searchText, setSearchText] = useState('');
+  const { addHistory } = useSearch();
 
   // Language toggle
   const [language, setLanguage] = useState('ENG 🇬🇧');
@@ -50,10 +52,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
     navigation.goBack();
   };
 
+
+
   const handleSearch = () => {
-    // In the active style, you might navigate to results or do something else
     const trimmed = searchText.trim();
     if (!trimmed) return;
+    addHistory(trimmed);
     navigation.navigate('SearchResultScreen', { query: trimmed });
   };
 
@@ -76,7 +80,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
         />
 
         {/* Language Switch (Right-aligned) */}
-        <TouchableOpacity onPress={handleLanguageToggle} style={styles.languageSwitch}>
+        <TouchableOpacity onPress={handleLanguageToggle} style={styles.languageSwitch} disabled>
           <Text style={styles.languageText}>{language}</Text>
         </TouchableOpacity>
       </View>
@@ -108,7 +112,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
           {/* TextInput (middle) */}
           <TextInput
             style={styles.activeSearchInput}
-            placeholder="สตอเบอรี่ปั่น"
+            placeholder="Try searching for menu or food stall"
             placeholderTextColor="#999"
             value={searchText}
             onChangeText={setSearchText}
@@ -217,12 +221,12 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   searchIconCircle: {
-    width: 30,
+    width: 50,
     height: 30,
     borderRadius: 15,
     backgroundColor: '#006664',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 8,
+
   },
 });

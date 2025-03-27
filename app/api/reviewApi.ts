@@ -6,9 +6,9 @@ export const fetchMockReviewData = async (stallId: number) => {
   
     return {
       stallID: stallId,
-      stallName: 'Toei Kaew (Beverages)',
+      stallName: 'Mr. Raw Fried Chicken',
       ratingSummary: {
-        avgStallRating: 4.92,
+        avgStallRating: 4.96,
         totalReviews: 119,
         totalLikes: 1678,
         totalLoved: 617,
@@ -25,11 +25,11 @@ export const fetchMockReviewData = async (stallId: number) => {
         {
           name: 'Anonymous',
           role: 'KU Student',
-          gender: 'Female',
+          gender: 'Perfer not to say',
           date: '2025-03-20T10:00:00Z',
           stars: 5,
           content:
-            'pandan juice are refreshing and unique and natural sweetness make it a perfect thirst quencher',
+            'fried chicken is crispy outside, juicy inside, and not greasy at all — exactly what I crave for a quick protein boost',
           recommendMenus: ['pandan juice'],
         },
         {
@@ -37,29 +37,29 @@ export const fetchMockReviewData = async (stallId: number) => {
           role: 'KU Student',
           gender: 'Male',
           date: '2025-02-20T10:00:00Z',
-          stars: 3,
+          stars: 4,
           content:
-            'It’s disappointing that the drinks at this stall are consistently too sweet. Would be great if they offered sugar level customization.',
+            'loved the flavor and texture, but the portion size felt a bit small for the price. Still, definitely one of the better fried chickens around here',
           recommendMenus: [],
         },
         {
-            name: 'Anonymous',
+            name: 'Proud',
             role: 'KU Student',
             gender: 'Female',
             date: '2025-03-20T10:00:00Z',
-            stars: 5,
+            stars: 3,
             content:
-              'pandan juice are refreshing and unique and natural sweetness make it a perfect thirst quencher',
+              'too oily for me, sorry!',
             recommendMenus: ['pandan juice'],
           },
           {
-            name: 'Sweetless plsss',
-            role: 'KU Student',
+            name: 'Chicken',
+            role: 'Guest',
             gender: 'Male',
             date: '2025-02-20T10:00:00Z',
-            stars: 3,
+            stars: 5,
             content:
-              'It’s disappointing that the drinks at this stall are consistently too sweet. Would be great if they offered sugar level customization.',
+              'super crispy and flavorful!',
             recommendMenus: [],
           },
       ],

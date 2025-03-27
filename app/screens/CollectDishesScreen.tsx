@@ -56,7 +56,9 @@ const CollectDishesScreen = () => {
 
         <Text style={styles.title}>Select your Favorite Dishes! ❤︎</Text>
 
-        <Text style={styles.infoText}>You can change them later on Setting.</Text>
+        <Text style={styles.infoText}>No worry! Just choose it real quick. {'\n'}
+          You can change them later on Account.</Text>
+        
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {/* Favorite Dishes Section */}
@@ -103,6 +105,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     marginTop: 10,
     marginBottom: 15,
+    lineHeight: 20
   },
   scrollContainer: {
     paddingBottom: 20,

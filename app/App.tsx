@@ -93,7 +93,7 @@ export default function App() {
       <FeedbackProvider>
       <SearchProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="MainTab">
+          <Stack.Navigator initialRouteName="LoginGoogle">
 
             {/* 1) หน้า Login with google */}
             <Stack.Screen

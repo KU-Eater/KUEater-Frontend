@@ -96,7 +96,19 @@ const MenuDetailScreen: React.FC = () => {
 
   const handleStallPress = () => {
     // Example: navigate to stall’s profile if desired
-    console.log('Stall pressed!');
+    navigation.navigate("StallProfile", {
+      stallData: {
+        id: 5,
+      menuName: 'Hainanese rice',
+      price: '10',
+      likes: 68,
+      dislikes: 0,
+      stallName: 'Mr. Raw Fried Chicken (A La Carte)',
+      stallLock: '22',
+      imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721436/22005_gzh7co.jpg',
+      typeCard: 'MenuCardinStall' as const,
+      }
+    });
   };
 
   return (

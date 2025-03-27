@@ -71,16 +71,6 @@ const CollectUsernameScreen = () => {
                 </Text>
 
 
-                <CommentCard
-                    username="Tanny"
-                    role="KU Student"
-                    gender="Male"
-                    date="2025-03-25"
-                    stars={4}
-                    content="pandan juice are refreshing and unique and natural sweetness make it a perfect thirst quencher"
-                    
-                />
-
 
                 {/* Next Button */}
                 <View style={styles.buttonWrapper}>

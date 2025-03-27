@@ -64,11 +64,12 @@ const LoginGoogleScreen: React.FC = () => {
     };
 
     const handleGoogleLogin = async () => {
-        const result = await promptAsync();
-        if (result?.type === 'success') {
-          const { authentication } = result;
-          fetchUserInfo(authentication?.accessToken);
-        }
+        // const result = await promptAsync();
+        // if (result?.type === 'success') {
+        //   const { authentication } = result;
+        //   fetchUserInfo(authentication?.accessToken);
+        // }
+        navigation.navigate("CollectUsername")
       };
 
 
