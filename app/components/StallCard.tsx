@@ -4,18 +4,10 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StallData } from '../api/dataTypes';
 
-interface StallCardProps {
+interface StallCardProps extends StallData {
   rank: number;
-  stallName: string;
-  imageUrl: string;
-  location: string;
-  operatingHours: string;
-  priceRange: string;
-  tags: string;
-  reviews: number;
-  likes: number;
-  rating: number;
 }
 
 // Define the navigation stack types

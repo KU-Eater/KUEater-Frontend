@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useFeedback } from "../context/FeedbackContext";
-import { sendFeedback } from "../api/feedbackApi";
+import { sendFeedback } from "../api/feedback";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import Stars from "./Stars";
 

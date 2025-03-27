@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { StallData } from '../api/dataTypes';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 
 
@@ -27,16 +29,29 @@ interface MenuCardProps {
 // Adjust this if your root navigator types differ
 type RootStackParamList = {
   MenuDetails: { menuData: MenuCardProps };
+  StallProfile: { stallData: StallData };
 };
 
 type MenuDetailScreenRouteProp = RouteProp<RootStackParamList, 'MenuDetails'>;
 
 const MenuDetailScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const route = useRoute<MenuDetailScreenRouteProp>();
 
   // Data passed from MenuCard
   const { menuData } = route.params;
+  const stallData: StallData = {
+    stallName: menuData.stallName,
+    imageUrl: menuData.imageUrl,
+    location: menuData.stallLock, // หรือแปลง location ตาม design
+    operatingHours: "10.00 - 18.00", // ถ้ายังไม่มีข้อมูลจริง ให้ mock ไว้ก่อน
+    priceRange: "25 - 60", // mock หรือรับจาก menu ก็ได้
+    tags: "Thai, Spicy", // แล้วแต่เมนู
+    reviews: 87,
+    likes: 256,
+    rating: 4.68,
+  };
 
   // Replicate "like" / "dislike" / "isLoved" logic
   const [likeCount, setLikeCount] = useState<number>(menuData.likes || 0);
@@ -96,19 +111,7 @@ const MenuDetailScreen: React.FC = () => {
 
   const handleStallPress = () => {
     // Example: navigate to stall’s profile if desired
-    navigation.navigate("StallProfile", {
-      stallData: {
-        id: 5,
-      menuName: 'Hainanese rice',
-      price: '10',
-      likes: 68,
-      dislikes: 0,
-      stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-      stallLock: '22',
-      imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721436/22005_gzh7co.jpg',
-      typeCard: 'MenuCardinStall' as const,
-      }
-    });
+    navigation.navigate('StallProfile', { stallData: stallData} );
   };
 
   return (
@@ -156,32 +159,32 @@ const MenuDetailScreen: React.FC = () => {
         </View>
 
         <View style={styles.likeRow}>
-        {/* "Why you see this menu?" */}
-        <TouchableOpacity onPress={handleWhyThisMenuPress}>
-              <Text style={styles.whyMenuText}>Why you see this menu?</Text>
-        </TouchableOpacity>
-
-        {/* Likes / Dislikes Row */}
-        <View style={styles.likeDislikeRow}>
-          {/* Like */}
-          <TouchableOpacity onPress={handleLikePress} style={styles.likeDislikeButton}>
-            <FontAwesome
-              name="thumbs-up"
-              size={20}
-              color={userAction === 'like' ? '#008884' : '#999'}
-            />
-            <Text style={styles.likeCountText}>{likeCount}</Text>
+          {/* "Why you see this menu?" */}
+          <TouchableOpacity onPress={handleWhyThisMenuPress}>
+            <Text style={styles.whyMenuText}>Why you see this menu?</Text>
           </TouchableOpacity>
 
-          {/* Dislike */}
-          <TouchableOpacity onPress={handleDislikePress} style={styles.likeDislikeButton}>
-            <FontAwesome
-              name="thumbs-down"
-              size={20}
-              color={userAction === 'dislike' ? '#B33E3E' : '#999'}
-            />
-          </TouchableOpacity>
-        </View>
+          {/* Likes / Dislikes Row */}
+          <View style={styles.likeDislikeRow}>
+            {/* Like */}
+            <TouchableOpacity onPress={handleLikePress} style={styles.likeDislikeButton}>
+              <FontAwesome
+                name="thumbs-up"
+                size={20}
+                color={userAction === 'like' ? '#008884' : '#999'}
+              />
+              <Text style={styles.likeCountText}>{likeCount}</Text>
+            </TouchableOpacity>
+
+            {/* Dislike */}
+            <TouchableOpacity onPress={handleDislikePress} style={styles.likeDislikeButton}>
+              <FontAwesome
+                name="thumbs-down"
+                size={20}
+                color={userAction === 'dislike' ? '#B33E3E' : '#999'}
+              />
+            </TouchableOpacity>
+          </View>
 
         </View>
 
@@ -200,17 +203,17 @@ const MenuDetailScreen: React.FC = () => {
           <View style={styles.stallDetails}>
 
             <View style={styles.stallNameContainer}>
-            <Ionicons name="restaurant" size={15} color="#999"/>
-            <Text style={styles.stallTitle}>
-              {'  '}
-              {menuData.stallLock} | {menuData.stallName}
-            </Text>
+              <Ionicons name="restaurant" size={15} color="#999" />
+              <Text style={styles.stallTitle}>
+                {'  '}
+                {menuData.stallLock} | {menuData.stallName}
+              </Text>
             </View>
 
             {/* Example: Category + rating */}
             <View style={styles.stallSubRow}>
               <Ionicons name="pricetags" size={13} color="#999" />
-              
+
               <Text style={styles.stallCategory}>{'  '} Beverages</Text>
               <Text style={styles.stallRating}>
                 <Ionicons name="star" size={13} color="#D49E3A" /> 4.92
@@ -332,7 +335,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#DDD',
     marginTop: 10,
     marginBottom: 16,
-    
+
   },
   // Stall row
   stallRow: {

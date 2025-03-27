@@ -6,21 +6,9 @@ import MenuCard from '../components/MenuCard'; // Adjust the path
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
+import { StallData } from '../api/dataTypes';
 
 
-
-
-interface StallData {
-  stallName: string;
-  imageUrl: string;
-  location: string;
-  operatingHours: string;
-  priceRange: string;
-  tags: string;
-  reviews: number;
-  likes: number;
-  rating: number;
-}
 
 type RouteParams = {
   stallData: StallData;

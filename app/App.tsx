@@ -34,6 +34,9 @@ import * as Font from "expo-font";
 import { ActivityIndicator, View } from "react-native";
 import { FeedbackProvider } from './context/FeedbackContext';
 import { SearchProvider } from './context/SearchContext';
+import { StallData } from './api/dataTypes';
+
+
 
 // ประกาศ type สำหรับ Stack ถ้าต้องการใช้กับ TypeScript
 // (ถ้าไม่ต้องการบังคับ type แน่น ก็สามารถใช้ any ได้)
@@ -45,7 +48,7 @@ export type RootStackParamList = {
   Account: undefined;
   SearchScreen: undefined;
   SearchResultScreen: undefined;
-  StallProfile: undefined;
+  StallProfile: { stallData: StallData };
   MenuDetails: undefined;
   CollectUsername: undefined;
   CollectRole: undefined;
