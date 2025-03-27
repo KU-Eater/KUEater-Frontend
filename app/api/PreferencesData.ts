@@ -61,16 +61,16 @@ export const dishesOptions: string[] = [
     "Fried Bread with Minced Pork", "Iced Americano", "Cocoa Milk",
     "Stewed Egg with Rice", "Sea Bass", "Spicy Salmon Salad", "Pink Milk",
     "Healthy Smoothie", "Salad", "Steamed Bun with Minced Pork",
-    "Stir-Fried Noodles in Gravy (Rad Na)", "Shrimp Paste Fried Rice",
+    "Stir-Fried Noodles in Gravy (Rad Na)", "Shrimp Paste Fried Rice", "Kaphrao",
     "Stir-Fried Red Curry Pork (Pad Ped)", "Spaghetti Drunken Noodles (Pad Kee Mao)",
     "Iced Black Tea", "Taiwanese Milk Tea", "Spicy Minced Pork Salad (Larb Moo)",
     "Bananas", "Rice with Vegetarian Curry", "River Prawns", "Century Egg",
     "Instant Noodle Salad (Yum Mama)", "Stir-Fried Red Curry Pork",
     "Fried Egg with Minced Shrimp", "Clear Soup with Tofu and Minced Pork",
     "Ramen with Pork Chashu", "Stir-Fried Wild Boar", "Cheese Balls",
-    "Watermelon Smoothie", "Stir-Fried Basil with Pork", "Grilled Pork with Rice",
-    "Vegetarian Stir-Fry", "Konjac", "Steamed Chicken Breast",
-    "Stir-Fry Crispy Pork Chili Salt", "Fried Red Sausage", "Bear Brand Milk"
+    "Watermelon Smoothie", "Boba Tea", "Stir-Fried Basil with Pork", "Grilled Pork with Rice",
+    "Boiled Egg","Vegetarian Stir-Fry", "Konjac", "Steamed Chicken Breast", "Fried Egg", 
+        "Stir-Fry Crispy Pork Chili Salt", "Fried Red Sausage", "Bear Brand Milk"
   ];
   
 
