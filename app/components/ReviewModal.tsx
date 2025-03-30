@@ -51,7 +51,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
             touchable
             size={220}
             onRatingChange={(val) => setRating(val)}
-            style={{ marginBottom: 24 }}
+            style={{ marginBottom: 24 ,gap:10,justifyContent: "center"}}
           />
 
           {/* กล่อง Comment */}

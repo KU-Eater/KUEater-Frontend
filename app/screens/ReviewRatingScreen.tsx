@@ -97,7 +97,7 @@ const ReviewRatingScreen: React.FC = () => {
                 <TouchableOpacity style={styles.reviewBox} onPress={() => setModalVisible(true)}>
                     <Text style={styles.sectionLabel}>Rating and Review</Text>
                     <Text style={styles.sectionStall}>{stallName}</Text>
-                    <Stars rating={0} size={200} />
+                    <Stars rating={0} size={200} style={{ gap:10,justifyContent: "center"}}/>
                 </TouchableOpacity>
 
                 {/* 🗣️ Comment Section */}

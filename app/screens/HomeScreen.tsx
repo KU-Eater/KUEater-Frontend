@@ -125,19 +125,22 @@ const HomeScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Recommended Menus for You!</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {mockMenuData.map((menu) => (
-              <MenuCard
-                key={menu.id}
-                menuName={menu.menuName}
-                price={menu.price}
-                likes={menu.likes}
-                dislikes={menu.dislikes}
-                stallName={menu.stallName}
-                stallLock={menu.stallLock}
-                imageUrl={menu.imageUrl}
-                typeCard={menu.typeCard}
-              />
-            ))}
+            <View style={styles.scrollView}>
+              {mockMenuData.map((menu) => (
+                <MenuCard
+                  key={menu.id}
+                  menuName={menu.menuName}
+                  price={menu.price}
+                  likes={menu.likes}
+                  dislikes={menu.dislikes}
+                  stallName={menu.stallName}
+                  stallLock={menu.stallLock}
+                  imageUrl={menu.imageUrl}
+                  showStallName={true}
+                  customWidthPercent={42}
+                />
+              ))}
+            </View>
           </ScrollView>
         </View>
 
@@ -147,21 +150,24 @@ const HomeScreen = () => {
             <Text style={styles.sectionTitle}>Top like Menu from</Text>
             <Text style={styles.eater}> Eater!</Text>
           </View>
-          
+
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {mockMenuData.map((menu) => (
-              <MenuCard
-                key={menu.id}
-                menuName={menu.menuName}
-                price={menu.price}
-                likes={menu.likes}
-                dislikes={menu.dislikes}
-                stallName={menu.stallName}
-                stallLock={menu.stallLock}
-                imageUrl={menu.imageUrl}
-                typeCard={menu.typeCard}
-              />
-            ))}
+            <View style={styles.scrollView}>
+              {mockMenuData.map((menu) => (
+                <MenuCard
+                  key={menu.id}
+                  menuName={menu.menuName}
+                  price={menu.price}
+                  likes={menu.likes}
+                  dislikes={menu.dislikes}
+                  stallName={menu.stallName}
+                  stallLock={menu.stallLock}
+                  imageUrl={menu.imageUrl}
+                  showStallName={true}
+                  customWidthPercent={42}
+                />
+              ))}
+            </View>
           </ScrollView>
         </View>
 
@@ -226,12 +232,17 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     marginBottom: 8,
     color: '#006664',
     marginTop: 16,
     marginHorizontal: 16,
     marginRight: 0,
+  },
+  scrollView: {
+    flexDirection: 'row',
+    paddingLeft: 8,
+    gap: 8
   },
   eater: {
     fontSize: 17,

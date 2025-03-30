@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native
 import StallCard from '../components/StallCard'; // Adjust the path
 import MenuCard from '../components/MenuCard'; // Adjust the path
 import { Ionicons } from '@expo/vector-icons';
-import  BookmarkHeartIcon from '../components/NavBar';
+import BookmarkHeartIcon from '../components/NavBar';
+import MenuCardGrid from '../components/MenuCardGrid';
+import StallCardList from '../components/StallCardList';
 
 const mockSavedMenuData = [
   {
@@ -167,56 +169,14 @@ const mockSavedStallData = [
 
 
 const SavedScreen = () => {
-  const [activeTab, setActiveTab] = useState<'Food Stall' | 'Menu'>('Food Stall');
+  const [activeTab, setActiveTab] = useState<'Food Stall' | 'Menu'>('Menu');
   const iconSize = 22;
 
   const renderContent = () => {
     if (activeTab === 'Food Stall') {
-      return (
-        <FlatList
-          data={mockSavedStallData}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <StallCard
-              rank={item.rank}
-              stallName={item.stallName}
-              imageUrl={item.imageUrl}
-              location={item.location}
-              operatingHours={item.operatingHours}
-              priceRange={item.priceRange}
-              tags={item.tags}
-              reviews={item.reviews}
-              likes={item.likes}
-              rating={item.rating}
-            />
-          )}
-          contentContainerStyle={styles.listContent}
-          key="stalls" // Unique key for FlatList
-        />
-      );
+      return <StallCardList data={mockSavedStallData} />;
     }
-    return (
-      <FlatList
-        data={mockSavedMenuData}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <MenuCard
-            menuName={item.menuName}
-            price={item.price}
-            likes={item.likes}
-            dislikes={item.dislikes}
-            stallName={item.stallName}
-            stallLock={item.stallLock}
-            imageUrl={item.imageUrl}
-            typeCard={item.typeCard}
-          />
-        )}
-        numColumns={2}
-        columnWrapperStyle={styles.menuColumn}
-        contentContainerStyle={styles.listContent}
-        key="menus" // Unique key for FlatList
-      />
-    );
+    return <MenuCardGrid data={mockSavedMenuData} />;
   };
 
   return (
@@ -224,23 +184,31 @@ const SavedScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>
-            Saved list{'  '}
+          Saved list{'  '}
         </Text>
         <View>
-                  {/* Bookmark icon */}
-                  <Ionicons name='bookmarks' size={iconSize} color='#006664'/>
-                  {/* Heart icon (overlayed) */}
-                  <Ionicons name='heart' size={iconSize / 2.35} color='#FFFFFF'
-                    style={[
-                      styles.heartOverlay,
-                      { top: iconSize * 0.25, left: iconSize * 0.2 },
-                    ]}
-                  />
+
+          {/* <BookmarkHeartIcon/> */}
+          {/* Bookmark icon */}
+          <Ionicons name='bookmarks' size={iconSize} color='#006664' />
+          {/* Heart icon (overlayed) */}
+          <Ionicons name='heart' size={iconSize / 2.35} color='#FFFFFF'
+            style={[
+              styles.heartOverlay,
+              { top: iconSize * 0.25, left: iconSize * 0.2 },
+            ]}
+          />
         </View>
       </View>
 
       {/* Tab Bar */}
       <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'Menu' && styles.activeTab]}
+          onPress={() => setActiveTab('Menu')}
+        >
+          <Text style={[styles.tabText, activeTab === 'Menu' && styles.activeTabText]}>Menu</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'Food Stall' && styles.activeTab]}
           onPress={() => setActiveTab('Food Stall')}
@@ -249,12 +217,7 @@ const SavedScreen = () => {
             Food Stall
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'Menu' && styles.activeTab]}
-          onPress={() => setActiveTab('Menu')}
-        >
-          <Text style={[styles.tabText, activeTab === 'Menu' && styles.activeTabText]}>Menu</Text>
-        </TouchableOpacity>
+
       </View>
 
       {/* Content */}
@@ -275,13 +238,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center'
-
   },
   title: {
     fontSize: 18,
     fontWeight: '600',
     color: '#006664',
-    
+
   },
   tabBar: {
     flexDirection: 'row',
@@ -313,10 +275,16 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   listContent: {
-    paddingBottom: 30, // Add space for the bottom navigation bar
+    paddingTop: 8,
+    paddingBottom: 16,
+    paddingHorizontal: 12,
+
   },
   menuColumn: {
-    marginBottom: 6,
+    justifyContent: "space-between",
+    marginBottom: 8,
+
+
   },
   heartOverlay: {
     position: 'absolute',

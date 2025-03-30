@@ -13,6 +13,8 @@ import { useRoute } from '@react-navigation/native';
 import SearchBar from '../components/SearchBar';
 import StallCard from '../components/StallCard';
 import MenuCard from '../components/MenuCard';
+import MenuCardGrid from '../components/MenuCardGrid';
+import StallCardList from '../components/StallCardList';
 
 type StallDataType = {
   id: number;
@@ -37,7 +39,6 @@ type MenuDataType = {
   stallName: string;
   stallLock: string;
   imageUrl: string;
-  typeCard: 'MenuCardinHome' | 'MenuCardinStall' | 'MenuCardinSaved';
 };
 
 // Mock stalls
@@ -98,7 +99,6 @@ const mockMenuData: MenuDataType[] = [
     stallLock: '04',
     imageUrl:
       'https://www.justonecookbook.com/wp-content/uploads/2019/02/Saba-Shioyaki-I-1.jpg',
-    typeCard: 'MenuCardinSaved', // <--- important
   },
   {
     id: 2,
@@ -110,7 +110,6 @@ const mockMenuData: MenuDataType[] = [
     stallLock: '04',
     imageUrl:
       'https://res.cloudinary.com/dejzapat4/image/upload/v1739355627/02027_cg98ot.jpg',
-    typeCard: 'MenuCardinSaved',
   },
   {
     id: 3,
@@ -122,7 +121,16 @@ const mockMenuData: MenuDataType[] = [
     stallLock: '43',
     imageUrl:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDmete-M3ba2oCyVLZIcH2oDh7QQSz-UtoA&s',
-    typeCard: 'MenuCardinSaved',
+  },
+  {
+    id: 4,
+    menuName: 'Thai sukiyaki soup with seafood',
+    price: '50',
+    likes: 460,
+    dislikes: 5,
+    stallName: 'Nong Pim A LA CARTE (Stir Fry)',
+    stallLock: '02',
+    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739355622/02017_kc8tej.jpg',
   },
 ];
 
@@ -132,83 +140,46 @@ const SearchResultScreen = () => {
   const query = (route.params as any)?.query || '';
 
   // local state for active tab
-  const [activeTab, setActiveTab] = useState<'stall' | 'menu'>('stall');
-
+  const [activeTab, setActiveTab] = useState<'Food Stall' | 'Menu'>('Menu');
+  const renderContent = () => {
+    if (activeTab === 'Food Stall') {
+      return <StallCardList data={mockStallData} />;
+    }
+    return <MenuCardGrid data={mockMenuData} />;
+  };
   return (
     <View style={styles.container}>
       {/* Reuse your SearchBar at the top */}
       <SearchBar />
 
       {/* Possibly show the user's search query */}
-      <Text style={styles.searchQueryText}>
-        Showing results for: <Text style={{ fontWeight: 'bold' }}>{query}</Text>
-      </Text>
-
-      {/* Two Tabs: Food Stall / Menu */}
-      <View style={styles.tabContainer}>
+      {/* <View style={styles.background}>
+        <Text style={styles.searchQueryText}>
+          Showing results for: <Text style={{ fontWeight: 'bold' }}>{query}</Text>
+        </Text>
+      </View> */}
+      {/* Tab Bar */}
+      <View style={styles.tabBar}>
         <TouchableOpacity
-          style={[
-            styles.tabButton,
-            activeTab === 'stall' && styles.activeTabButton,
-          ]}
-          onPress={() => setActiveTab('stall')}
+          style={[styles.tab, activeTab === 'Menu' && styles.activeTab]}
+          onPress={() => setActiveTab('Menu')}
         >
-          <Text
-            style={[
-              styles.tabButtonText,
-              activeTab === 'stall' && styles.activeTabText,
-            ]}
-          >
+          <Text style={[styles.tabText, activeTab === 'Menu' && styles.activeTabText]}>Menu</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'Food Stall' && styles.activeTab]}
+          onPress={() => setActiveTab('Food Stall')}
+        >
+          <Text style={[styles.tabText, activeTab === 'Food Stall' && styles.activeTabText]}>
             Food Stall
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[
-            styles.tabButton,
-            activeTab === 'menu' && styles.activeTabButton,
-          ]}
-          onPress={() => setActiveTab('menu')}
-        >
-          <Text
-            style={[
-              styles.tabButtonText,
-              activeTab === 'menu' && styles.activeTabText,
-            ]}
-          >
-            Menu
-          </Text>
-        </TouchableOpacity>
       </View>
 
-      {/* Tab Content */}
-      {activeTab === 'stall' ? (
-        // Display Stall results
-        <ScrollView style={styles.resultScroll}>
-          {mockStallData.map((stall) => (
-            <StallCard key={stall.id} {...stall} />
-          ))}
-        </ScrollView>
-      ) : (
-        // Display Menu results using MenuCard with typeCard=MenuCardinSaved
-        <FlatList
-          style={styles.resultScroll}
-          data={mockMenuData}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <MenuCard
-              typeCard={item.typeCard} // "MenuCardinSaved"
-              menuName={item.menuName}
-              price={item.price}
-              likes={item.likes}
-              dislikes={item.dislikes}
-              stallName={item.stallName}
-              stallLock={item.stallLock}
-              imageUrl={item.imageUrl}
-            />
-          )}
-        />
-      )}
+      {/* Content */}
+      <View style={styles.content}>{renderContent()}</View>
+
     </View>
   );
 };
@@ -218,40 +189,64 @@ export default SearchResultScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF5F0',
   },
   searchQueryText: {
     fontSize: 14,
     color: '#006664',
-    marginTop: 10,
-    marginHorizontal: 16,
+
   },
-  tabContainer: {
-    flexDirection: 'row',
-    marginTop: 10,
-    marginHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  tabButton: {
-    flex: 1,
+  background: {
+    paddingTop: 10,
+    paddingBottom: 7,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
-    paddingVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
-  tabButtonText: {
-    fontSize: 14,
-    color: '#888',
+  tabBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#DDD',
   },
-  activeTabButton: {
-    borderBottomWidth: 2,
+  tab: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center',
+    paddingTop: 16
+  },
+  activeTab: {
+    borderBottomWidth: 3,
     borderBottomColor: '#006664',
   },
-  activeTabText: {
-    color: '#006664',
-    fontWeight: '600',
+  tabText: {
+    fontSize: 15,
+    color: '#777',
   },
-  resultScroll: {
-    marginTop: 10,
-    marginHorizontal: 8,
+  activeTabText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#006664',
+  },
+  content: {
+    flex: 1,
+    paddingTop: 8,
+  },
+  listContent: {
+    paddingTop: 8,
+    paddingBottom: 16,
+    paddingHorizontal: 12,
+
+  },
+  menuColumn: {
+    justifyContent: "space-between",
+    marginBottom: 8,
+
+
+  },
+  heartOverlay: {
+    position: 'absolute',
   },
 });
