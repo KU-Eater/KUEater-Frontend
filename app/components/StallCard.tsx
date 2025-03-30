@@ -5,9 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StallData } from '../api/dataTypes';
+import RankBadge from './ฺRankBadge';
 
 interface StallCardProps extends StallData {
   rank: number;
+  hideBadge?: boolean;
 }
 
 // Define the navigation stack types
@@ -43,9 +45,7 @@ const StallCard: React.FC<StallCardProps> = (props) => {
 
   return (
     <TouchableOpacity style={styles.card} onPress={handleCardPress}>
-      <View style={styles.rankBadge}>
-        <Text style={styles.rankText}>TOP {rank}</Text>
-      </View>
+      {!props.hideBadge && <RankBadge rank={rank} />}
 
       <Image source={{ uri: imageUrl }} style={styles.image} />
 
@@ -102,21 +102,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 1,
   },
-  rankBadge: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    backgroundColor: '#006662',
-    borderRadius: 4,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    zIndex: 2,
-  },
-  rankText: {
-    fontSize: 12,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
+
   image: {
     width: '40%',
     height: '100%',
@@ -176,4 +162,5 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     color: '#3A3838',
   },
+
 });
