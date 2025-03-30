@@ -10,4 +10,5 @@ export interface StallData {
     reviews: number;
     likes: number;
     rating: number;
-  }
+  };
+

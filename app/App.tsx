@@ -45,9 +45,10 @@ export type RootStackParamList = {
   Signup: undefined;
   LoginGoogle: undefined;
   MainTab: undefined;
+  HomeScreen: undefined;
   Account: undefined;
   SearchScreen: undefined;
-  SearchResultScreen: undefined;
+  SearchResultScreen: { query: string };
   StallProfile: { stallData: StallData };
   MenuDetails: undefined;
   CollectUsername: undefined;

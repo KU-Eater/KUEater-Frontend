@@ -3,11 +3,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import SearchBar from '../components/SearchBar'; // Adjust the path
-import MenuCard from '../components/MenuCard'; // Adjust the path
-import StallCard from '../components/StallCard'; // Adjust the path
 import CategoryBar from '../components/CategoryBar';
 import MenuCardHorizontal from '../components/MenuCardHorizontal';
 import StallCardList from '../components/StallCardList';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../App';
+import { useSearch } from '../context/SearchContext';
 
 // --- your mock data remains the same
 const mockMenuData = [
@@ -110,7 +112,18 @@ const mockStallData = [
   },
 ];
 
+type  HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'HomeScreen'>;
+
+
 const HomeScreen = () => {
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+  const { addHistory } = useSearch();
+
+  const handleCategoryPress = (categoryName: string) => {
+    addHistory(categoryName);
+    navigation.navigate('SearchResultScreen', { query: categoryName });
+  };
+
   return (
     <View style={styles.container}>
 
@@ -118,7 +131,7 @@ const HomeScreen = () => {
 
       <ScrollView contentContainerStyle={styles.content}>
         {/* Category Bar */}
-        <CategoryBar />
+        <CategoryBar onCategorySelect={handleCategoryPress} />
 
         {/* Recommended Menus Section */}
         <View style={styles.section}>

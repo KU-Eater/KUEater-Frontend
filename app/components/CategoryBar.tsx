@@ -18,12 +18,20 @@ const categories: Category[] = [
   { id: 8, name: 'Fruit', icon: 'https://cdn-icons-png.flaticon.com/128/6973/6973944.png' },
 ];
 
-const CategoryBar: React.FC = () => {
+interface CategoryBarProps {
+  onCategorySelect?: (categoryName: string) => void;
+}
+
+const CategoryBar: React.FC<CategoryBarProps> = ({ onCategorySelect }) => {
   return (
     <View style={styles.container}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {categories.map((category) => (
-          <TouchableOpacity key={category.id} style={styles.categoryItem}>
+          <TouchableOpacity
+            key={category.id}
+            style={styles.categoryItem}
+            onPress={() => onCategorySelect?.(category.name)} // 🔥
+          >
             <Image source={{ uri: category.icon }} style={styles.categoryIcon} />
             <Text style={styles.categoryName}>{category.name}</Text>
           </TouchableOpacity>
@@ -32,6 +40,7 @@ const CategoryBar: React.FC = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
