@@ -6,6 +6,8 @@ import SearchBar from '../components/SearchBar'; // Adjust the path
 import MenuCard from '../components/MenuCard'; // Adjust the path
 import StallCard from '../components/StallCard'; // Adjust the path
 import CategoryBar from '../components/CategoryBar';
+import MenuCardHorizontal from '../components/MenuCardHorizontal';
+import StallCardList from '../components/StallCardList';
 
 // --- your mock data remains the same
 const mockMenuData = [
@@ -111,10 +113,7 @@ const mockStallData = [
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
-      {/* 
-        NOTE: We pass a prop to SearchBar so it navigates
-        to SearchScreen when the user taps the TextInput.
-      */}
+
       <SearchBar isOnHomeScreen />
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -123,92 +122,41 @@ const HomeScreen = () => {
 
         {/* Recommended Menus Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recommended Menus for You!</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.scrollView}>
-              {mockMenuData.map((menu) => (
-                <MenuCard
-                  key={menu.id}
-                  menuName={menu.menuName}
-                  price={menu.price}
-                  likes={menu.likes}
-                  dislikes={menu.dislikes}
-                  stallName={menu.stallName}
-                  stallLock={menu.stallLock}
-                  imageUrl={menu.imageUrl}
-                  showStallName={true}
-                  customWidthPercent={42}
-                />
-              ))}
-            </View>
-          </ScrollView>
+          <MenuCardHorizontal
+            menus={mockMenuData}
+            title='Recommended Menus for You!'
+          />
         </View>
 
         {/* Top like Menu from Eater! */}
         <View style={styles.section}>
-          <View style={styles.sectionEater}>
-            <Text style={styles.sectionTitle}>Top like Menu from</Text>
-            <Text style={styles.eater}> Eater!</Text>
-          </View>
-
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.scrollView}>
-              {mockMenuData.map((menu) => (
-                <MenuCard
-                  key={menu.id}
-                  menuName={menu.menuName}
-                  price={menu.price}
-                  likes={menu.likes}
-                  dislikes={menu.dislikes}
-                  stallName={menu.stallName}
-                  stallLock={menu.stallLock}
-                  imageUrl={menu.imageUrl}
-                  showStallName={true}
-                  customWidthPercent={42}
-                />
-              ))}
-            </View>
-          </ScrollView>
+          <MenuCardHorizontal
+            menus={mockMenuData}
+            customTitleComponent={
+              <View style={styles.sectionEater}>
+                <Text style={styles.sectionTitle}>Top like Menu from</Text>
+                <Text style={styles.eater}> Eater!</Text>
+              </View>
+            }
+          />
         </View>
 
         {/* You may Love these Food Stalls! */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>You may Love these Food Stalls!</Text>
-          {mockStallData.map((stall) => (
-            <StallCard
-              key={stall.id}
-              rank={stall.rank}
-              stallName={stall.stallName}
-              imageUrl={stall.imageUrl}
-              location={stall.location}
-              operatingHours={stall.operatingHours}
-              priceRange={stall.priceRange}
-              tags={stall.tags}
-              reviews={stall.reviews}
-              likes={stall.likes}
-              rating={stall.rating}
-            />
-          ))}
+          <StallCardList
+            data={mockStallData}
+            scrollEnabled={false}
+            title="You may Love these Food Stalls!"
+          />
         </View>
 
         {/* Popular Stalls Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Popular Stalls in Bar Mai</Text>
-          {mockStallData.map((stall) => (
-            <StallCard
-              key={stall.id}
-              rank={stall.rank}
-              stallName={stall.stallName}
-              imageUrl={stall.imageUrl}
-              location={stall.location}
-              operatingHours={stall.operatingHours}
-              priceRange={stall.priceRange}
-              tags={stall.tags}
-              reviews={stall.reviews}
-              likes={stall.likes}
-              rating={stall.rating}
-            />
-          ))}
+          <StallCardList
+            data={mockStallData}
+            scrollEnabled={false}
+            title="Popular Stalls in Bar Mai"
+          />
         </View>
       </ScrollView>
     </View>
@@ -253,5 +201,6 @@ const styles = StyleSheet.create({
   },
   sectionEater: {
     flexDirection: 'row',
+    marginHorizontal: 0
   },
 });
