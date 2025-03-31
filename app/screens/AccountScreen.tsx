@@ -7,6 +7,7 @@ import { useUserPreferences } from "../context/UserPreferencesContext";
 import { Ionicons } from "@expo/vector-icons";
 import FeedbackModal from "../components/FeedbackModal";
 import ProfilePicture from "../components/ProfilePicture";
+import { Linking } from "react-native";
 
 type AccountScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "Account">;
 
@@ -20,7 +21,7 @@ const AccountScreen = () => {
 
   const handlePersonalProfile = () => { navigation.navigate("PersonalProfile") };
   const handleFoodPreferences = () => { navigation.navigate("FoodPreferences") };
-  const handleAboutUs = () => { };
+  const handleAboutUs = () => { Linking.openURL("https://ku-eater.notion.site/Project-Description-c37340ad181f44b09455563492804743"); };
   const handleFeedback = () => { setFeedbackModalVisible(true) };
   const handleLogout = () => { navigation.navigate("LoginGoogle") };
 

@@ -10,6 +10,8 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { StallData } from '../api/dataTypes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import InformationModal from '../components/InformationModal';
+
 
 
 
@@ -58,6 +60,10 @@ const MenuDetailScreen: React.FC = () => {
   const [dislikeCount, setDislikeCount] = useState<number>(menuData.dislikes || 0);
   const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
   const [isLoved, setIsLoved] = useState(false);
+  const [whyMenuModalVisible, setWhyMenuModalVisible] = useState(false);
+  const titleForSeeThisMenuModal = "Why you see this menu?";
+  const reasonForSeeThisMenu = "Example text - because you should fucking love this menu bitch!";
+
 
   const handleLikePress = () => {
     if (userAction === 'like') {
@@ -74,6 +80,7 @@ const MenuDetailScreen: React.FC = () => {
       }
     }
   };
+
 
   const handleDislikePress = () => {
     if (userAction === 'dislike') {
@@ -106,12 +113,12 @@ const MenuDetailScreen: React.FC = () => {
 
   const handleWhyThisMenuPress = () => {
     // Example: show modal, or navigate to explanation screen
-    console.log('Why you see this menu? pressed');
+    setWhyMenuModalVisible(true);
   };
 
   const handleStallPress = () => {
     // Example: navigate to stall’s profile if desired
-    navigation.navigate('StallProfile', { stallData: stallData} );
+    navigation.navigate('StallProfile', { stallData: stallData });
   };
 
   return (
@@ -226,6 +233,16 @@ const MenuDetailScreen: React.FC = () => {
         </TouchableOpacity>
         <View style={styles.divider} />
         {/* Optionally more sections or content below */}
+
+        <InformationModal
+  visible={whyMenuModalVisible}
+  onClose={() => setWhyMenuModalVisible(false)}
+  title={titleForSeeThisMenuModal}
+  paragraphs={[
+    reasonForSeeThisMenu
+  ]}
+/>
+
       </View>
     </View>
   );
