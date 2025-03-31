@@ -60,7 +60,7 @@ export default MenuCardHorizontal;
 
 const styles = StyleSheet.create({
   section: {
-    marginTop: 4,
+    marginTop: 2,
     backgroundColor: '#FAF5F0',
     paddingBottom: 6,
   },
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 8,
     color: '#006664',
-    marginTop: 16,
+    marginTop: 12,
     marginHorizontal: 16,
     marginRight: 0,
   },
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     paddingRight: 8,
     gap: 8,
-    paddingTop: 5,
+    paddingTop: 2,
 
   },
 });

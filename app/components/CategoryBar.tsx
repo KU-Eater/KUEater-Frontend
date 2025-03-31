@@ -44,9 +44,9 @@ const CategoryBar: React.FC<CategoryBarProps> = ({ onCategorySelect }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 8,
     backgroundColor: '#FFFFFF',
-    marginVertical:10,
+    marginTop:16,
+    marginBottom: 10
   },
   categoryItem: {
     alignItems: 'center',

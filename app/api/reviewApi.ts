@@ -30,7 +30,7 @@ export const fetchMockReviewData = async (stallId: number) => {
           stars: 5,
           content:
             'fried chicken is crispy outside, juicy inside, and not greasy at all — exactly what I crave for a quick protein boost',
-          recommendMenus: ['pandan juice'],
+          recommendMenus: ['Deep-fried battered chicken thigh'],
         },
         {
           name: 'Sweetless plsss',
