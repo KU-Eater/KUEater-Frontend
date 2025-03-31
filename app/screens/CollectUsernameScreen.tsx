@@ -56,13 +56,17 @@ const CollectUsernameScreen = () => {
                 <Text style={styles.title}>What'll be your Username?</Text>
 
                 {/* Input Field */}
-                <TextInput
-                    placeholder="Type any username"
-                    value={username}
-                    onChangeText={setUsername}
-                    style={styles.input}
-                    placeholderTextColor="#B0B0B0"
-                />
+                    <TextInput
+                        placeholder="Type any username"
+                        value={username}
+                        onChangeText={setUsername}
+                        style={styles.input}
+                        placeholderTextColor="#B0B0B0"
+                        maxLength={30}
+                    />
+                    <Text style={styles.counterText}>{username.length}/30</Text>
+
+
 
                 {/* Helper Text */}
                 <Text style={styles.helperText}>
@@ -113,17 +117,17 @@ const styles = StyleSheet.create({
         lineHeight: 51,
     },
     input: {
+        borderBottomColor: "#D9D9D9",
         borderBottomWidth: 0.6,
-        borderBottomColor: "#B0B0B0",
         fontSize: 18,
         paddingTop: 5,
-        marginBottom: 15,
+        marginBottom: 4,
         color: "#3A3838",
         alignItems: "center",
         alignSelf: "center",
         width: "95%",
-
     },
+
     helperText: {
         fontSize: 14,
         color: "#666",
@@ -135,6 +139,14 @@ const styles = StyleSheet.create({
     buttonWrapper: {
         marginTop: "auto",
         paddingVertical: 20,
+    },
+
+    counterText: {
+        marginTop:4,
+        marginRight:12,
+        alignSelf:"flex-end",
+        fontSize: 12,
+        color: '#999',
     },
 });
 
