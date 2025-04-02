@@ -11,15 +11,24 @@ import {
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useDebounce } from '../utils/debounce';
+import { submitDislikeItem, submitLikeItem, submitSaveItem } from '../api/services/mainService';
 
-interface MenuCardProps {
-  menuName: string;
+export interface MenuCardProps {
+  id: string;
+  name: string;
   price: string;
   likes: number;
   dislikes: number;
+  stallId: string;
   stallName: string;
   stallLock: string;
   imageUrl: string;
+  score?: number;
+  reason?: string;
+  liked?: boolean;
+  disliked?: boolean;
+  saved?: boolean;
   showStallName?: boolean;         // ✅ NEW - toggle stall name display
   customWidthPercent?: number;     // ✅ NEW - set card width (default = 48%)
   style?: any;
@@ -32,33 +41,49 @@ type RootStackParamList = {
 const screenWidth = Dimensions.get('window').width;
 
 const MenuCard: React.FC<MenuCardProps> = ({
-  menuName,
+  id,
+  name,
   price,
   likes,
   dislikes,
+  stallId,
   stallName,
   stallLock,
   imageUrl,
+  score = 0,
+  reason = "",
+  liked = false,
+  disliked = false,
+  saved = false,
   showStallName = true,
   customWidthPercent = 48,
 }) => {
-  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
+  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(
+    (liked ? 'like' : null) || (disliked ? 'dislike' : null)
+  );
   const [likeCount, setLikeCount] = useState(likes);
   const [dislikeCount, setDislikeCount] = useState(dislikes);
-  const [isLoved, setIsLoved] = useState(false);
+  const [isLoved, setIsLoved] = useState(saved);
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleCardPress = () => {
     navigation.navigate('MenuDetails', {
       menuData: {
-        menuName,
+        id,
+        name,
         price,
         likes: likeCount,
         dislikes: dislikeCount,
+        stallId,
         stallName,
         stallLock,
         imageUrl,
+        score,
+        reason,
+        liked: (userAction == 'like'),
+        disliked: (userAction == 'dislike'),
+        saved: isLoved
       },
     });
   };
@@ -72,7 +97,12 @@ const MenuCard: React.FC<MenuCardProps> = ({
       setLikeCount(likeCount + 1);
       if (userAction === 'dislike') setDislikeCount(dislikeCount - 1);
     }
+    submitLike();
   };
+
+  const submitLike = useDebounce(() => {
+    submitLikeItem(id);
+  }, 1000);
 
   const handleDislikePress = () => {
     if (userAction === 'dislike') {
@@ -83,11 +113,21 @@ const MenuCard: React.FC<MenuCardProps> = ({
       setDislikeCount(dislikeCount + 1);
       if (userAction === 'like') setLikeCount(likeCount - 1);
     }
+    submitDislike();
   };
+
+  const submitDislike = useDebounce(() => {
+    submitDislikeItem(id);
+  }, 1000);
 
   const handleLovePress = () => {
     setIsLoved(!isLoved);
+    submitSave();
   };
+
+  const submitSave = useDebounce(() => {
+    submitSaveItem(id);
+  }, 1000);
 
   // const screenPadding = 16;
   // const cardSpacing = 8;
@@ -108,8 +148,8 @@ const MenuCard: React.FC<MenuCardProps> = ({
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.menuName} numberOfLines={1}>
-            {menuName}
+          <Text style={styles.name} numberOfLines={1}>
+            {name}
           </Text>
 
           {showStallName && (
@@ -185,7 +225,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 8,
   },
-  menuName: {
+  name: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#006664',

@@ -9,6 +9,7 @@ import GradientButton from "../components/GradientButton";
 import Chips from "../components/Chips";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import { dishesOptions } from "../api/preferencesData";
+import { createAccount } from "../api/services/mainService";
 
 type CollectDishesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectDishes">;
 
@@ -24,7 +25,14 @@ const CollectDishesScreen = () => {
   const handleNext = () => {
     if (selectedDishes.length >= 5) {
       updatePreferences("favoriteDishes", selectedDishes); // Store favorite dishes
-      navigation.navigate("MainTab");
+      createAccount({...preferences, favoriteDishes: selectedDishes}).then(
+        (_) => {
+          navigation.navigate("MainTab");
+        },
+        (e) => {
+          console.error(e);
+        }
+      )
     }
   };
 

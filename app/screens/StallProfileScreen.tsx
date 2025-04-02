@@ -1,122 +1,22 @@
 // screens/StallProfileScreen.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import MenuCard from '../components/MenuCard'; // Adjust the path
+import MenuCard, { MenuCardProps } from '../components/MenuCard'; // Adjust the path
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import { StallData } from '../api/dataTypes';
 import MenuCardGrid from '../components/MenuCardGrid';
+import { StallCardProps } from '../components/StallCard';
+import { getMenuOfStall, submitSaveStall } from '../api/services/mainService';
+import { useDebounce } from '../utils/debounce';
 
 
 
 type RouteParams = {
-  stallData: StallData;
+  stallData: StallCardProps;
 };
-
-const mockStallMenuData = [
-  {
-    id: 1,
-    menuName: 'Deep-fried battered chicken thigh',
-    price: '25',
-    likes: 956,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22001_hsn5yx.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-    id: 2,
-    menuName: 'Deep-fried battered chicken drumstick',
-    price: '18',
-    likes: 641,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22002_agofym.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-    id: 3,
-    menuName: 'Sticky rice',
-    price: '5',
-    likes: 92,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22003_aggstb.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-    id: 4,
-    menuName: 'White rice',
-    price: '10',
-    likes: 44,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721436/22004_uh1ykb.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-    id: 5,
-    menuName: 'Hainanese rice',
-    price: '10',
-    likes: 68,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721436/22005_gzh7co.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-    id: 1,
-    menuName: 'Deep-fried battered chicken thigh',
-    price: '25',
-    likes: 956,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22001_hsn5yx.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-    id: 2,
-    menuName: 'Deep-fried battered chicken drumstick',
-    price: '18',
-    likes: 641,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22002_agofym.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-    id: 3,
-    menuName: 'Sticky rice',
-    price: '5',
-    likes: 92,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22003_aggstb.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-    id: 4,
-    menuName: 'White rice',
-    price: '10',
-    likes: 44,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721436/22004_uh1ykb.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-
-];
 
 
 type StallProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'StallProfile'>;
@@ -126,12 +26,26 @@ const StallProfileScreen: React.FC = () => {
   const route = useRoute();
   const { stallData } = route.params as RouteParams;
 
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [ menu, setMenu ] = useState<MenuCardProps[]>([]);
+  const [isBookmarked, setIsBookmarked] = useState(stallData.saved);
   const [isShared, setIsShared] = useState(false);
 
-  const handleBookmarkPress = () => setIsBookmarked(!isBookmarked);
+  const handleBookmarkPress = () => {
+    setIsBookmarked(!isBookmarked)
+    submitBookmark();
+  };
   const handleSharePress = () => setIsShared(!isShared);
-  const handleReview = () => navigation.navigate("ReviewRating");
+  const handleReview = () => navigation.navigate("ReviewRating", {
+    stallId: stallData.id
+  });
+
+  const submitBookmark = useDebounce(() => {
+      submitSaveStall(stallData.id);
+    }, 1000);
+
+  useEffect(() => {
+    getMenuOfStall(stallData.id).then((data) => setMenu(data));
+  }, [])
 
   const renderHeader = () => (
     <>
@@ -218,7 +132,7 @@ const StallProfileScreen: React.FC = () => {
 
     <View style={styles.container}>
       <ScrollView>{renderHeader()}
-        <MenuCardGrid data={mockStallMenuData} showStallName={false} scrollEnabled={false} />
+        <MenuCardGrid data={menu} showStallName={false} scrollEnabled={false} />
       </ScrollView>
 
     </View>

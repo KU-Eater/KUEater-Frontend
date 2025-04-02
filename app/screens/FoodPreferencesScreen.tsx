@@ -25,6 +25,7 @@ import {
 
 // Chips Component
 import Chips from "../components/Chips";
+import { writeToPreferences } from "../api/services/mainService";
 
 type FoodPreferencesScreenNavigationProp = NativeStackNavigationProp<
     RootStackParamList,
@@ -64,6 +65,16 @@ const FoodPreferencesScreen: React.FC = () => {
         updatePreferences("favoriteCuisines", favoriteCuisines);
         updatePreferences("dislikedIngredients", dislikedIngredients);
         updatePreferences("favoriteDishes", favoriteDishes);
+        writeToPreferences(
+            {
+                ...preferences,
+                dietaryPreferences: dietaryPref,
+                allergies: allergies,
+                favoriteCuisines: favoriteCuisines,
+                dislikedIngredients: dislikedIngredients,
+                favoriteDishes: favoriteDishes,
+            }
+        )
         setIsSaved(true);
     };
 

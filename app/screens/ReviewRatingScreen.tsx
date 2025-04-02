@@ -9,32 +9,38 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RootStackParamList } from '../App';
 import Stars from '../components/Stars';
 import PercentBar from '../components/PercentBar';
 import CommentCard from '../components/CommentCard';
-import { fetchMockReviewData } from '../api/reviewApi';
+import { fetchMockReviewData, RatingReviews } from '../api/reviewApi';
 import ReviewModal from '../components/ReviewModal';
+import { getReviews, sendReview } from '../api/services/mainService';
 
 type ReviewRatingScreenNavigationProp = NativeStackNavigationProp<
     RootStackParamList,
     'ReviewRating'
 >;
 
+type RouteParams = {
+  stallId: string;
+};
+
 const ReviewRatingScreen: React.FC = () => {
     const navigation = useNavigation<ReviewRatingScreenNavigationProp>();
-    const stallId = 26;
+    const route = useRoute();
+    const { stallId } = route.params as RouteParams;
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState<null | Awaited<ReturnType<typeof fetchMockReviewData>>>(null);
+    const [data, setData] = useState<RatingReviews|undefined>();
 
 
     useEffect(() => {
         const loadData = async () => {
-            const result = await fetchMockReviewData(stallId);
+            const result = await getReviews(stallId)
             setData(result);
             setLoading(false);
         };
@@ -134,6 +140,14 @@ const ReviewRatingScreen: React.FC = () => {
                         console.log("Rating:", rating);
                         console.log("Comment:", comment);
                         // 🧠 ส่งไป backend ได้ตรงนี้
+                        sendReview(stallId, rating, comment)
+                        .then((r) => {
+                            setData({
+                                ...data,
+                                reviews: [r, ...data.reviews],
+                            }
+                            )
+                        });
                     }}
                 />
             </ScrollView>

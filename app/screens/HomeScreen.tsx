@@ -10,118 +10,129 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import { useSearch } from '../context/SearchContext';
-
-// --- your mock data remains the same
-const mockMenuData = [
-  {
-    id: 1,
-    menuName: 'Rice with crispy pork and Chinese kale',
-    price: '50',
-    likes: 75,
-    dislikes: 3,
-    stallName: 'Nong Pim A LA CARTE (Stir Fry)',
-    stallLock: '02',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739355627/02027_cg98ot.jpg',
-    typeCard: 'MenuCardinHome' as const,
-  },
-  {
-    id: 2,
-    menuName: 'Grilled Saba with Rice',
-    price: '50',
-    likes: 212,
-    dislikes: 0,
-    stallName: 'Eat 8 Ate',
-    stallLock: '08',
-    imageUrl: 'https://www.justonecookbook.com/wp-content/uploads/2019/02/Saba-Shioyaki-I-1.jpg',
-    typeCard: 'MenuCardinHome' as const,
-  },
-  {
-    id: 3,
-    menuName: 'Deep-fried battered chicken thigh',
-    price: '25',
-    likes: 956,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22001_hsn5yx.jpg',
-    typeCard: 'MenuCardinHome' as const,
-  },
-  {
-    id: 4,
-    menuName: 'Pandan Juice',
-    price: '5',
-    likes: 641,
-    dislikes: 0,
-    stallName: 'Toei Kaew (Beverages)',
-    stallLock: '26',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmOe2ocJeXunMXXQTQmNWDRlBVDXmt4ZYwdA&s',
-    typeCard: 'MenuCardinHome' as const,
-  },
-  {
-    id: 5,
-    menuName: 'Dry Thai sukiyaki with seafood',
-    price: '50',
-    likes: 75,
-    dislikes: 3,
-    stallName: 'Nong Pim A LA CARTE (Stir Fry)',
-    stallLock: '02',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739355624/02022_apuaa1.jpg',
-    typeCard: 'MenuCardinHome' as const,
-  },
-];
-
-const mockStallData = [
-  {
-    id: 1,
-    rank: 1,
-    stallName: 'Mr. Raw Fried Chicken',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM7s0v7yK-niQWaDUgGD6XU_N05_SyJ9j_IYISHPPFXWacLQ2DjadykH2m9NKSSHRyPO0&usqp=CAU',
-    location: '22',
-    operatingHours: '10.30 - 14.30',
-    priceRange: '5 - 25',
-    tags: 'Fast Food',
-    reviews: 87,
-    likes: 2081,
-    rating: 4.96,
-  },
-  {
-    id: 2,
-    rank: 2,
-    stallName: 'Toei Kaew (Beverages)',
-    imageUrl: 'https://drive.google.com/uc?id=1wbDqPSyYn--XZQhey6j7AJ45h9G7ovH_',
-    location: '37',
-    operatingHours: '07.00 - 17.30',
-    priceRange: '5 - 40',
-    tags: 'Beverages',
-    reviews: 119,
-    likes: 1678,
-    rating: 4.92,
-  },
-  {
-    id: 3,
-    rank: 3,
-    stallName: 'Pilin Local North',
-    imageUrl: 'https://img.wongnai.com/p/1920x0/2023/08/28/140f720406f7403cab6ae74a58887a8f.jpg',
-    location: '22',
-    operatingHours: '07.30 - 15.30',
-    priceRange: '35 - 60',
-    tags: 'Thai',
-    reviews: 43,
-    likes: 1264,
-    rating: 4.89,
-  },
-];
+import { firstRecommends, getHomeForYou, getHomeTopLikeMenu, getHomeTopStall, getUserPreference, moreRecommendations } from '../api/services/mainService';
+import MenuCard, { MenuCardProps } from '../components/MenuCard';
+import { UserPreferences, useUserPreferences } from '../context/UserPreferencesContext';
+import { StallCardProps } from '../components/StallCard';
+import MenuCardGrid from '../components/MenuCardGrid';
 
 type  HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'HomeScreen'>;
 
-
 const HomeScreen = () => {
+
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const { preferences, updatePreferences } = useUserPreferences();
   const { addHistory } = useSearch();
+
+  const [ topLikeData, setTopLikeData ] = useState<MenuCardProps[]>([]);
+  const [ topStallData, setTopStallData ] = useState<StallCardProps[]>([]);
+  const [ forYouData, setForYouData ] = useState<MenuCardProps[]>([]);
+  const [ becauseYouLikeData, setbecauseYouLikeData ] = useState<MenuCardProps[]>([]);
+  const [ textLike, setTextLike ] = useState<string>("");
+
+  const [ recommendations, setRecommendations ] = useState<MenuCardProps[]>([]);
+  const [ nextPageToken, setNextPageToken ] = useState<string>("");
+  const [ scoreToken, setScoreToken ] = useState<string>("");
+  const [ endOfPage, setEndOfPage ] = useState<boolean>(false);
+
+  useEffect(() => {
+    // fetch all once
+    fetchData();
+    syncPreferences();
+  }, []);
+
+  const syncPreferences = () => {
+    getUserPreference().then((pref) => {
+      updatePreferences("userID", pref.userID);
+      updatePreferences("gmail", pref.gmail);
+      updatePreferences("username", pref.username);
+      updatePreferences("role", pref.role);
+      updatePreferences("gender", pref.gender);
+      updatePreferences("dietaryPreferences", pref.dietaryPreferences);
+      updatePreferences("allergies", pref.allergies);
+      updatePreferences("favoriteCuisines", pref.favoriteCuisines);
+      updatePreferences("dislikedIngredients", pref.dislikedIngredients);
+      updatePreferences("favoriteDishes", pref.favoriteDishes);
+    });
+  }
+
+  const fetchData = () => {
+    // fetch the banners and first part of recommendations
+    getHomeTopLikeMenu().then(
+      (menus) => {
+        setTopLikeData(menus);
+      },
+      (e) => {
+        setTopLikeData([]);
+      }
+    )
+    getHomeTopStall().then(
+      (stalls) => {
+        setTopStallData(stalls);
+      },
+      (e) => {
+        setTopStallData([]);
+      }
+    )
+    getHomeForYou().then(
+      (menus) => {
+        setForYouData(menus);
+      },
+      (e) => {
+        setForYouData([]);
+      }
+    )
+    // TODO: Add because you like later,
+    firstRecommends().then(
+      (resp) => {
+        setRecommendations(resp.menus);
+        if (!resp.nextPageToken) {
+          setEndOfPage(true);
+        }
+        setNextPageToken(resp.nextPageToken);
+        if (resp.scoreToken) {
+          setScoreToken(resp.scoreToken);
+        }
+      },
+      (e) => {
+        setRecommendations([]);
+      }
+    )
+  };
+
+  const continueRec = (nextPage: string, score: string) => {
+    moreRecommendations(nextPage, score).then(
+      (resp) => {
+        setRecommendations([...recommendations,...resp.menus]);
+        if (!resp.nextPageToken) {
+          setEndOfPage(true);
+        }
+        setNextPageToken(resp.nextPageToken);
+        if (resp.scoreToken) {
+          setScoreToken(resp.scoreToken);
+        }
+      },
+      (e) => {
+        setRecommendations([]);
+      }
+    )
+  };
+
+  const handleEndReached = () => {
+    if (!endOfPage) {
+      continueRec(nextPageToken, scoreToken);
+    }
+  }
 
   const handleCategoryPress = (categoryName: string) => {
     addHistory(categoryName);
     navigation.navigate('SearchResultScreen', { query: categoryName });
+  };
+
+  const isCloseToBottom = (obj: any) => {
+    const paddingToBottom = 35; // how many pixels from the bottom to trigger the event
+    return obj.layoutMeasurement.height + obj.contentOffset.y >= 
+      obj.contentSize.height - paddingToBottom;
   };
 
   return (
@@ -129,14 +140,21 @@ const HomeScreen = () => {
 
       <SearchBar isOnHomeScreen />
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} onScroll={
+        ({nativeEvent}) => {
+          if (isCloseToBottom(nativeEvent)) {
+            handleEndReached();
+          }
+        }
+      } scrollEventThrottle={32}>
         {/* Category Bar */}
         <CategoryBar onCategorySelect={handleCategoryPress} />
 
         {/* Recommended Menus Section */}
+        {/* gRPC: for you route */}
         <View style={styles.section}>
           <MenuCardHorizontal
-            menus={mockMenuData}
+            menus={forYouData}
             title='Recommended Menus for You!'
           />
         </View>
@@ -144,7 +162,7 @@ const HomeScreen = () => {
         {/* Top like Menu from Eater! */}
         <View style={styles.section}>
           <MenuCardHorizontal
-            menus={mockMenuData}
+            menus={topLikeData}
             customTitleComponent={
               <View style={styles.sectionEater}>
                 <Text style={styles.sectionTitle}>Top like Menu from</Text>
@@ -154,22 +172,17 @@ const HomeScreen = () => {
           />
         </View>
 
-        {/* You may Love these Food Stalls! */}
-        <View style={styles.section}>
-          <StallCardList
-            data={mockStallData}
-            scrollEnabled={false}
-            title="You may Love these Food Stalls!"
-          />
-        </View>
-
         {/* Popular Stalls Section */}
         <View style={styles.section}>
           <StallCardList
-            data={mockStallData}
+            data={topStallData}
             scrollEnabled={false}
             title="Popular Stalls in Bar Mai"
           />
+        </View>
+
+        <View style={styles.section}>
+          <MenuCardGrid data={recommendations}/>
         </View>
       </ScrollView>
     </View>

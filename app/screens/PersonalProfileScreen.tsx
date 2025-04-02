@@ -15,6 +15,7 @@ import { RootStackParamList } from "../App";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import ProfilePicture from "../components/ProfilePicture";
 import InformationModal from "../components/InformationModal";
+import { writeToProfile } from "../api/services/mainService";
 
 
 type PersonalProfileScreenNavigationProp = NativeStackNavigationProp<
@@ -70,6 +71,12 @@ const PersonalProfileScreen = () => {
     updatePreferences("username", username);
     updatePreferences("role", role);
     updatePreferences("gender", gender);
+    writeToProfile({
+      ...preferences,
+      username: username,
+      role: role,
+      gender: gender
+    });
     setIsSaved(true);
   };
 

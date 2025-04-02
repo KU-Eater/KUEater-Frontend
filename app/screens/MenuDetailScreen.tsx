@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,27 +11,18 @@ import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { StallData } from '../api/dataTypes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import InformationModal from '../components/InformationModal';
-
-
-
+import { StallCardProps } from '../components/StallCard';
+import { MenuCardProps } from '../components/MenuCard';
+import { getStallDetail, submitDislikeItem, submitLikeItem, submitSaveItem } from '../api/services/mainService';
+import { useDebounce } from '../utils/debounce';
 
 
 // If you already have a type or interface for the passed data, reuse that:
-interface MenuCardProps {
-  typeCard: 'MenuCardinHome' | 'MenuCardinStall' | 'MenuCardinSaved';
-  menuName: string;
-  price: string;
-  likes: number;
-  dislikes: number;
-  stallName: string;
-  stallLock: string;
-  imageUrl: string;
-}
 
 // Adjust this if your root navigator types differ
 type RootStackParamList = {
   MenuDetails: { menuData: MenuCardProps };
-  StallProfile: { stallData: StallData };
+  StallProfile: { stallData: StallCardProps };
 };
 
 type MenuDetailScreenRouteProp = RouteProp<RootStackParamList, 'MenuDetails'>;
@@ -43,64 +34,64 @@ const MenuDetailScreen: React.FC = () => {
 
   // Data passed from MenuCard
   const { menuData } = route.params;
-  const stallData: StallData = {
-    stallName: menuData.stallName,
-    imageUrl: menuData.imageUrl,
-    location: menuData.stallLock, // หรือแปลง location ตาม design
-    operatingHours: "10.00 - 18.00", // ถ้ายังไม่มีข้อมูลจริง ให้ mock ไว้ก่อน
-    priceRange: "25 - 60", // mock หรือรับจาก menu ก็ได้
-    tags: "Thai, Spicy", // แล้วแต่เมนู
-    reviews: 87,
-    likes: 256,
-    rating: 4.68,
-  };
 
+  const [ stallData, setStallData ] = useState<StallCardProps | undefined>(undefined);
   // Replicate "like" / "dislike" / "isLoved" logic
   const [likeCount, setLikeCount] = useState<number>(menuData.likes || 0);
   const [dislikeCount, setDislikeCount] = useState<number>(menuData.dislikes || 0);
-  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
-  const [isLoved, setIsLoved] = useState(false);
+  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(
+    (menuData.liked ? 'like' : null) || (menuData.disliked ? 'dislike' : null)
+  );
+  const [isLoved, setIsLoved] = useState(menuData.saved);
   const [whyMenuModalVisible, setWhyMenuModalVisible] = useState(false);
   const titleForSeeThisMenuModal = "Why you see this menu?";
-  const reasonForSeeThisMenu = "Example text - because you should fucking love this menu bitch!";
+  const reasonForSeeThisMenu = menuData.reason || "At KU Eater, we want people to discover food they want to try. If it's not up to your taste, tell us!";
 
+  useEffect(() => {
+    // Call stall details
+    getStallDetail(menuData.stallId).then((props) => setStallData(props));
+  }, [])
 
   const handleLikePress = () => {
-    if (userAction === 'like') {
-      // Undo like
-      setUserAction(null);
-      setLikeCount(likeCount - 1);
-    } else {
-      // Like
-      setUserAction('like');
-      setLikeCount(likeCount + 1);
-      // If previously disliked, remove that
-      if (userAction === 'dislike') {
-        setDislikeCount(dislikeCount - 1);
-      }
-    }
-  };
-
-
-  const handleDislikePress = () => {
-    if (userAction === 'dislike') {
-      // Undo dislike
-      setUserAction(null);
-      setDislikeCount(dislikeCount - 1);
-    } else {
-      // Dislike
-      setUserAction('dislike');
-      setDislikeCount(dislikeCount + 1);
-      // If previously liked, remove that
       if (userAction === 'like') {
+        setUserAction(null);
         setLikeCount(likeCount - 1);
+      } else {
+        setUserAction('like');
+        setLikeCount(likeCount + 1);
+        if (userAction === 'dislike') setDislikeCount(dislikeCount - 1);
       }
-    }
-  };
-
-  const handleLovePress = () => {
-    setIsLoved(!isLoved);
-  };
+      submitLike();
+    };
+  
+    const submitLike = useDebounce(() => {
+      submitLikeItem(menuData.id);
+    }, 1000);
+  
+    const handleDislikePress = () => {
+      if (userAction === 'dislike') {
+        setUserAction(null);
+        setDislikeCount(dislikeCount - 1);
+      } else {
+        setUserAction('dislike');
+        setDislikeCount(dislikeCount + 1);
+        if (userAction === 'like') setLikeCount(likeCount - 1);
+      }
+      submitDislike();
+    };
+  
+    const submitDislike = useDebounce(() => {
+      submitDislikeItem(menuData.id);
+    }, 1000);
+  
+    const handleLovePress = () => {
+      setIsLoved(!isLoved);
+      submitSave();
+    };
+  
+    const submitSave = useDebounce(() => {
+      submitSaveItem(menuData.id);
+    }, 1000);
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -118,6 +109,7 @@ const MenuDetailScreen: React.FC = () => {
 
   const handleStallPress = () => {
     // Example: navigate to stall’s profile if desired
+    if (stallData !== undefined)
     navigation.navigate('StallProfile', { stallData: stallData });
   };
 
@@ -151,7 +143,7 @@ const MenuDetailScreen: React.FC = () => {
           <View style={{ flex: 1 }}>
             <Text style={styles.priceText}>{menuData.price} ฿</Text>
             <Text style={styles.menuNameText} numberOfLines={2}>
-              {menuData.menuName}
+              {menuData.name}
             </Text>
           </View>
 
@@ -167,10 +159,11 @@ const MenuDetailScreen: React.FC = () => {
 
         <View style={styles.likeRow}>
           {/* "Why you see this menu?" */}
+          { menuData.score != undefined && menuData.score! >= 10 ?
           <TouchableOpacity onPress={handleWhyThisMenuPress}>
             <Text style={styles.whyMenuText}>Why you see this menu?</Text>
-          </TouchableOpacity>
-
+          </TouchableOpacity> : <></>
+          }
           {/* Likes / Dislikes Row */}
           <View style={styles.likeDislikeRow}>
             {/* Like */}

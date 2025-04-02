@@ -26,7 +26,9 @@ const CommentCard: React.FC<Props> = ({
   content,
   recommendMenus,
 }) => {
-  const displayDate = dayjs(date).fromNow(); // eg: Today, 3 days ago, etc.
+  
+  let dater = dayjs(date); // eg: Today, 3 days ago, etc.
+  const displayDate = dater.fromNow();
 
   return (
     <View style={styles.card}>

@@ -58,7 +58,7 @@ export type RootStackParamList = {
   CollectDishes: undefined;
   PersonalProfile: undefined;
   FoodPreferences: undefined;
-  ReviewRating: undefined;
+  ReviewRating: { stallId: string };
   AboutUs: undefined;
 
 };

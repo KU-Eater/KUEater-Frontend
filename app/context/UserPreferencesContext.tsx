@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 
 // Define types for user preferences
-interface UserPreferences {
+export interface UserPreferences {
     userID: string | undefined;
     gmail: string;
     username: string;

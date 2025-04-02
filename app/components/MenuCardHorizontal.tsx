@@ -2,23 +2,12 @@
 
 import React from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
-import MenuCard from './MenuCard';
-
-type Menu = {
-  id: number;
-  menuName: string;
-  price: string;
-  likes: number;
-  dislikes: number;
-  stallName: string;
-  stallLock: string;
-  imageUrl: string;
-};
+import MenuCard, { MenuCardProps } from './MenuCard';
 
 type Props = {
   title?: string;
   customTitleComponent?: React.ReactNode;
-  menus: Menu[];
+  menus: MenuCardProps[];
 };
 
 const MenuCardHorizontal = ({ title, customTitleComponent, menus }: Props) => {
@@ -40,13 +29,20 @@ const MenuCardHorizontal = ({ title, customTitleComponent, menus }: Props) => {
         {menus.map((menu) => (
           <MenuCard
             key={menu.id}
-            menuName={menu.menuName}
+            id={menu.id}
+            name={menu.name}
             price={menu.price}
             likes={menu.likes}
             dislikes={menu.dislikes}
+            stallId={menu.stallId}
             stallName={menu.stallName}
             stallLock={menu.stallLock}
             imageUrl={menu.imageUrl}
+            score={menu.score}
+            reason={menu.reason}
+            liked={menu.liked}
+            disliked={menu.disliked}
+            saved={menu.saved}
             showStallName={true}
             customWidthPercent={42}
           />

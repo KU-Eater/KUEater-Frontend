@@ -6,9 +6,12 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StallData } from '../api/dataTypes';
 import RankBadge from './ฺRankBadge';
+import { useDebounce } from '../utils/debounce';
+import { submitSaveStall } from '../api/services/mainService';
 
-interface StallCardProps extends StallData {
+export interface StallCardProps extends StallData {
   rank: number;
+  saved?: boolean;
   hideBadge?: boolean;
 }
 
@@ -19,6 +22,7 @@ type RootStackParamList = {
 
 const StallCard: React.FC<StallCardProps> = (props) => {
   const {
+    id,
     rank,
     stallName,
     imageUrl,
@@ -29,15 +33,21 @@ const StallCard: React.FC<StallCardProps> = (props) => {
     reviews,
     likes,
     rating,
+    saved
   } = props;
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(saved);
 
   const handleBookmarkPress = () => {
     setIsBookmarked(!isBookmarked);
+    submitBookmark();
   };
+
+  const submitBookmark = useDebounce(() => {
+        submitSaveStall(id);
+      }, 1000);
 
   const handleCardPress = () => {
     navigation.navigate('StallProfile', { stallData: props });

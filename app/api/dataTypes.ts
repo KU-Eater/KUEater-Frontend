@@ -1,6 +1,7 @@
 // dataTypes.ts
 
 export interface StallData {
+    id: string;
     stallName: string;
     imageUrl: string;
     location: string;

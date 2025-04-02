@@ -2,24 +2,10 @@
 
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import StallCard from './StallCard';
-
-type StallDataType = {
-  id: number;
-  rank: number;
-  stallName: string;
-  imageUrl: string;
-  location: string;
-  operatingHours: string;
-  priceRange: string;
-  tags: string;
-  reviews: number;
-  likes: number;
-  rating: number;
-};
+import StallCard, { StallCardProps } from './StallCard';
 
 interface StallCardListProps {
-  data: StallDataType[];
+  data: StallCardProps[];
   scrollEnabled?: boolean;
   title?: string;
   customTitleComponent?: React.ReactNode;
@@ -47,6 +33,7 @@ const StallCardList: React.FC<StallCardListProps> = ({
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <StallCard
+            id={item.id}
             rank={item.rank}
             stallName={item.stallName}
             imageUrl={item.imageUrl}
@@ -57,6 +44,7 @@ const StallCardList: React.FC<StallCardListProps> = ({
             reviews={item.reviews}
             likes={item.likes}
             rating={item.rating}
+            saved={item.saved}
           />
         )}
         contentContainerStyle={styles.listContent}

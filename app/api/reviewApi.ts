@@ -66,3 +66,48 @@ export const fetchMockReviewData = async (stallId: number) => {
     };
   };
   
+
+// Defines the structure for rating counts by star level
+interface StarRating {
+  total: number;
+  percent: number;
+}
+
+// Defines the structure for ratings by star level (1-5)
+interface RatingByStars {
+  five: StarRating;
+  four: StarRating;
+  three: StarRating;
+  two: StarRating;
+  one: StarRating;
+}
+
+// Defines the structure for overall rating summary
+interface RatingSummary {
+  avgStallRating: number;
+  totalReviews: number;
+  totalLikes: number;
+  totalLoved: number;
+  totalSaved: number;
+  byStars: RatingByStars;
+}
+
+
+// Defines the structure for a single review
+export interface Review {
+  name: string;
+  role: string;
+  gender: string;
+  date: string;
+  stars: number;
+  content: string;
+  recommendMenus: string[];
+}
+
+// Main interface for the stall data
+export interface RatingReviews {
+  stallID: string;
+  stallName: string;
+  ratingSummary: RatingSummary;
+  reviews: Review[];
+}
