@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Image,
   TouchableOpacity,
   Modal,
   StyleSheet
@@ -15,6 +14,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { RootStackParamList } from "../App";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import ProfilePicture from "../components/ProfilePicture";
+import InformationModal from "../components/InformationModal";
+import { writeToProfile } from "../api/services/mainService";
 
 
 type PersonalProfileScreenNavigationProp = NativeStackNavigationProp<
@@ -70,6 +71,12 @@ const PersonalProfileScreen = () => {
     updatePreferences("username", username);
     updatePreferences("role", role);
     updatePreferences("gender", gender);
+    writeToProfile({
+      ...preferences,
+      username: username,
+      role: role,
+      gender: gender
+    });
     setIsSaved(true);
   };
 
@@ -105,7 +112,7 @@ const PersonalProfileScreen = () => {
 
       {/* Profile Picture Section */}
       <View style={styles.profileSection}>
-        <ProfilePicture size={120} style={{borderColor: "#3A3838",borderWidth: 2}}/>
+        <ProfilePicture size={120} style={{ borderColor: "#3A3838", borderWidth: 2 }} />
       </View>
 
       {/* Username Field */}
@@ -166,23 +173,18 @@ const PersonalProfileScreen = () => {
       </TouchableOpacity>
 
       {/* Gender Info Modal */}
-      <Modal visible={genderInfoModalVisible} transparent animationType="fade">
-        <View style={styles.genderInfoOverlay}>
-          <View style={styles.genderInfoBody}>
-            <Text style={styles.genderInfoTitle}>Why we ask your gender?</Text>
-            <Text style={styles.genderInfoText}>{genderAskReason1}</Text>
-            <Text style={styles.genderInfoText}>{genderAskReason2}</Text>
-            <Text style={styles.genderInfoText}>{genderAskReason3}</Text>
+      <InformationModal
+        visible={genderInfoModalVisible}
+        onClose={() => setGenderInfoModalVisible(false)}
+        title="Why we ask your gender?"
+        paragraphs={[
+          genderAskReason1,
+          genderAskReason2,
+          genderAskReason3,
+        ]}
+      />
 
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setGenderInfoModalVisible(false)}
-            >
-              <Text style={styles.closeButtonText}>OK</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+
 
       {/* Role Selection Modal */}
       <Modal visible={roleModalVisible} transparent animationType="fade">
@@ -196,7 +198,7 @@ const PersonalProfileScreen = () => {
           <TouchableOpacity
             style={styles.modalBody}
             activeOpacity={1}
-            onPress={() => {}}
+            onPress={() => { }}
           >
             <Text style={styles.modalTitle}>Which one describes you the best?</Text>
             {roleOptions.map((item) => {
@@ -228,7 +230,7 @@ const PersonalProfileScreen = () => {
           <TouchableOpacity
             style={styles.modalBody}
             activeOpacity={1}
-            onPress={() => {}}
+            onPress={() => { }}
           >
             <Text style={styles.modalTitle}>Which one describes you the best?</Text>
             {genderOptions.map((item) => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,10 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MaterialIcons } from '@expo/vector-icons';
 
-// Import your new SearchBar (which includes top row + active search bar style)
 import SearchBar from '../components/SearchBar';
+import { useSearch } from '../context/SearchContext';
 
 type RootStackParamList = {
   HomeScreen: undefined;
@@ -20,15 +21,7 @@ type RootStackParamList = {
 
 const SearchScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
-  // Mock search history and suggestions
-  const [searchHistory, setSearchHistory] = useState<string[]>([
-    'ข้าวปลาซาบะย่าง',
-    'ชานมไข่มุก',
-    'อาหารคลีน',
-    'เคบับ',
-    'กะเพราหมูกรอบ',
-  ]);
+  const { history, addHistory, clearHistory } = useSearch();
 
   const searchSuggestions = [
     'Healthy',
@@ -39,53 +32,51 @@ const SearchScreen = () => {
     'Fish Steak',
   ];
 
-  // Clear search history
-  const clearSearchHistory = () => {
-    setSearchHistory([]);
-  };
-
-  // Navigate to SearchResultScreen with the tapped query
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
+    addHistory(query);
     navigation.navigate('SearchResultScreen', { query });
   };
 
   return (
     <View style={styles.container}>
-      {/* Use the new SearchBar in active mode (no isOnHomeScreen prop) */}
       <SearchBar />
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {/* Search History */}
-        <View style={styles.historyContainer}>
-          {searchHistory.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => handleSearch(item)}
-              style={styles.historyItem}
-            >
-              <Text style={styles.historyText}>{item}</Text>
-            </TouchableOpacity>
-          ))}
+        {history.length > 0 && (
+          <View style={styles.historyContainer}>
+            {history.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleSearch(item)}
+                style={styles.historyItem}
+              >
+                <View style={styles.historyRow}>
+                  <MaterialIcons name="history" size={20} color="#555" />
+                  <Text style={styles.historyText}>{item}</Text>
+                </View>
+                {index < history.length - 1 && <View style={styles.divider} />}
+              </TouchableOpacity>
+            ))}
 
-          {searchHistory.length > 0 && (
-            <TouchableOpacity onPress={clearSearchHistory}>
+            <TouchableOpacity onPress={clearHistory} style={styles.clearButton}>
               <Text style={styles.clearHistoryText}>Clear Search History</Text>
             </TouchableOpacity>
-          )}
-        </View>
+          </View>
+        )}
 
         {/* Search Suggestions */}
         <View style={styles.suggestionsContainer}>
           <Text style={styles.suggestionsTitle}>Search Suggestions</Text>
-          <View style={styles.suggestionsGrid}>
-            {searchSuggestions.map((suggestion, index) => (
+          <View style={styles.chipContainer}>
+            {searchSuggestions.map((text, index) => (
               <TouchableOpacity
                 key={index}
-                onPress={() => handleSearch(suggestion)}
-                style={styles.suggestionItem}
+                style={styles.chip}
+                onPress={() => handleSearch(text)}
               >
-                <Text style={styles.suggestionText}>{suggestion}</Text>
+                <Text style={styles.chipText}>{text}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -98,41 +89,45 @@ const SearchScreen = () => {
 export default SearchScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  contentContainer: {
-    paddingHorizontal: 14,
-    paddingBottom: 20,
-  },
-  // Search History
+  container: { flex: 1, backgroundColor: '#fff' },
+  contentContainer: { padding: 16 },
+
+  // History
   historyContainer: {
-    backgroundColor: '#FAF5F0',
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 16,
-    marginBottom: 16,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginBottom: 24,
   },
   historyItem: {
-    paddingVertical: 8,
+    paddingVertical: 10,
+  },
+  historyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   historyText: {
-    fontSize: 14,
-    color: '#006664',
+    fontSize: 16,
+    color: '#333',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e0e0e0',
+    marginTop: 12,
+  },
+  clearButton: {
+    alignItems: 'center',
+    marginTop: 16,
   },
   clearHistoryText: {
-    marginTop: 8,
-    fontSize: 12,
+    fontSize: 13,
     color: '#B33E3E',
     textDecorationLine: 'underline',
   },
+
   // Suggestions
   suggestionsContainer: {
-    backgroundColor: '#FAF5F0',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
+    marginBottom: 24,
   },
   suggestionsTitle: {
     fontSize: 16,
@@ -140,18 +135,20 @@ const styles = StyleSheet.create({
     color: '#006664',
     marginBottom: 8,
   },
-  suggestionsGrid: {
+  chipContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    gap: 8,
   },
-  suggestionItem: {
-    padding: 8,
-    backgroundColor: '#fff',
-    borderRadius: 4,
-    margin: 4,
+  chip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    backgroundColor: '#F0F0F0',
+    borderRadius: 20,
+    marginBottom: 8,
   },
-  suggestionText: {
-    fontSize: 14,
+  chipText: {
     color: '#006664',
+    fontSize: 14,
   },
 });

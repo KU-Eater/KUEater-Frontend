@@ -16,7 +16,12 @@ import { useUserPreferences } from '../context/UserPreferencesContext';
 
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { checkUserExists } from '../api/userPreferences';
+import { checkUserExists } from '../api/userPreferencesApi';
+import { CodeChallengeMethod, ResponseType } from 'expo-auth-session/build/AuthRequest.types';
+import { performAuth } from '../api/services/authService';
+import { ACCESS_TOKEN_PATH, getBackendClient } from '../api/grpcClient';
+import { AccountReadinessRequest, AccountReadinessResponse } from '../generated/data/main_pb';
+import { RpcError } from 'grpc-web';
 WebBrowser.maybeCompleteAuthSession();
 
 type LoginGoogleScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginGoogle'>;
@@ -27,48 +32,54 @@ const LoginGoogleScreen: React.FC = () => {
 
     const { preferences, updatePreferences } = useUserPreferences();
     const [request, response, promptAsync] = Google.useAuthRequest({
-        clientId: '125519731352-d6nivd7ddttrholqalln1imprb6rt0gm.apps.googleusercontent.com',
+        clientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
         redirectUri: 'http://localhost:8888',
-        scopes: ['profile', 'email'],
+        scopes: ['email', 'openid'],
+        responseType: ResponseType.Code,
+        shouldAutoExchangeCode: false,
+        usePKCE: false
     });
+
+    const [ authError, setAuthError ] = useState<string>("");
 
     useEffect(() => {
         if (response?.type === 'success') {
-            const { authentication } = response;
-            console.log('✅ Access Token:', authentication?.accessToken);
-            fetchUserInfo(authentication?.accessToken);
+            const code = response.params.code;
+            performAuth(code).then(
+                (_) => {
+                    // Login successful
+                    // TODO: Fire and check if profile is complete, if not navigate to collect username
+                    // if true, navigate to home screen
+                    getBackendClient().then(
+                        (obj) => {
+                            const { client, header } = obj;
+                            client.accountReadiness(
+                                new AccountReadinessRequest(),
+                                header, (err: RpcError, response: AccountReadinessResponse) => {
+                                    if (err) {
+                                        console.error(err);
+                                        setAuthError(err.message);
+                                    } else {
+                                        const ready: boolean = response.getReady()
+                                        if (!ready) {
+                                            navigation.navigate('CollectUsername');
+                                        } else {
+                                            navigation.replace('MainTab');
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    )
+                }, (reason) => {
+                    setAuthError(reason);
+                }
+            )
         }
     }, [response]);
 
-    const fetchUserInfo = async (token?: string) => {
-        if (!token) return;
-        try {
-            const res = await fetch('https://www.googleapis.com/userinfo/v2/me', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            const user = await res.json();
-            console.log('✅ Google User:', user);
-            alert(`Welcome ${user.name}`);
-
-            const backendRes = await checkUserExists(user.email);
-
-            if (backendRes.preferences) {
-                navigation.replace('MainTab');
-            } else {
-                updatePreferences("gmail", user.email);
-                navigation.replace('CollectUsername');
-            }
-        } catch (error) {
-            console.error('Google Login Error:', error);
-        }
-    };
-
     const handleGoogleLogin = async () => {
-        const result = await promptAsync();
-        if (result?.type === 'success') {
-          const { authentication } = result;
-          fetchUserInfo(authentication?.accessToken);
-        }
+        await promptAsync();
       };
 
 

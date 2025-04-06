@@ -24,6 +24,7 @@ import CollectMealScreen from './screens/CollectMealScreen';
 import CollectDishesScreen from './screens/CollectDishesScreen';
 import PersonalProfileScreen from './screens/PersonalProfileScreen';
 import FoodPreferencesScreen from './screens/FoodPreferencesScreen';
+import ReviewRatingScreen from './screens/ReviewRatingScreen';
 
 import { UserPreferencesProvider } from './context/UserPreferencesContext';
 
@@ -32,6 +33,10 @@ import AccountScreen from './screens/AccountScreen';
 import * as Font from "expo-font";
 import { ActivityIndicator, View } from "react-native";
 import { FeedbackProvider } from './context/FeedbackContext';
+import { SearchProvider } from './context/SearchContext';
+import { StallData } from './api/dataTypes';
+
+
 
 // ประกาศ type สำหรับ Stack ถ้าต้องการใช้กับ TypeScript
 // (ถ้าไม่ต้องการบังคับ type แน่น ก็สามารถใช้ any ได้)
@@ -40,10 +45,11 @@ export type RootStackParamList = {
   Signup: undefined;
   LoginGoogle: undefined;
   MainTab: undefined;
+  HomeScreen: undefined;
   Account: undefined;
   SearchScreen: undefined;
-  SearchResultScreen: undefined;
-  StallProfile: undefined;
+  SearchResultScreen: { query: string };
+  StallProfile: { stallData: StallData };
   MenuDetails: undefined;
   CollectUsername: undefined;
   CollectRole: undefined;
@@ -52,6 +58,8 @@ export type RootStackParamList = {
   CollectDishes: undefined;
   PersonalProfile: undefined;
   FoodPreferences: undefined;
+  ReviewRating: { stallId: string };
+  AboutUs: undefined;
 
 };
 
@@ -88,8 +96,9 @@ export default function App() {
   return (
     <UserPreferencesProvider>
       <FeedbackProvider>
+      <SearchProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="CollectUsername">
+          <Stack.Navigator initialRouteName="LoginGoogle">
 
             {/* 1) หน้า Login with google */}
             <Stack.Screen
@@ -197,9 +206,18 @@ export default function App() {
               }} />
 
 
+            <Stack.Screen
+              name="ReviewRating"
+              component={ReviewRatingScreen}
+              options={{
+                headerShown: false,
+              }} />
+
+
 
           </Stack.Navigator>
         </NavigationContainer>
+        </SearchProvider>
       </FeedbackProvider>
     </UserPreferencesProvider>
   );

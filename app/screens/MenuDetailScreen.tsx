@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,77 +8,90 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
-
-
+import { StallData } from '../api/dataTypes';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import InformationModal from '../components/InformationModal';
+import { StallCardProps } from '../components/StallCard';
+import { MenuCardProps } from '../components/MenuCard';
+import { getStallDetail, submitDislikeItem, submitLikeItem, submitSaveItem } from '../api/services/mainService';
+import { useDebounce } from '../utils/debounce';
 
 
 // If you already have a type or interface for the passed data, reuse that:
-interface MenuCardProps {
-  typeCard: 'MenuCardinHome' | 'MenuCardinStall' | 'MenuCardinSaved';
-  menuName: string;
-  price: string;
-  likes: number;
-  dislikes: number;
-  stallName: string;
-  stallLock: string;
-  imageUrl: string;
-}
 
 // Adjust this if your root navigator types differ
 type RootStackParamList = {
   MenuDetails: { menuData: MenuCardProps };
+  StallProfile: { stallData: StallCardProps };
 };
 
 type MenuDetailScreenRouteProp = RouteProp<RootStackParamList, 'MenuDetails'>;
 
 const MenuDetailScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const route = useRoute<MenuDetailScreenRouteProp>();
 
   // Data passed from MenuCard
   const { menuData } = route.params;
 
+  const [ stallData, setStallData ] = useState<StallCardProps | undefined>(undefined);
   // Replicate "like" / "dislike" / "isLoved" logic
   const [likeCount, setLikeCount] = useState<number>(menuData.likes || 0);
   const [dislikeCount, setDislikeCount] = useState<number>(menuData.dislikes || 0);
-  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
-  const [isLoved, setIsLoved] = useState(false);
+  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(
+    (menuData.liked ? 'like' : null) || (menuData.disliked ? 'dislike' : null)
+  );
+  const [isLoved, setIsLoved] = useState(menuData.saved);
+  const [whyMenuModalVisible, setWhyMenuModalVisible] = useState(false);
+  const titleForSeeThisMenuModal = "Why you see this menu?";
+  const reasonForSeeThisMenu = menuData.reason || "At KU Eater, we want people to discover food they want to try. If it's not up to your taste, tell us!";
+
+  useEffect(() => {
+    // Call stall details
+    getStallDetail(menuData.stallId).then((props) => setStallData(props));
+  }, [])
 
   const handleLikePress = () => {
-    if (userAction === 'like') {
-      // Undo like
-      setUserAction(null);
-      setLikeCount(likeCount - 1);
-    } else {
-      // Like
-      setUserAction('like');
-      setLikeCount(likeCount + 1);
-      // If previously disliked, remove that
-      if (userAction === 'dislike') {
-        setDislikeCount(dislikeCount - 1);
-      }
-    }
-  };
-
-  const handleDislikePress = () => {
-    if (userAction === 'dislike') {
-      // Undo dislike
-      setUserAction(null);
-      setDislikeCount(dislikeCount - 1);
-    } else {
-      // Dislike
-      setUserAction('dislike');
-      setDislikeCount(dislikeCount + 1);
-      // If previously liked, remove that
       if (userAction === 'like') {
+        setUserAction(null);
         setLikeCount(likeCount - 1);
+      } else {
+        setUserAction('like');
+        setLikeCount(likeCount + 1);
+        if (userAction === 'dislike') setDislikeCount(dislikeCount - 1);
       }
-    }
-  };
-
-  const handleLovePress = () => {
-    setIsLoved(!isLoved);
-  };
+      submitLike();
+    };
+  
+    const submitLike = useDebounce(() => {
+      submitLikeItem(menuData.id);
+    }, 1000);
+  
+    const handleDislikePress = () => {
+      if (userAction === 'dislike') {
+        setUserAction(null);
+        setDislikeCount(dislikeCount - 1);
+      } else {
+        setUserAction('dislike');
+        setDislikeCount(dislikeCount + 1);
+        if (userAction === 'like') setLikeCount(likeCount - 1);
+      }
+      submitDislike();
+    };
+  
+    const submitDislike = useDebounce(() => {
+      submitDislikeItem(menuData.id);
+    }, 1000);
+  
+    const handleLovePress = () => {
+      setIsLoved(!isLoved);
+      submitSave();
+    };
+  
+    const submitSave = useDebounce(() => {
+      submitSaveItem(menuData.id);
+    }, 1000);
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -91,12 +104,13 @@ const MenuDetailScreen: React.FC = () => {
 
   const handleWhyThisMenuPress = () => {
     // Example: show modal, or navigate to explanation screen
-    console.log('Why you see this menu? pressed');
+    setWhyMenuModalVisible(true);
   };
 
   const handleStallPress = () => {
     // Example: navigate to stall’s profile if desired
-    console.log('Stall pressed!');
+    if (stallData !== undefined)
+    navigation.navigate('StallProfile', { stallData: stallData });
   };
 
   return (
@@ -129,7 +143,7 @@ const MenuDetailScreen: React.FC = () => {
           <View style={{ flex: 1 }}>
             <Text style={styles.priceText}>{menuData.price} ฿</Text>
             <Text style={styles.menuNameText} numberOfLines={2}>
-              {menuData.menuName}
+              {menuData.name}
             </Text>
           </View>
 
@@ -144,32 +158,33 @@ const MenuDetailScreen: React.FC = () => {
         </View>
 
         <View style={styles.likeRow}>
-        {/* "Why you see this menu?" */}
-        <TouchableOpacity onPress={handleWhyThisMenuPress}>
-              <Text style={styles.whyMenuText}>Why you see this menu?</Text>
-        </TouchableOpacity>
+          {/* "Why you see this menu?" */}
+          { menuData.score != undefined && menuData.score! >= 10 ?
+          <TouchableOpacity onPress={handleWhyThisMenuPress}>
+            <Text style={styles.whyMenuText}>Why you see this menu?</Text>
+          </TouchableOpacity> : <></>
+          }
+          {/* Likes / Dislikes Row */}
+          <View style={styles.likeDislikeRow}>
+            {/* Like */}
+            <TouchableOpacity onPress={handleLikePress} style={styles.likeDislikeButton}>
+              <FontAwesome
+                name="thumbs-up"
+                size={20}
+                color={userAction === 'like' ? '#008884' : '#999'}
+              />
+              <Text style={styles.likeCountText}>{likeCount}</Text>
+            </TouchableOpacity>
 
-        {/* Likes / Dislikes Row */}
-        <View style={styles.likeDislikeRow}>
-          {/* Like */}
-          <TouchableOpacity onPress={handleLikePress} style={styles.likeDislikeButton}>
-            <FontAwesome
-              name="thumbs-up"
-              size={20}
-              color={userAction === 'like' ? '#008884' : '#999'}
-            />
-            <Text style={styles.likeCountText}>{likeCount}</Text>
-          </TouchableOpacity>
-
-          {/* Dislike */}
-          <TouchableOpacity onPress={handleDislikePress} style={styles.likeDislikeButton}>
-            <FontAwesome
-              name="thumbs-down"
-              size={20}
-              color={userAction === 'dislike' ? '#B33E3E' : '#999'}
-            />
-          </TouchableOpacity>
-        </View>
+            {/* Dislike */}
+            <TouchableOpacity onPress={handleDislikePress} style={styles.likeDislikeButton}>
+              <FontAwesome
+                name="thumbs-down"
+                size={20}
+                color={userAction === 'dislike' ? '#B33E3E' : '#999'}
+              />
+            </TouchableOpacity>
+          </View>
 
         </View>
 
@@ -188,17 +203,17 @@ const MenuDetailScreen: React.FC = () => {
           <View style={styles.stallDetails}>
 
             <View style={styles.stallNameContainer}>
-            <Ionicons name="restaurant" size={15} color="#999"/>
-            <Text style={styles.stallTitle}>
-              {'  '}
-              {menuData.stallLock} | {menuData.stallName}
-            </Text>
+              <Ionicons name="restaurant" size={15} color="#999" />
+              <Text style={styles.stallTitle}>
+                {'  '}
+                {menuData.stallLock} | {menuData.stallName}
+              </Text>
             </View>
 
             {/* Example: Category + rating */}
             <View style={styles.stallSubRow}>
               <Ionicons name="pricetags" size={13} color="#999" />
-              
+
               <Text style={styles.stallCategory}>{'  '} Beverages</Text>
               <Text style={styles.stallRating}>
                 <Ionicons name="star" size={13} color="#D49E3A" /> 4.92
@@ -211,6 +226,16 @@ const MenuDetailScreen: React.FC = () => {
         </TouchableOpacity>
         <View style={styles.divider} />
         {/* Optionally more sections or content below */}
+
+        <InformationModal
+  visible={whyMenuModalVisible}
+  onClose={() => setWhyMenuModalVisible(false)}
+  title={titleForSeeThisMenuModal}
+  paragraphs={[
+    reasonForSeeThisMenu
+  ]}
+/>
+
       </View>
     </View>
   );
@@ -320,7 +345,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#DDD',
     marginTop: 10,
     marginBottom: 16,
-    
+
   },
   // Stall row
   stallRow: {

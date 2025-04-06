@@ -1,6 +1,4 @@
-// components/SearchBar.tsx
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,64 +8,64 @@ import {
   Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSearch } from '../context/SearchContext';
 
 type RootStackParamList = {
   HomeScreen: undefined;
   SearchScreen: undefined;
   SearchResultScreen: { query: string };
-  // ... any others
 };
 
 interface SearchBarProps {
-  isOnHomeScreen?: boolean; // if true => inactive style
+  isOnHomeScreen?: boolean;
 }
-
-
 
 const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const route = useRoute();
 
-  // We'll keep a local search text state, in case you want to type in the active style
+  const { addHistory } = useSearch();
+
+  const [language, setLanguage] = useState('ENG 🇬🇧');
   const [searchText, setSearchText] = useState('');
 
-  // Language toggle
-  const [language, setLanguage] = useState('ENG 🇬🇧');
+  useEffect(() => {
+    const query = (route.params as any)?.query;
+    if (query) setSearchText(query);
+  }, [route.params]);
+
   const handleLanguageToggle = () => {
     setLanguage((prev) => (prev === 'ENG 🇬🇧' ? 'THA 🇹🇭' : 'ENG 🇬🇧'));
   };
 
-  // On HomeScreen, tapping the TextInput navigates to SearchScreen
   const handleFocus = () => {
     if (isOnHomeScreen) {
       navigation.navigate('SearchScreen');
     }
   };
 
-  // For the active style (if we want a back arrow or a search action)
   const handleBack = () => {
     navigation.goBack();
   };
 
   const handleSearch = () => {
-    // In the active style, you might navigate to results or do something else
     const trimmed = searchText.trim();
     if (!trimmed) return;
+    addHistory(trimmed);
     navigation.navigate('SearchResultScreen', { query: trimmed });
   };
 
   return (
     <View style={styles.container}>
-      {/* Top Row - Location, Logo, Language (same for both) */}
+      {/* Top Row */}
       <View style={styles.topRow}>
-        {/* Location (Left-aligned) */}
         <View style={styles.locationContainer}>
           <Ionicons name="location-sharp" size={15} color="#B33E3E" />
           <Text style={styles.locationText}>Bar Mai</Text>
         </View>
 
-        {/* Centered Logo */}
         <Image
           source={{
             uri: 'https://raw.githubusercontent.com/KU-Eater/KUEater-Frontend/refs/heads/base-gui/app/assets/logo_home.png',
@@ -75,19 +73,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
           style={styles.logo}
         />
 
-        {/* Language Switch (Right-aligned) */}
-        <TouchableOpacity onPress={handleLanguageToggle} style={styles.languageSwitch}>
+        <TouchableOpacity onPress={handleLanguageToggle} style={styles.languageSwitch} disabled>
           <Text style={styles.languageText}>{language}</Text>
         </TouchableOpacity>
       </View>
 
-      {/* 
-        Search Bar Container 
-        We'll keep the same container style, but conditionally render 
-        the "inactive" vs "active" layout inside.
-      */}
+      {/* Search Bar */}
       {isOnHomeScreen ? (
-        // =============== INACTIVE STYLE (Home Screen) ===============
         <View style={styles.inactiveSearchContainer}>
           <Ionicons name="search-outline" size={20} color="#999" style={styles.searchIcon} />
           <TextInput
@@ -98,17 +90,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
           />
         </View>
       ) : (
-        // =============== ACTIVE STYLE (Search or Result Screen) ===============
         <View style={styles.activeSearchContainer}>
-          {/* Back Arrow (left) */}
           <TouchableOpacity onPress={handleBack} style={styles.arrowContainer}>
             <Ionicons name="arrow-back-outline" size={20} color="#999" />
           </TouchableOpacity>
 
-          {/* TextInput (middle) */}
           <TextInput
             style={styles.activeSearchInput}
-            placeholder="สตอเบอรี่ปั่น"
+            placeholder="Try searching for menu or food stall"
             placeholderTextColor="#999"
             value={searchText}
             onChangeText={setSearchText}
@@ -116,7 +105,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
             returnKeyType="search"
           />
 
-          {/* Teal Circle with White Search Icon (right) */}
+          {searchText.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchText('')} style={styles.clearIcon}>
+              <Ionicons name="close" size={18} color="#888" />
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity style={styles.searchIconCircle} onPress={handleSearch}>
             <Ionicons name="search-outline" size={18} color="#fff" />
           </TouchableOpacity>
@@ -129,7 +123,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
 export default SearchBar;
 
 const styles = StyleSheet.create({
-  // Overall container for top row + search bar
   container: {
     paddingVertical: 15,
     paddingHorizontal: 14,
@@ -137,14 +130,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
-
-  /* =================== TOP ROW =================== */
   topRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'center',
     position: 'relative',
-    marginTop: 30,
+    marginTop: 40,
   },
   locationContainer: {
     position: 'absolute',
@@ -178,8 +169,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#3A3838',
   },
-
-  /* =================== INACTIVE SEARCH BAR (Home) =================== */
   inactiveSearchContainer: {
     marginTop: -15,
     flexDirection: 'row',
@@ -190,15 +179,14 @@ const styles = StyleSheet.create({
     height: 40,
   },
   searchIcon: {
-    marginRight: 8,
+    marginRight: 4,
   },
   searchInput: {
     flex: 1,
     fontSize: 14,
     color: '#333',
+    alignSelf: "center"
   },
-
-  /* =================== ACTIVE SEARCH BAR (Search Screen) =================== */
   activeSearchContainer: {
     marginTop: -15,
     flexDirection: 'row',
@@ -216,13 +204,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
+  clearIcon: {
+    marginHorizontal: 10,
+  },
   searchIconCircle: {
-    width: 30,
+    width: 50,
     height: 30,
     borderRadius: 15,
     backgroundColor: '#006664',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 8,
   },
 });
+

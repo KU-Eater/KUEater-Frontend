@@ -25,6 +25,7 @@ import {
 
 // Chips Component
 import Chips from "../components/Chips";
+import { writeToPreferences } from "../api/services/mainService";
 
 type FoodPreferencesScreenNavigationProp = NativeStackNavigationProp<
     RootStackParamList,
@@ -44,7 +45,7 @@ const FoodPreferencesScreen: React.FC = () => {
 
     // State to track if everything is currently saved
     const [isSaved, setIsSaved] = useState(true);
-
+    const isFavoriteDishValid = favoriteDishes.length >= 5;
     // Compare local states to context to enable or disable the "Save" button
     useEffect(() => {
         const changed =
@@ -64,6 +65,16 @@ const FoodPreferencesScreen: React.FC = () => {
         updatePreferences("favoriteCuisines", favoriteCuisines);
         updatePreferences("dislikedIngredients", dislikedIngredients);
         updatePreferences("favoriteDishes", favoriteDishes);
+        writeToPreferences(
+            {
+                ...preferences,
+                dietaryPreferences: dietaryPref,
+                allergies: allergies,
+                favoriteCuisines: favoriteCuisines,
+                dislikedIngredients: dislikedIngredients,
+                favoriteDishes: favoriteDishes,
+            }
+        )
         setIsSaved(true);
     };
 
@@ -81,16 +92,16 @@ const FoodPreferencesScreen: React.FC = () => {
 
                 <TouchableOpacity
                     onPress={handleSave}
-                    disabled={isSaved}
+                    disabled={isSaved || !isFavoriteDishValid}
                     style={styles.headerRight}
                 >
                     <Ionicons
                         name="checkmark-outline"
                         size={17}
                         style={{ marginRight: 5 }}
-                        color={isSaved ? "#aaa" : "#006664"}
+                        color={(isSaved || !isFavoriteDishValid)? "#aaa" : "#006664"}
                     />
-                    <Text style={[styles.saveButton, !isSaved && { color: "#006664" }]}>
+                    <Text style={[styles.saveButton, (!isSaved && isFavoriteDishValid) && { color: "#006664" }]}>
                         {saveLabel}
                     </Text>
                 </TouchableOpacity>

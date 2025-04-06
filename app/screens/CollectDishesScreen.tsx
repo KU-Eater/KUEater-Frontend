@@ -9,6 +9,7 @@ import GradientButton from "../components/GradientButton";
 import Chips from "../components/Chips";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import { dishesOptions } from "../api/preferencesData";
+import { createAccount } from "../api/services/mainService";
 
 type CollectDishesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectDishes">;
 
@@ -24,7 +25,14 @@ const CollectDishesScreen = () => {
   const handleNext = () => {
     if (selectedDishes.length >= 5) {
       updatePreferences("favoriteDishes", selectedDishes); // Store favorite dishes
-      navigation.navigate("MainTab");
+      createAccount({...preferences, favoriteDishes: selectedDishes}).then(
+        (_) => {
+          navigation.navigate("MainTab");
+        },
+        (e) => {
+          console.error(e);
+        }
+      )
     }
   };
 
@@ -56,7 +64,9 @@ const CollectDishesScreen = () => {
 
         <Text style={styles.title}>Select your Favorite Dishes! ❤︎</Text>
 
-        <Text style={styles.infoText}>You can change them later on Setting.</Text>
+        <Text style={styles.infoText}>No worry! Just choose it real quick. {'\n'}
+          You can change them later on Account.</Text>
+        
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {/* Favorite Dishes Section */}
@@ -65,7 +75,7 @@ const CollectDishesScreen = () => {
 
         {/* Next Button with dynamic counter */}
         <View style={styles.buttonWrapper}>
-          <GradientButton title={`Finish! (${selectedDishes.length}/5)`} onPress={handleNext} disabled={selectedDishes.length < 10} />
+          <GradientButton title={`Finish! (${selectedDishes.length}/5)`} onPress={handleNext} disabled={selectedDishes.length < 5} />
         </View>
       </View>
     </View>
@@ -103,6 +113,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     marginTop: 10,
     marginBottom: 15,
+    lineHeight: 20
   },
   scrollContainer: {
     paddingBottom: 20,

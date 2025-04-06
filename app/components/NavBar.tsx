@@ -44,9 +44,13 @@ const BookmarkHeartIcon: React.FC<IconProps>= ({ focused, size, color}) => {
 export default function NavBar() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+    screenOptions={({ route }: { route: any }) => ({
         headerShown: false, // Hide the top header
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, color, size }: { 
+          focused: boolean; 
+          color: string; 
+          size: number }) => {
+            
           let iconName: any;
 
           if (route.name === 'Home') {

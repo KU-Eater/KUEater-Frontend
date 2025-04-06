@@ -4,18 +4,15 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StallData } from '../api/dataTypes';
+import RankBadge from './ฺRankBadge';
+import { useDebounce } from '../utils/debounce';
+import { submitSaveStall } from '../api/services/mainService';
 
-interface StallCardProps {
+export interface StallCardProps extends StallData {
   rank: number;
-  stallName: string;
-  imageUrl: string;
-  location: string;
-  operatingHours: string;
-  priceRange: string;
-  tags: string;
-  reviews: number;
-  likes: number;
-  rating: number;
+  saved?: boolean;
+  hideBadge?: boolean;
 }
 
 // Define the navigation stack types
@@ -25,6 +22,7 @@ type RootStackParamList = {
 
 const StallCard: React.FC<StallCardProps> = (props) => {
   const {
+    id,
     rank,
     stallName,
     imageUrl,
@@ -35,15 +33,21 @@ const StallCard: React.FC<StallCardProps> = (props) => {
     reviews,
     likes,
     rating,
+    saved
   } = props;
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(saved);
 
   const handleBookmarkPress = () => {
     setIsBookmarked(!isBookmarked);
+    submitBookmark();
   };
+
+  const submitBookmark = useDebounce(() => {
+        submitSaveStall(id);
+      }, 1000);
 
   const handleCardPress = () => {
     navigation.navigate('StallProfile', { stallData: props });
@@ -51,9 +55,7 @@ const StallCard: React.FC<StallCardProps> = (props) => {
 
   return (
     <TouchableOpacity style={styles.card} onPress={handleCardPress}>
-      <View style={styles.rankBadge}>
-        <Text style={styles.rankText}>TOP {rank}</Text>
-      </View>
+      {!props.hideBadge && <RankBadge rank={rank} />}
 
       <Image source={{ uri: imageUrl }} style={styles.image} />
 
@@ -110,21 +112,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 1,
   },
-  rankBadge: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    backgroundColor: '#006662',
-    borderRadius: 4,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    zIndex: 2,
-  },
-  rankText: {
-    fontSize: 12,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
+
   image: {
     width: '40%',
     height: '100%',
@@ -184,4 +172,5 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     color: '#3A3838',
   },
+
 });

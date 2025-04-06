@@ -1,148 +1,78 @@
 // screens/StallProfileScreen.tsx
-import React, { useState } from 'react';
-import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity,FlatList} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import MenuCard, { MenuCardProps } from '../components/MenuCard'; // Adjust the path
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import MenuCard from '../components/MenuCard'; // Adjust the path
+import { RootStackParamList } from '../App';
+import { StallData } from '../api/dataTypes';
+import MenuCardGrid from '../components/MenuCardGrid';
+import { StallCardProps } from '../components/StallCard';
+import { getMenuOfStall, submitSaveStall } from '../api/services/mainService';
+import { useDebounce } from '../utils/debounce';
 
 
-
-
-interface StallData {
-  stallName: string;
-  imageUrl: string;
-  location: string;
-  operatingHours: string;
-  priceRange: string;
-  tags: string;
-  reviews: number;
-  likes: number;
-  rating: number;
-}
 
 type RouteParams = {
-  stallData: StallData;
+  stallData: StallCardProps;
 };
 
-const mockStallMenuData = [
-  {
-    id: 1,
-    menuName: 'Deep-fried battered chicken thigh',
-    price: '25',
-    likes: 956,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22001_hsn5yx.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-    id: 2,
-    menuName: 'Deep-fried battered chicken drumstick',
-    price: '18',
-    likes: 641,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22002_agofym.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-    id: 3,
-    menuName: 'Sticky rice',
-    price: '5',
-    likes: 92,
-    dislikes: 0,
-    stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-    stallLock: '22',
-    imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721435/22003_aggstb.jpg',
-    typeCard: 'MenuCardinStall' as const,
-  },
-  {
-      id: 4,
-      menuName: 'White rice',
-      price: '10',
-      likes: 44,
-      dislikes: 0,
-      stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-      stallLock: '22',
-      imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721436/22004_uh1ykb.jpg',
-      typeCard: 'MenuCardinStall' as const,
-    },
-    {
-      id: 5,
-      menuName: 'Hainanese rice',
-      price: '10',
-      likes: 68,
-      dislikes: 0,
-      stallName: 'Mr. Raw Fried Chicken (A La Carte)',
-      stallLock: '22',
-      imageUrl: 'https://res.cloudinary.com/dejzapat4/image/upload/v1739721436/22005_gzh7co.jpg',
-      typeCard: 'MenuCardinStall' as const,
-    },
-    
-];
 
+type StallProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'StallProfile'>;
 
 const StallProfileScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StallProfileScreenNavigationProp>();
   const route = useRoute();
   const { stallData } = route.params as RouteParams;
 
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [ menu, setMenu ] = useState<MenuCardProps[]>([]);
+  const [isBookmarked, setIsBookmarked] = useState(stallData.saved);
   const [isShared, setIsShared] = useState(false);
 
   const handleBookmarkPress = () => {
-    setIsBookmarked(!isBookmarked);
+    setIsBookmarked(!isBookmarked)
+    submitBookmark();
   };
+  const handleSharePress = () => setIsShared(!isShared);
+  const handleReview = () => navigation.navigate("ReviewRating", {
+    stallId: stallData.id
+  });
 
-  const handleSharePress = () => {
-    setIsShared(!isShared);
-  };
+  const submitBookmark = useDebounce(() => {
+      submitSaveStall(stallData.id);
+    }, 1000);
 
-  // Create a header component so FlatList can handle scrolling
+  useEffect(() => {
+    getMenuOfStall(stallData.id).then((data) => setMenu(data));
+  }, [])
+
   const renderHeader = () => (
     <>
-      {/* Banner Container */}
       <View style={styles.bannerContainer}>
         <Image source={{ uri: stallData.imageUrl }} style={styles.bannerImage} />
-
-        {/* Back Button */}
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={26} color="#006664" />
         </TouchableOpacity>
-
-        {/* Share Button */}
         <TouchableOpacity style={styles.shareButton} onPress={handleSharePress}>
           <Ionicons name="share-social" size={26} color="#006664" />
         </TouchableOpacity>
       </View>
 
-      {/* Main Content */}
       <View style={styles.content}>
-        {/* Stall Name + Bookmark */}
-        <View>
+        
+        <View style={styles.stallNameContainer}>
           <Text style={styles.stallName}>{stallData.stallName}</Text>
 
-          <TouchableOpacity
-            style={styles.bookmarkButton}
-            onPress={handleBookmarkPress}
-          >
-            <Ionicons
-              name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
-              size={26}
-              color={isBookmarked ? '#006664' : '#C1C1C1'}
-            />
+          <TouchableOpacity style={styles.bookmarkButton} onPress={handleBookmarkPress}>
+            <Ionicons name="bookmark" size={35} color={isBookmarked ? '#006664' : '#D0CECE'} />
           </TouchableOpacity>
+
         </View>
 
         <View style={styles.divider} />
 
-        {/* Rating & Review */}
-        <TouchableOpacity style={styles.ratingRow}>
+        <TouchableOpacity style={styles.ratingRow} onPress={handleReview}>
           <Ionicons name="star" size={18} color="#D49E3A" />
           <Text style={styles.ratingText}>{stallData.rating.toFixed(2)}</Text>
           <Text style={styles.reviewText}> • Rating and Review this Stall</Text>
@@ -151,7 +81,6 @@ const StallProfileScreen: React.FC = () => {
 
         <View style={styles.divider} />
 
-        {/* Operating Hours */}
         <View style={styles.infoRow}>
           <View style={styles.infoColumn}>
             <Ionicons name="calendar" size={18} color="#777" />
@@ -165,7 +94,6 @@ const StallProfileScreen: React.FC = () => {
 
         <View style={styles.divider} />
 
-        {/* Location */}
         <View style={styles.infoRow}>
           <View style={styles.infoColumn}>
             <FontAwesome5 name="store" size={16} color="#777" />
@@ -182,7 +110,6 @@ const StallProfileScreen: React.FC = () => {
 
         <View style={styles.divider} />
 
-        {/* Price & Tags */}
         <View style={styles.infoRow}>
           <View style={styles.infoColumn}>
             <Ionicons name="logo-bitcoin" size={18} color="#777" />
@@ -195,36 +122,19 @@ const StallProfileScreen: React.FC = () => {
         </View>
       </View>
 
-      {/* Optional divider before menu list */}
-      <View style={styles.divider} />
+
+
+      <Text style={styles.menus}>Menus</Text>
     </>
   );
 
-  // Render each menu card item
-  const renderMenuItem = ({ item }: any) => (
-    <MenuCard
-      menuName={item.menuName}
-      price={item.price}
-      likes={item.likes}
-      dislikes={item.dislikes}
-      stallName={item.stallName}
-      stallLock={item.stallLock}
-      imageUrl={item.imageUrl}
-      typeCard={item.typeCard}
-    />
-  );
-
   return (
+
     <View style={styles.container}>
-      <FlatList
-        data={mockStallMenuData}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderMenuItem}
-        numColumns={2}
-        columnWrapperStyle={styles.menuColumn}
-        contentContainerStyle={styles.listContent}
-        ListHeaderComponent={renderHeader}  // <-- Use ListHeaderComponent here
-      />
+      <ScrollView>{renderHeader()}
+        <MenuCardGrid data={menu} showStallName={false} scrollEnabled={false} />
+      </ScrollView>
+
     </View>
   );
 };
@@ -262,12 +172,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 6,
   },
-  bookmarkButton: {
-    position: 'absolute',
-    top: 5,
-    right: 16,
-    padding: 8,
-  },
   content: {
     backgroundColor: '#FFFFFF',
     padding: 16,
@@ -278,6 +182,23 @@ const styles = StyleSheet.create({
     color: '#333',
     marginVertical: 10,
     marginLeft: 14,
+  },
+  bookmarkButton: {
+    padding: 8,
+    paddingRight: 16,
+    paddingTop: 10
+  },
+  stallNameContainer:{
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  menus: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#006664',
+    marginLeft: 16,
+    marginTop: 16,
+    marginBottom: 10
   },
   ratingRow: {
     flexDirection: 'row',

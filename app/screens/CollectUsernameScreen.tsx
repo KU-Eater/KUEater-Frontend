@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -7,6 +7,9 @@ import { Ionicons } from '@expo/vector-icons';
 import GradientProgressBar from "../components/GradientProgressBar";
 import GradientButton from "../components/GradientButton";
 import { useUserPreferences } from "../context/UserPreferencesContext"; // Import context
+import CommentCard from "../components/CommentCard";
+
+
 
 type CollectUsernameScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "CollectUsername">;
 
@@ -14,7 +17,7 @@ type CollectUsernameScreenNavigationProp = NativeStackNavigationProp<RootStackPa
 const CollectUsernameScreen = () => {
     const navigation = useNavigation<CollectUsernameScreenNavigationProp>();
     const { preferences, updatePreferences } = useUserPreferences();
-    
+
     const [username, setUsername] = useState(preferences.username); // Load stored value
 
     useEffect(() => {
@@ -31,7 +34,7 @@ const CollectUsernameScreen = () => {
 
     // Function to handle "Back" navigation
     const handleBack = () => {
-            navigation.navigate("LoginGoogle");
+        navigation.navigate("LoginGoogle");
     };
 
     return (
@@ -53,19 +56,25 @@ const CollectUsernameScreen = () => {
                 <Text style={styles.title}>What'll be your Username?</Text>
 
                 {/* Input Field */}
-                <TextInput
-                    placeholder="Type any username"
-                    value={username}
-                    onChangeText={setUsername}
-                    style={styles.input}
-                    placeholderTextColor="#B0B0B0"
-                />
+                    <TextInput
+                        placeholder="Type any username"
+                        value={username}
+                        onChangeText={setUsername}
+                        style={styles.input}
+                        placeholderTextColor="#B0B0B0"
+                        maxLength={30}
+                    />
+                    <Text style={styles.counterText}>{username.length}/30</Text>
+
+
 
                 {/* Helper Text */}
                 <Text style={styles.helperText}>
                     This is how it’ll appear on your profile{"\n"}
                     <Text style={{ fontWeight: "bold" }}>You can change it later.</Text>
                 </Text>
+
+
 
                 {/* Next Button */}
                 <View style={styles.buttonWrapper}>
@@ -108,17 +117,17 @@ const styles = StyleSheet.create({
         lineHeight: 51,
     },
     input: {
+        borderBottomColor: "#D9D9D9",
         borderBottomWidth: 0.6,
-        borderBottomColor: "#B0B0B0",
         fontSize: 18,
         paddingTop: 5,
-        marginBottom: 15,
+        marginBottom: 4,
         color: "#3A3838",
         alignItems: "center",
         alignSelf: "center",
         width: "95%",
-        
     },
+
     helperText: {
         fontSize: 14,
         color: "#666",
@@ -130,6 +139,14 @@ const styles = StyleSheet.create({
     buttonWrapper: {
         marginTop: "auto",
         paddingVertical: 20,
+    },
+
+    counterText: {
+        marginTop:4,
+        marginRight:12,
+        alignSelf:"flex-end",
+        fontSize: 12,
+        color: '#999',
     },
 });
 
