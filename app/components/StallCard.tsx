@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 4,
     elevation: 1,
+    
   },
 
   image: {
@@ -121,14 +122,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#006664',
+    marginTop: 8,
     marginBottom: 4,
     marginLeft: 4,
+    marginRight: 34,
   },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 2,
     marginLeft: 4,
+
   },
   infoText: {
     fontSize: 12,
@@ -147,6 +151,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 6,
     marginHorizontal: 4,
+    marginBottom:5,
+    marginRight:10
   },
   stat: {
     fontSize: 11,

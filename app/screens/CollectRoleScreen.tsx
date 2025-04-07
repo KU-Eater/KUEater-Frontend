@@ -24,7 +24,7 @@ const CollectRoleScreen = () => {
 
 
     // Role options
-    const roles = ["KU Student", "Exchange Student", "KU Professor", "KU Staff", "Guest"];
+    const roles = ["KU Student", "Exchange Student", "KU Professor", "KU Staff","Alumnus", "Guest"];
 
     // Function to handle "Next" navigation
     const handleNext = () => {
@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
         lineHeight: 48,
     },
     roleButton: {
-        marginTop: 30,
-        paddingVertical: 16,
+        marginTop: 24,
+        paddingVertical: 18,
         paddingHorizontal: 20,
         borderWidth: 1,
         borderColor: "#D0CECE",

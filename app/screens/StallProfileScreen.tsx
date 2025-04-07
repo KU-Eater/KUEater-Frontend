@@ -216,12 +216,8 @@ const StallProfileScreen: React.FC = () => {
 
   return (
 
-    <View style={styles.container}>
-      <ScrollView>{renderHeader()}
-        <MenuCardGrid data={mockStallMenuData} showStallName={false} scrollEnabled={false} />
-      </ScrollView>
-
-    </View>
+    <View style={styles.container}>{renderHeader()}</View>
+      
   );
 };
 

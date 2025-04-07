@@ -39,7 +39,7 @@ const PersonalProfileScreen = () => {
   const [genderInfoModalVisible, setGenderInfoModalVisible] = useState(false);
 
   // Options
-  const roleOptions = ["KU Student", "Exchange Student", "KU Professor", "KU Staff", "Guest"];
+  const roleOptions = ["KU Student", "Exchange Student", "KU Professor", "KU Staff","Alumnus", "Guest"];
   const genderOptions = ["Female", "Male", "Non-Binary", "Prefer not to say"];
 
   const genderAskReason1 =

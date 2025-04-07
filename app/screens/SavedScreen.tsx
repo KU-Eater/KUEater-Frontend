@@ -1,11 +1,10 @@
+// SavedScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import StallCard from '../components/StallCard'; // Adjust the path
-import MenuCard from '../components/MenuCard'; // Adjust the path
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import BookmarkHeartIcon from '../components/NavBar';
 import MenuCardGrid from '../components/MenuCardGrid';
 import StallCardList from '../components/StallCardList';
+
 
 const mockSavedMenuData = [
   {
@@ -103,7 +102,7 @@ const mockSavedStallData = [
   {
     id: 1,
     rank: 1,
-    stallName: 'Mr. Raw Fried Chicken',
+    stallName: 'Mr. Raw Fried Chicken Mr. Raw Fried Chicken',
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM7s0v7yK-niQWaDUgGD6XU_N05_SyJ9j_IYISHPPFXWacLQ2DjadykH2m9NKSSHRyPO0&usqp=CAU',
     location: '22',
     operatingHours: '10.00 - 14.00',
@@ -154,6 +153,19 @@ const mockSavedStallData = [
   },
   {
     id: 5,
+    rank: 3,
+    stallName: 'Pilin Local North',
+    imageUrl: 'https://img.wongnai.com/p/1920x0/2023/08/28/140f720406f7403cab6ae74a58887a8f.jpg',
+    location: '22',
+    operatingHours: '07.30 - 15.30',
+    priceRange: '35 - 60',
+    tags: 'Thai',
+    reviews: 43,
+    likes: 1264,
+    rating: 4.89,
+  },
+  {
+    id: 6,
     rank: 3,
     stallName: 'Pilin Local North',
     imageUrl: 'https://img.wongnai.com/p/1920x0/2023/08/28/140f720406f7403cab6ae74a58887a8f.jpg',
@@ -221,7 +233,12 @@ const SavedScreen = () => {
       </View>
 
       {/* Content */}
-      <View style={styles.content}>{renderContent()}</View>
+      <View style={styles.content}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          {renderContent()}
+        </ScrollView>
+      </View>
+
     </View>
   );
 };
@@ -243,7 +260,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#006664',
-
   },
   tabBar: {
     flexDirection: 'row',
