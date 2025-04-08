@@ -25,6 +25,9 @@ const profilePics: { [key: string]: any } = {
   "Guest Male": require("../assets/roles/guest_m.png"),
   "Guest Female": require("../assets/roles/guest_f.png"),
   "Guest": require("../assets/roles/guest.png"),
+  "Alumnus Male": require("../assets/roles/alumni_m.png"),
+  "Alumnus Female": require("../assets/roles/alumni_f.png"),
+  "Alumnus": require("../assets/roles/alumni.png"),
   "default": require("../assets/roles/default_profile.png"),
 };
 

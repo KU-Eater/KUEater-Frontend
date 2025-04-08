@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 import StallCard, { StallCardProps } from '../components/StallCard'; // Adjust the path
 import MenuCard, { MenuCardProps } from '../components/MenuCard'; // Adjust the path
 import { Ionicons } from '@expo/vector-icons';
@@ -73,7 +73,11 @@ const SavedScreen = () => {
       </View>
 
       {/* Content */}
-      <View style={styles.content}>{renderContent()}</View>
+      <View style={styles.content}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          {renderContent()}
+        </ScrollView>
+      </View>
     </View>
   );
 };

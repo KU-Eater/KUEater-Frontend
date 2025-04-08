@@ -131,8 +131,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#006664',
+    marginTop: 8,
     marginBottom: 4,
     marginLeft: 4,
+    marginRight: 34,
   },
   infoRow: {
     flexDirection: 'row',
@@ -157,6 +159,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 6,
     marginHorizontal: 4,
+    marginBottom: 5,
+    marginRight: 10,
   },
   stat: {
     fontSize: 11,

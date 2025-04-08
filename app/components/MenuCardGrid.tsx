@@ -1,6 +1,6 @@
 // component/MenuCardGrid.tsx
 import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import MenuCard, { MenuCardProps } from './MenuCard';
 
 interface MenuCardGridProps {
@@ -28,43 +28,46 @@ const MenuCardGrid: React.FC<MenuCardGridProps> = ({
   } : undefined;
 
   return (
-    <FlatList
-      data={adjustedData}
-      keyExtractor={(item, index) =>
-        item ? item.id.toString() : `empty-${index}`
-      }
-      numColumns={2}
-      columnWrapperStyle={styles.menuColumn}
-      contentContainerStyle={styles.listContent}
-      scrollEnabled={scrollEnabled}
-      {...endReachProps}
-      renderItem={({ item }) =>
-        item ? (
-          <MenuCard
-            key={item.id}
-            id={item.id}
-            name={item.name}
-            price={item.price}
-            likes={item.likes}
-            dislikes={item.dislikes}
-            stallId={item.stallId}
-            stallName={item.stallName}
-            stallLock={item.stallLock}
-            imageUrl={item.imageUrl}
-            score={item.score}
-            reason={item.reason}
-            liked={item.liked}
-            disliked={item.disliked}
-            saved={item.saved}
-            showStallName={showStallName}
-            customWidthPercent={customWidthPercent}
-          />
-        ) : (
-          // กรณี null → เว้นว่าง
-          <View style={{ width: `${customWidthPercent}%` }} />
-        )
-      }
-    />
+    <ScrollView>
+      <FlatList
+        data={adjustedData}
+        keyExtractor={(item, index) =>
+          item ? item.id.toString() : `empty-${index}`
+        }
+        numColumns={2}
+        columnWrapperStyle={styles.menuColumn}
+        contentContainerStyle={[styles.listContent, { flexGrow: 1 }]}
+        scrollEnabled={scrollEnabled}
+        style={{ flexGrow: 1 }}
+        {...endReachProps}
+        renderItem={({ item }) =>
+          item ? (
+            <MenuCard
+              key={item.id}
+              id={item.id}
+              name={item.name}
+              price={item.price}
+              likes={item.likes}
+              dislikes={item.dislikes}
+              stallId={item.stallId}
+              stallName={item.stallName}
+              stallLock={item.stallLock}
+              imageUrl={item.imageUrl}
+              score={item.score}
+              reason={item.reason}
+              liked={item.liked}
+              disliked={item.disliked}
+              saved={item.saved}
+              showStallName={showStallName}
+              customWidthPercent={customWidthPercent}
+            />
+          ) : (
+            // กรณี null → เว้นว่าง
+            <View style={{ width: `${customWidthPercent}%` }} />
+          )
+        }
+      />
+    </ScrollView>
   );
 };
 

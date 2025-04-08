@@ -203,18 +203,22 @@ const MenuDetailScreen: React.FC = () => {
           <View style={styles.stallDetails}>
 
             <View style={styles.stallNameContainer}>
-              <Ionicons name="restaurant" size={15} color="#999" />
-              <Text style={styles.stallTitle}>
-                {'  '}
+            <View style={styles.icon}><Ionicons name="restaurant" size={15} color="#999" /></View>
+              <Text
+                 style={styles.stallTitle}
+                 numberOfLines={1}
+                 ellipsizeMode="tail"
+              >
                 {menuData.stallLock} | {menuData.stallName}
               </Text>
             </View>
 
             {/* Example: Category + rating */}
             <View style={styles.stallSubRow}>
-              <Ionicons name="pricetags" size={13} color="#999" />
+            <View style={styles.icon}><Ionicons name="pricetags" size={13} color="#999" /></View>
 
-              <Text style={styles.stallCategory}>{'  '} Beverages</Text>
+              {/* TODO: Backend must send stall tag with menu data */}
+              <Text style={styles.stallCategory}>{' '}</Text>
               <Text style={styles.stallRating}>
                 <Ionicons name="star" size={13} color="#D49E3A" /> 4.92
               </Text>
@@ -228,13 +232,13 @@ const MenuDetailScreen: React.FC = () => {
         {/* Optionally more sections or content below */}
 
         <InformationModal
-  visible={whyMenuModalVisible}
-  onClose={() => setWhyMenuModalVisible(false)}
-  title={titleForSeeThisMenuModal}
-  paragraphs={[
-    reasonForSeeThisMenu
-  ]}
-/>
+          visible={whyMenuModalVisible}
+          onClose={() => setWhyMenuModalVisible(false)}
+          title={titleForSeeThisMenuModal}
+          paragraphs={[
+            reasonForSeeThisMenu
+          ]}
+        />
 
       </View>
     </View>
@@ -371,6 +375,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 4,
+    marginRight: 10
   },
   stallSubRow: {
     flexDirection: 'row',
@@ -384,5 +389,9 @@ const styles = StyleSheet.create({
   stallRating: {
     fontSize: 14,
     color: '#999',
+    marginLeft: 12
   },
+  icon: {
+    marginRight: 12
+  }
 });

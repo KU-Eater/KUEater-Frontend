@@ -1,7 +1,7 @@
 // components/StallCardList.tsx
 
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View, ScrollView } from 'react-native';
 import StallCard, { StallCardProps } from './StallCard';
 
 interface StallCardListProps {
@@ -18,38 +18,41 @@ const StallCardList: React.FC<StallCardListProps> = ({
   customTitleComponent,
 }) => {
   return (
-    <View style={styles.section}>
-      {/* Title */}
-      {customTitleComponent ? (
-        customTitleComponent
-      ) : title ? (
-        <Text style={styles.sectionTitle}>{title}</Text>
-      ) : null}
+    <ScrollView>
+      <View style={styles.section}>
+        {/* Title */}
+        {customTitleComponent ? (
+          customTitleComponent
+        ) : title ? (
+          <Text style={styles.sectionTitle}>{title}</Text>
+        ) : null}
 
-      {/* Stall list */}
-      <FlatList
-        data={data}
-        scrollEnabled={scrollEnabled}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <StallCard
-            id={item.id}
-            rank={item.rank}
-            stallName={item.stallName}
-            imageUrl={item.imageUrl}
-            location={item.location}
-            operatingHours={item.operatingHours}
-            priceRange={item.priceRange}
-            tags={item.tags}
-            reviews={item.reviews}
-            likes={item.likes}
-            rating={item.rating}
-            saved={item.saved}
-          />
-        )}
-        contentContainerStyle={styles.listContent}
-      />
-    </View>
+        {/* Stall list */}
+        <FlatList
+          data={data}
+          scrollEnabled={scrollEnabled}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <StallCard
+              id={item.id}
+              rank={item.rank}
+              stallName={item.stallName}
+              imageUrl={item.imageUrl}
+              location={item.location}
+              operatingHours={item.operatingHours}
+              priceRange={item.priceRange}
+              tags={item.tags}
+              reviews={item.reviews}
+              likes={item.likes}
+              rating={item.rating}
+              saved={item.saved}
+            />
+          )}
+          style={{ flexGrow: 1 }}
+          contentContainerStyle={[styles.listContent, { flexGrow: 1 }]}
+        />
+      </View>
+    </ScrollView>
   );
 };
 

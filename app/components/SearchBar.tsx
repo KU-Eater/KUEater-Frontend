@@ -13,7 +13,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSearch } from '../context/SearchContext';
 
 type RootStackParamList = {
-  HomeScreen: undefined;
+  MainTab: undefined;
   SearchScreen: undefined;
   SearchResultScreen: { query: string };
 };
@@ -46,6 +46,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
     }
   };
 
+  const handleLogo = () => {
+    navigation.navigate('MainTab');
+  };
+
   const handleBack = () => {
     navigation.goBack();
   };
@@ -66,12 +70,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOnHomeScreen }) => {
           <Text style={styles.locationText}>Bar Mai</Text>
         </View>
 
+        <TouchableOpacity onPress={handleLogo}>
         <Image
           source={{
             uri: 'https://raw.githubusercontent.com/KU-Eater/KUEater-Frontend/refs/heads/base-gui/app/assets/logo_home.png',
           }}
           style={styles.logo}
         />
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={handleLanguageToggle} style={styles.languageSwitch} disabled>
           <Text style={styles.languageText}>{language}</Text>
